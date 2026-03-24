@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suzuki Portfolio</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --white: #ede8df;
+            --gray: #7a7a72;
+            --accent: #b8a88a;
+            --bg: #080808;
+        }
+
+        html {
+            scroll-behavior: auto;
+        }
+
+        body {
+            height: 600vh;
+            background: var(--bg);
+            color: var(--white);
+            font-family: 'Space Mono', monospace;
+            overflow-x: hidden;
+        }
+
+        #progressBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 1px;
+            width: 0;
+            background: var(--accent);
+            z-index: 300;
+            transition: width 0.05s linear;
+        }
+
+        #canvas-container {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+        }
+
+        #backcanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 28px 52px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            letter-spacing: 0.35em;
+            color: var(--white);
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            gap: 36px;
+        }
+
+        nav a {
+            font-size: 9px;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--gray);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--white);
+        }
+
+        .section-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            will-change: opacity, transform;
+        }
+
+        #hero {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero-eyebrow {
+            font-size: 9px;
+            letter-spacing: 0.45em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 28px;
+        }
+
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(56px, 9vw, 136px);
+            font-weight: 300;
+            line-height: 0.95;
+            letter-spacing: -0.01em;
+            color: var(--white);
+        }
+
+        .hero-title em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero-sub {
+            margin-top: 32px;
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gray);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 44px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            font-size: 8px;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--gray);
+        }
+
+        .scroll-hint::after {
+            content: '';
+            width: 1px;
+            height: 52px;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+            animation: lineDown 1.8s ease-in-out infinite;
+        }
+
+        @keyframes lineDown {
+            0% {
+                transform: scaleY(0) translateY(-50%);
+                opacity: 0;
+            }
+
+            40% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: scaleY(1) translateY(0);
+                opacity: 0;
+            }
+        }
+
+        .panel {
+            background: rgba(8, 8, 8, 0.55);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            padding: 56px 64px;
+        }
+
+        .section-num {
+            font-size: 9px;
+            letter-spacing: 0.45em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(38px, 4.5vw, 68px);
+            font-weight: 300;
+            line-height: 1.05;
+            margin-bottom: 36px;
+            color: var(--white);
+        }
+
+        .section-body {
+            font-size: 12px;
+            line-height: 2;
+            color: rgba(237, 232, 223, 0.6);
+        }
+
+        #about-section {
+            padding: 0 10vw;
+        }
+
+        #about-section .panel {
+            max-width: 520px;
+        }
+
+        #works-section {
+            padding: 0 8vw;
+            justify-content: flex-end;
+        }
+
+        #works-section .panel {
+            width: min(620px, 90vw);
+        }
+
+        .works-list {
+            margin-top: 28px;
+        }
+
+        .work-item {
+            display: grid;
+            grid-template-columns: 40px 1fr auto;
+            align-items: center;
+            gap: 20px;
+            padding: 18px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .work-item:last-child {
+            border-bottom: none;
+        }
+
+        .work-num {
+            font-size: 9px;
+            color: var(--accent);
+            letter-spacing: 0.1em;
+        }
+
+        .work-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+        }
+
+        .work-tag {
+            font-size: 8px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gray);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 4px 10px;
+        }
+
+        #timeline-section {
+            padding: 0 10vw;
+        }
+
+        #timeline-section .panel {
+            max-width: 520px;
+        }
+
+        .tl-list {
+            margin-top: 28px;
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .tl-list::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 0;
+            width: 1px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .tl-item {
+            position: relative;
+            padding-bottom: 32px;
+        }
+
+        .tl-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .tl-item::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 7px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 12px var(--accent);
+        }
+
+        .tl-year {
+            font-size: 9px;
+            letter-spacing: 0.25em;
+            color: var(--accent);
+            margin-bottom: 6px;
+        }
+
+        .tl-role {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .tl-desc {
+            font-size: 11px;
+            color: var(--gray);
+            line-height: 1.8;
+        }
+
+        #skill-section {
+            padding: 0 8vw;
+            justify-content: flex-end;
+        }
+
+        #skill-section .panel {
+            width: min(540px, 90vw);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            margin-top: 28px;
+        }
+
+        .skill-item {
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .skill-item:nth-child(odd) {
+            padding-right: 24px;
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .skill-item:nth-child(even) {
+            padding-left: 24px;
+        }
+
+        .skill-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+            color: var(--white);
+        }
+
+        .skill-pct {
+            color: var(--accent);
+        }
+
+        .skill-track {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.08);
+            position: relative;
+            overflow: visible;
+        }
+
+        .skill-fill {
+            height: 100%;
+            background: var(--accent);
+            position: relative;
+        }
+
+        .skill-fill::after {
+            content: '';
+            position: absolute;
+            right: -1px;
+            top: -2px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        #contact-section {
+            justify-content: center;
+            align-items: center;
+        }
+
+        #contact-section .panel {
+            text-align: center;
+            max-width: 600px;
+            width: 90vw;
+        }
+
+        .contact-email {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(16px, 2.5vw, 30px);
+            color: var(--accent);
+            margin: 20px 0 36px;
+            letter-spacing: 0.04em;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 36px;
+        }
+
+        .contact-link {
+            font-size: 9px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gray);
+            text-decoration: none;
+            position: relative;
+            padding-bottom: 4px;
+            transition: color 0.3s;
+        }
+
+        .contact-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent);
+            transition: width 0.3s;
+        }
+
+        .contact-link:hover {
+            color: var(--white);
+        }
+
+        .contact-link:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="progressBar"></div>
+
+    <header>
+        <div class="logo">Suzuki</div>
+        <nav>
+            <a data-goto="1">About</a>
+            <a data-goto="2">Works</a>
+            <a data-goto="3">Timeline</a>
+            <a data-goto="4">Skill</a>
+            <a data-goto="5">Contact</a>
+        </nav>
+    </header>
+
+    <div id="canvas-container">
+        <canvas id="backcanvas"></canvas>
+    </div>
+
+    <!-- ① Hero -->
+    <div class="section-overlay" id="hero">
+        <div class="hero-eyebrow">Web Developer &amp; Creative Engineer</div>
+        <div class="hero-title">Suzuki<br><em>Portfolio</em></div>
+        <div class="hero-sub">Front-End · Three.js · UI Design</div>
+        <div class="scroll-hint">Scroll</div>
+    </div>
+
+    <!-- ② About -->
+    <div class="section-overlay" id="about-section">
+        <div class="panel">
+            <div class="section-num">01 — About</div>
+            <h2 class="section-title">Crafting digital<br>experiences</h2>
+            <p class="section-body">
+                フロントエンド開発を専門とするWebエンジニア。<br>
+                デザインと技術の境界を曖昧にしながら、<br>
+                ユーザーの記憶に残るインターフェースを作っています。
+            </p>
+            <p class="section-body" style="margin-top:16px;">
+                Based in Japan &nbsp;·&nbsp; 5+ years experience<br>
+                Available for freelance projects worldwide.
+            </p>
+        </div>
+    </div>
+
+    <!-- ③ Works -->
+    <div class="section-overlay" id="works-section">
+        <div class="panel">
+            <div class="section-num">02 — Works</div>
+            <h2 class="section-title">Selected<br>Projects</h2>
+            <div class="works-list">
+                <div class="work-item">
+                    <span class="work-num">001</span>
+                    <span class="work-name">Project Alpha</span>
+                    <span class="work-tag">Web Design</span>
+                </div>
+                <div class="work-item">
+                    <span class="work-num">002</span>
+                    <span class="work-name">E-Commerce Platform</span>
+                    <span class="work-tag">Development</span>
+                </div>
+                <div class="work-item">
+                    <span class="work-num">003</span>
+                    <span class="work-name">Task Manager App</span>
+                    <span class="work-tag">Mobile App</span>
+                </div>
+                <div class="work-item">
+                    <span class="work-num">004</span>
+                    <span class="work-name">Brand Identity</span>
+                    <span class="work-tag">UI / UX</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ④ Timeline -->
+    <div class="section-overlay" id="timeline-section">
+        <div class="panel">
+            <div class="section-num">03 — Timeline</div>
+            <h2 class="section-title">Journey</h2>
+            <div class="tl-list">
+                <div class="tl-item">
+                    <div class="tl-year">2024 – Present</div>
+                    <div class="tl-role">Senior Front-End Engineer</div>
+                    <div class="tl-desc">フリーランスとして国内外の<br>プロジェクトをリード。</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-year">2021 – 2024</div>
+                    <div class="tl-role">Web Developer</div>
+                    <div class="tl-desc">スタートアップにて React / Vue.js を用いた<br>プロダクト開発に従事。</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-year">2019 – 2021</div>
+                    <div class="tl-role">UI / UX Designer</div>
+                    <div class="tl-desc">デザイン会社にてWebサイト・<br>アプリのUI設計を担当。</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⑤ Skill -->
+    <div class="section-overlay" id="skill-section">
+        <div class="panel">
+            <div class="section-num">04 — Skills</div>
+            <h2 class="section-title">Expertise</h2>
+            <div class="skills-grid">
+                <div class="skill-item">
+                    <div class="skill-label"><span>HTML / CSS</span><span class="skill-pct">95%</span></div>
+                    <div class="skill-track">
+                        <div class="skill-fill" style="width:95%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-label"><span>JavaScript</span><span class="skill-pct">90%</span></div>
+                    <div class="skill-track">
+                        <div class="skill-fill" style="width:90%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-label"><span>React</span><span class="skill-pct">85%</span></div>
+                    <div class="skill-track">
+                        <div class="skill-fill" style="width:85%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-label"><span>Three.js</span><span class="skill-pct">72%</span></div>
+                    <div class="skill-track">
+                        <div class="skill-fill" style="width:72%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-label"><span>Node.js</span><span class="skill-pct">78%</span></div>
+                    <div class="skill-track">
+                        <div class="skill-fill" style="width:78%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-label"><span>UI Design</span><span class="skill-pct">82%</span></div>
+                    <div class="skill-track">
+                        <div class="skill-fill" style="width:82%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⑥ Contact -->
+    <div class="section-overlay" id="contact-section">
+        <div class="panel">
+            <div class="section-num">05 — Contact</div>
+            <h2 class="section-title">Let's work<br>together</h2>
+            <div class="contact-email">suzuki.portfolio@example.com</div>
+            <div class="contact-links">
+                <a href="#" class="contact-link">GitHub</a>
+                <a href="#" class="contact-link">Twitter</a>
+                <a href="#" class="contact-link">LinkedIn</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+
+        /* ================================================================
+           【Three.js 基本セットアップ】
+           Three.js の3大要素 scene / camera / renderer を初期化する
+        ================================================================ */
+
+        // scene : 3Dオブジェクトを置く「空間」。ライトやメッシュはすべてここに追加する
+        const scene = new THREE.Scene();
+
+        // camera : 視点。PerspectiveCamera = 遠近感あり
+        //   引数① 視野角(deg)  ② アスペクト比  ③ 近クリップ面  ④ 遠クリップ面
+        //   クリップ面の範囲外にあるオブジェクトは描画されない
+        const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 2000);
+
+        // renderer : scene + camera の内容を canvas に描画するエンジン
+        //   antialias: ジャギー（ギザギザ）を滑らかにする
+        //   alpha:     背景を透明にする（背後の CSS 背景色が透けて見える）
+        const renderer = new THREE.WebGLRenderer({
+            canvas: document.getElementById('backcanvas'),
+            antialias: true,
+            alpha: true
+        });
+        renderer.setSize(innerWidth, innerHeight);
+        // デバイスピクセル比の上限を 2 に制限
+        // → Retina 等の高 DPI 端末でも描画が過剰に重くならないようにする
+        renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+
+        /* ================================================================
+           【クリスタル（ダイヤモンド形）の作成】
+        ================================================================ */
+
+        // ダイヤモンド形のジオメトリ（形状データ）を手動で定義する関数
+        const createDiamond = () => {
+            const geo = new THREE.BufferGeometry();
+
+            // 頂点座標を Float32Array で定義（x, y, z の繰り返し）
+            //   頂点0: 上頂点  /  頂点1〜4: 赤道の4点  /  頂点5: 下頂点
+            geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+                0, 1.1, 0,   // 0: 上
+                1, 0, 0,   // 1: 右
+                0, 0, 1,   // 2: 前
+                -1, 0, 0,   // 3: 左
+                0, 0, -1,   // 4: 後
+                0, -1.1, 0    // 5: 下
+            ]), 3));
+
+            // 三角形ポリゴンの頂点インデックスを指定（3つで1面）
+            //   上半球4面 + 下半球4面 = 計8面のポリゴン
+            geo.setIndex([
+                0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1,  // 上半球
+                5, 2, 1, 5, 3, 2, 5, 4, 3, 5, 1, 4   // 下半球
+            ]);
+
+            // 法線ベクトルを自動計算（ライティングの計算に必要）
+            geo.computeVertexNormals();
+            return geo;
+        };
+
+        const crystalGeo = createDiamond();
+
+        // クリスタルのマテリアル（表面素材）
+        //   MeshStandardMaterial: PBR（物理ベース）レンダリング対応の標準マテリアル
+        //   flatShading: true → 面ごとにフラットな陰影になり、多面体らしいクリスタル感が出る
+        const crystalMat = new THREE.MeshStandardMaterial({
+            color: 0x1a1a1a, // ほぼ黒
+            metalness: 0.1,      // 金属感（0=非金属 / 1=完全金属）
+            roughness: 0.7,      // 粗さ（0=鏡面 / 1=完全マット）
+            transparent: true,
+            opacity: 0.28,     // 半透明
+            flatShading: true,
+        });
+
+        // ジオメトリ + マテリアルを合わせてメッシュ（実際に表示されるオブジェクト）を作成
+        const crystal = new THREE.Mesh(crystalGeo, crystalMat);
+        const BASE_SCALE = 2; // 初期スケール（スクロール拡大アニメーションの基準値）
+        crystal.scale.setScalar(BASE_SCALE);
+        scene.add(crystal);
+
+        // ワイヤーフレーム（稜線）をクリスタルの「子オブジェクト」として追加
+        //   子にすることでクリスタルと一緒に回転・拡縮される
+        //   EdgesGeometry : ポリゴンの稜線だけを抽出したジオメトリ
+        //   LineSegments  : 線分の集合を描画するオブジェクト
+        crystal.add(new THREE.LineSegments(
+            new THREE.EdgesGeometry(crystalGeo),
+            new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 })
+        ));
+
+
+        /* ================================================================
+           【ガラスパネルの作成】
+           クリスタルを取り囲むように円周上に並べる半透明パネル
+        ================================================================ */
+
+        // MeshPhysicalMaterial: MeshStandardMaterial の拡張版
+        //   transmission（透過率）や reflectivity（反射率）でガラスっぽさを表現できる
+        const glassMat = new THREE.MeshPhysicalMaterial({
+            color: 0x289399, // パネルの色（ティール系）
+            metalness: 0,
+            roughness: 0,
+            transparent: true,
+            opacity: 0.14,
+            transmission: 0.5,       // 光の透過率（1=完全透明ガラス）
+            thickness: 0.1,
+            reflectivity: 0.9,
+            side: THREE.DoubleSide, // 表・裏どちらから見ても描画する
+        });
+
+        // パネルの縁取りライン用マテリアル
+        const edgeMat = new THREE.LineBasicMaterial({
+            color: 0xcccccc, transparent: true, opacity: 0.55
+        });
+
+        const PANEL_COUNT = 16;
+        const BASE_RADIUS = 4.55;
+        const PANEL_W = 1.8, PANEL_H = 1.8;
+        const V_LAYERS = 5, V_SPACING = 1.8;
+
+        const panelGroup = new THREE.Group();
+        const panels = []; // store {mesh, angle, layer}
+
+        for (let layer = 0; layer < V_LAYERS; layer++) {
+            const offsetY = (layer - (V_LAYERS - 1) / 2) * V_SPACING;
+            const start = layer % 2; // stagger every other layer
+
+            for (let i = start; i < PANEL_COUNT; i += 2) {
+
+                const angle = (i / PANEL_COUNT) * Math.PI * 2;
+
+                const pGeo = new THREE.PlaneGeometry(PANEL_W, PANEL_H);
+
+                const mesh = new THREE.Mesh(pGeo, glassMat);
+
+                mesh.position.set(Math.cos(angle) * BASE_RADIUS, offsetY, Math.sin(angle) * BASE_RADIUS);
+
+                mesh.rotation.y = -angle + Math.PI / 2;
+
+                mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(pGeo), edgeMat));
+
+                panelGroup.add(mesh);
+
+                panels.push({ mesh, angle, offsetY });
+
+            }
+
+        }
+        scene.add(panelGroup);
+
+        /* ================================================================
+           【ライト（照明）の設定】
+        ================================================================ */
+
+        // AmbientLight: 全方向から均一に照らす環境光。影はできない。暗部を底上げする
+        scene.add(new THREE.AmbientLight(0xffffff, 1.1));
+
+        // DirectionalLight: 特定方向からの平行光源（太陽光のイメージ）
+        const dLight = new THREE.DirectionalLight(0xffffff, 0.9);
+        dLight.position.set(0, 10, 10); // 上前方から照らす
+        scene.add(dLight);
+
+        // 補助ライト: 左下後方からのアンバー色の逆光（立体感の強調）
+        const dLight2 = new THREE.DirectionalLight(0xb8a88a, 0.5);
+        dLight2.position.set(-5, -5, -5);
+        scene.add(dLight2);
+
+        // カメラの初期位置: パネル半径の3倍後方に配置（全体が画角に収まる距離）
+        camera.position.z = BASE_RADIUS * 3;
+
+
+        /* ================================================================
+           【スクロール制御の共通ユーティリティ】
+        ================================================================ */
+
+        // セクションの総数（Hero + コンテンツ5つ = 6）
+        const SECTIONS = 6; // インデックス: 0=hero, 1=about, 2=works, 3=timeline, 4=skill, 5=contact
+
+        let scrollY = 0; // 現在のスクロール量（px）
+        let ticker = 0; // 毎フレーム +0.005 されるタイマー（自動回転・ゆらぎのベース）
+
+        // ease3: 三次イージング（ease-in-out cubic）
+        //   入力 t（0〜1）を S字カーブに変換して、動きの始まりと終わりを滑らかにする
+        //   t=0→0, t=0.5→0.5, t=1→1 だが中間が加速・減速する
+        const ease3 = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+        // clamp: 値を [a, b] の範囲に収める（はみ出しを防ぐ）
+        const clamp = (v, a, b) => Math.min(Math.max(v, a), b);
+
+        // lerp: 線形補間。t=0 なら a、t=1 なら b、0<t<1 なら中間値を返す
+        const lerp = (a, b, t) => a + (b - a) * t;
+
+        // 各セクションの HTML 要素への参照（配列インデックス = セクション番号）
+        const sectionEls = [
+            document.getElementById('hero'),
+            document.getElementById('about-section'),
+            document.getElementById('works-section'),
+            document.getElementById('timeline-section'),
+            document.getElementById('skill-section'),
+            document.getElementById('contact-section'),
+        ];
+
+        /**
+         * getSF() — Section Float（セクション進捗値）を返す
+         *
+         * スクロール量をページ全体の高さで割り、0〜SECTIONS の範囲に正規化した値。
+         *   sf = 0.0 → ページ最上部（Hero）
+         *   sf = 1.0 → About セクションの位置
+         *   sf = 5.0 → Contact セクションの位置（ページ最下部）
+         *
+         * この値を軸に「今どのセクションにいるか」を計算する
+         */
+        function getSF() {
+            const maxScroll = document.body.scrollHeight - innerHeight;
+            const p = maxScroll > 0 ? scrollY / maxScroll : 0; // スクロール率: 0〜1
+            return p * SECTIONS; // 0〜SECTIONS の範囲にスケール
+        }
+
+
+        /* ================================================================
+           【HTMLオーバーレイの表示・非表示制御】
+           スクロール位置に応じて各セクションの opacity と translateY を更新する
+        ================================================================ */
+        function updateOverlays() {
+            const sf = getSF();
+
+            sectionEls.forEach((el, i) => {
+                if (!el) return;
+
+                // dist（距離値）= 現在の sf から このセクションのインデックスを引いた値
+                //   dist < 0  → まだこのセクションに到達していない
+                //   0 ≤ dist < 1 → このセクションの表示範囲内
+                //   dist ≥ 1  → このセクションを通り過ぎた
+                const dist = sf - i;
+
+                let opacity = 0;
+                let ty = 0; // CSS translateY（px）: 下からのスライドインに使う
+
+                if (i === 0) {
+                    /* ── Hero セクション ──────────────────────────────
+                       dist=0 で表示開始、dist=0.25 までは完全表示、
+                       dist=0.25〜0.7 でイージングフェードアウト ＋ 上方向スライド */
+                    if (dist >= 0 && dist < 1) {
+                        const fo = clamp((dist - 0.25) / 0.45, 0, 1); // フェードアウト進行度（0→1）
+                        opacity = 1 - ease3(fo);  // イージングで徐々に透明に
+                        ty = -dist * 60;     // スクロール量に連動して上へ移動
+                    } else if (dist < 0) {
+                        opacity = 1; // ページ最上部なので最初から表示
+                    }
+
+                } else if (i === SECTIONS - 1) {
+                    /* ── Contact セクション（最終）──────────────────────
+                       一度フェードインしたら消えない（最後のセクションなので） */
+                    if (dist >= -0.1) {
+                        opacity = ease3(clamp((dist + 0.1) / 0.35, 0, 1));
+                    }
+
+                } else {
+                    /* ── 中間セクション（About / Works / Timeline / Skill） ──
+                       フェードイン開始: dist = -0.15（セクション手前から始まる）
+                       フェードアウト開始: dist = 0.65（次セクションへ向かうとき）
+                       fi（フェードイン）と fo（フェードアウト）を掛け合わせて
+                       「入って → 止まって → 出ていく」自然なカーブを作る */
+                    if (dist > -0.15 && dist < 1) {
+                        const fi = ease3(clamp((dist + 0.15) / 0.35, 0, 1)); // フェードイン（0→1）
+                        const fo = ease3(clamp((dist - 0.65) / 0.30, 0, 1)); // フェードアウト（0→1）
+                        opacity = fi * (1 - fo);  // 入る × 出ない = 表示時間帯だけ不透明
+                        ty = lerp(44, 0, ease3(clamp((dist + 0.15) / 0.35, 0, 1)));
+                        //           ↑ 登場時に 44px 下から 0 へスライドイン
+                    }
+                }
+
+                el.style.opacity = Math.max(0, Math.min(1, opacity));
+                el.style.transform = `translateY(${ty}px)`;
+                // opacity が低いとき（非表示に近いとき）はポインターイベントを無効化
+                // → 見えないリンクやボタンが裏で反応しないようにする
+                el.style.pointerEvents = opacity > 0.2 ? 'auto' : 'none';
+            });
+        }
+
+
+        /* ================================================================
+           【Three.js シーンのスクロール連動アップデート】
+           スクロール進捗（sf）に応じてクリスタルとパネルの状態を毎フレーム変化させる
+        ================================================================ */
+        function updateScene() {
+            const sf = getSF();
+
+            /* ── クリスタルのスケール（巨大化アニメーション） ──────────────
+               sf=0.4 で拡大開始 → sf=1.3 頃に最大スケール 16 に到達
+               growT: 0（初期サイズ）→ 1（最大サイズ）の進行度 */
+            const growT = ease3(clamp((sf - 0.4) / 0.9, 0, 1));
+            const targetScale = lerp(BASE_SCALE, 16, growT); // 2 → 16
+            crystal.scale.setScalar(targetScale);
+
+            // 透明度: 大きくなるにつれ少し薄くなる ＋ sin 波で呼吸するようなゆらぎを加える
+            crystalMat.opacity = lerp(0.28, 0.18, growT) + Math.sin(ticker * 1.8) * 0.025;
+
+            /* ── パネルの半径（外側へ飛んでいくアニメーション） ──────────────
+               growT に連動して BASE_RADIUS(4.55) → 28 まで広がる */
+            const targetRadius = lerp(BASE_RADIUS, 28, growT);
+
+            // パネルの透明度: 遠ざかるほど消えていく
+            //   panelOpT: 0（元の位置）→ 1（最遠の位置）の進行度
+            const panelOpT = clamp((targetRadius - BASE_RADIUS) / (28 - BASE_RADIUS), 0, 1);
+            glassMat.opacity = lerp(0.14, 0, panelOpT); // パネル面の透明度
+            edgeMat.opacity = lerp(0.55, 0, panelOpT); // 縁取りラインの透明度
+
+            // 各パネルを新しい半径の円周上に再配置
+            //   angle（向き）と offsetY（高さ）は変えず、X / Z だけ更新
+            panels.forEach(({ mesh, angle, offsetY }) => {
+                mesh.position.x = Math.cos(angle) * targetRadius;
+                mesh.position.z = Math.sin(angle) * targetRadius;
+                mesh.position.y = offsetY;
+            });
+
+            /* ── カメラの後退（クリスタルが大きくなるにつれ引いて見せる） ──────
+               目標位置を lerp で計算し、毎フレーム少しずつ近づける（スムージング）
+               0.06 が追従の遅延係数 → 小さいほど遅れてゆっくり追いかける */
+            const targetCamZ = lerp(BASE_RADIUS * 3, BASE_RADIUS * 3.8, growT * 0.5);
+            camera.position.z += (targetCamZ - camera.position.z) * 0.06;
+        }
+
+
+        /* ================================================================
+           【アニメーションループ】
+           requestAnimationFrame で毎フレーム（約60fps）呼び出し続ける
+        ================================================================ */
+        function animate() {
+            requestAnimationFrame(animate); // 次のフレームに自分自身を再予約
+            ticker += 0.005; // 時間軸を進める（自動回転・ゆらぎのベース値）
+
+            const sf = getSF();
+
+            // Hero セクション（sf < 1）では速く回転、それ以降はゆっくり回転
+            const rotSpeed = sf < 1 ? 1 : 0.35;
+
+            // クリスタルとパネルグループを逆方向に回転させて対称的な動きを演出
+            //   scrollY * 0.008: スクロール量に比例した角度（ドラッグ感）
+            //   ticker: 時間経過による自動回転
+            crystal.rotation.y = scrollY * 0.008 * rotSpeed + ticker;
+            panelGroup.rotation.y = -(scrollY * 0.008 * rotSpeed + ticker);
+
+            updateScene();                  // スクロール連動の状態を更新
+            renderer.render(scene, camera); // scene を camera 視点で canvas に描画
+        }
+
+
+        /* ================================================================
+           【イベントリスナー】
+        ================================================================ */
+
+        // scroll イベント
+        //   passive: true → ブラウザに「preventDefault を呼ばない」と伝えることで
+        //                    スクロールのパフォーマンスが向上する
+        window.addEventListener('scroll', () => {
+            scrollY = window.scrollY; // 現在のスクロール量を更新
+
+            // プログレスバーの幅をスクロール率（0〜100%）に同期
+            const maxScroll = document.body.scrollHeight - innerHeight;
+            document.getElementById('progressBar').style.width =
+                (scrollY / maxScroll * 100).toFixed(2) + '%';
+
+            updateOverlays(); // セクションの表示状態を更新
+        }, { passive: true });
+
+        // ナビゲーションリンクのクリック
+        //   data-goto 属性にセクション番号が入っている（例: <a data-goto="2">Works</a>）
+        //   クリックでそのセクションのスクロール位置へ滑らかに移動する
+        document.querySelectorAll('nav a[data-goto]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                const idx = parseInt(a.dataset.goto); // 移動先セクション番号（0〜5）
+                const maxScroll = document.body.scrollHeight - innerHeight;
+                // セクション番号 ÷ SECTIONS → スクロール率 → ページ内の px 位置に変換
+                window.scrollTo({ top: (idx / SECTIONS) * maxScroll, behavior: 'smooth' });
+            });
+        });
+
+        // resize イベント: ウィンドウサイズが変わったらカメラと renderer を更新
+        window.addEventListener('resize', () => {
+            camera.aspect = innerWidth / innerHeight;
+            camera.updateProjectionMatrix(); // アスペクト比を変えたら必ず呼ぶ（内部の行列を再計算）
+            renderer.setSize(innerWidth, innerHeight);
+        });
+
+        // ページ読み込み直後にオーバーレイの初期状態を適用してからループ開始
+        updateOverlays();
+        animate();
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bouncing Cube - 3D Visualization</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@400&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #020617 0%, #4c1d95 50%, #0f172a 100%);
+            height: 100vh;
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .overlay {
+            position: absolute;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .title-section {
+            top: 2rem;
+            left: 2rem;
+        }
+
+        .title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            background: #06b6d4;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+            font-size: 1.125rem;
+        }
+
+        .info-section {
+            bottom: 2rem;
+            right: 2rem;
+            text-align: right;
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .info-section p:first-child {
+            color: #cbd5e1;
+            margin-bottom: 0.25rem;
+        }
+
+        .bg-decoration {
+            position: absolute;
+            pointer-events: none;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.1;
+        }
+
+        .bg-decoration-1 {
+            top: 0;
+            left: 25%;
+            width: 24rem;
+            height: 24rem;
+            background: #a855f7;
+        }
+
+        .bg-decoration-2 {
+            bottom: 0;
+            right: 25%;
+            width: 24rem;
+            height: 24rem;
+            background: #06b6d4;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .title-section {
+                top: 1rem;
+                left: 1rem;
+            }
+
+            .info-section {
+                bottom: 1rem;
+                right: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="canvas-container"></div>
+
+    <!-- Overlay elements -->
+    <div class="overlay title-section">
+        <h1 class="title">Bouncing Cube</h1>
+        <p class="subtitle">立方体が画面端で反射しながら動きます</p>
+    </div>
+
+    <div class="overlay info-section">
+        <p>3D Visualization</p>
+        <p>WebGL + Three.js</p>
+    </div>
+
+    <!-- Background decorations -->
+    <div class="bg-decoration bg-decoration-1"></div>
+    <div class="bg-decoration bg-decoration-2"></div>
+
+    <!-- Three.js from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // Scene setup
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0a0e1a);
+
+        // Camera setup
+        const camera = new THREE.PerspectiveCamera(
+            75,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
+        camera.position.z = 5;
+
+        // Renderer setup
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Create gradient material with shaders
+        const vertexShader = `
+            varying vec3 vPosition;
+            varying vec3 vNormal;
+
+            void main() {
+                vPosition = position;
+                vNormal = normalize(normalMatrix * normal);
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `;
+
+        const fragmentShader = `
+            varying vec3 vPosition;
+            varying vec3 vNormal;
+            uniform float time;
+
+            void main() {
+                vec3 color1 = vec3(0.95, 0.26, 1); // Hot pink
+                vec3 color2 = vec3(0.35, 0.55, 0.95); // Blue
+                vec3 color3 = vec3(0.95, 0.75, 1); // Yellow
+
+                float mixValue = (vPosition.y + 1.0) * 0.5;
+                float timeMix = sin(time * 0.5) * 0.5 + 0.5;
+
+                vec3 color = mix(
+                    mix(color1, color2, mixValue),
+                    color3,
+                    timeMix * 0.3
+                );
+
+                // Add lighting effect
+                vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
+                float diff = max(dot(vNormal, lightDir), 0.0);
+                color = color * (0.5 + diff * 0.5);
+
+                gl_FragColor = vec4(color, 1.0);
+            }
+        `;
+
+        const material = new THREE.ShaderMaterial({
+            vertexShader: vertexShader,
+            fragmentShader: fragmentShader,
+            uniforms: {
+                time: { value: 0 }
+            }
+        });
+
+        // Create cube
+        const geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        // Add lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+        pointLight.position.set(5, 5, 5);
+        scene.add(pointLight);
+
+        // Animation variables
+        const velocity = { x: 0.02, y: 0.015, z: 0.01 };
+        const rotationVelocity = { x: 0.01, y: 0.015, z: 0.008 };
+        const bounds = { x: 3, y: 2, z: 2 };
+        let time = 0;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.01;
+
+            // Update shader uniform
+            material.uniforms.time.value = time;
+
+            // Update position
+            cube.position.x += velocity.x;
+            cube.position.y += velocity.y;
+            cube.position.z += velocity.z;
+
+            // Check boundaries and reflect
+            if (Math.abs(cube.position.x) > bounds.x) {
+                velocity.x *= -1;
+                cube.position.x = Math.sign(cube.position.x) * bounds.x;
+            }
+            if (Math.abs(cube.position.y) > bounds.y) {
+                velocity.y *= -1;
+                cube.position.y = Math.sign(cube.position.y) * bounds.y;
+            }
+            if (Math.abs(cube.position.z) > bounds.z) {
+                velocity.z *= -1;
+                cube.position.z = Math.sign(cube.position.z) * bounds.z;
+            }
+
+            // Rotate cube
+            cube.rotation.x += rotationVelocity.x;
+            cube.rotation.y += rotationVelocity.y;
+            cube.rotation.z += rotationVelocity.z;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+
+</html>

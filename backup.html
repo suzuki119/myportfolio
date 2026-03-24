@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suzuki Portfolio</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --white: #ede8df;
+            --gray: #7a7a72;
+            --accent: #b8a88a;
+            --bg: #080808;
+        }
+
+        html {
+            scroll-behavior: auto;
+        }
+
+        body {
+            height: 600vh;
+            background: var(--bg);
+            color: var(--white);
+            font-family: 'Space Mono', monospace;
+            overflow-x: hidden;
+        }
+
+        /* ── Progress bar ── */
+        #progressBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 1px;
+            width: 0;
+            background: var(--accent);
+            z-index: 300;
+            transition: width 0.05s linear;
+        }
+
+        /* ── Canvas ── */
+        #canvas-container {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+        }
+
+        #backcanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ── Header ── */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 28px 52px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            letter-spacing: 0.35em;
+            color: var(--white);
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            gap: 36px;
+        }
+
+        nav a {
+            font-size: 9px;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--gray);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--white);
+        }
+
+        /* ── Section overlays ── */
+        .section-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            will-change: opacity, transform;
+        }
+
+        /* ── Hero ── */
+        #hero {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero-eyebrow {
+            font-size: 9px;
+            letter-spacing: 0.45em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 28px;
+        }
+
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(56px, 9vw, 136px);
+            font-weight: 300;
+            line-height: 0.95;
+            letter-spacing: -0.01em;
+            color: var(--white);
+        }
+
+        .hero-title em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero-sub {
+            margin-top: 32px;
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gray);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 44px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            font-size: 8px;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--gray);
+        }
+
+        .scroll-hint::after {
+            content: '';
+            width: 1px;
+            height: 52px;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+            animation: lineDown 1.8s ease-in-out infinite;
+        }
+
+        @keyframes lineDown {
+            0% {
+                transform: scaleY(0) translateY(-50%);
+                opacity: 0;
+            }
+
+            40% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: scaleY(1) translateY(0);
+                opacity: 0;
+            }
+        }
+
+        /* ── Glass panel ── */
+        .panel {
+            background: rgba(8, 8, 8, 0.55);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            padding: 56px 64px;
+        }
+
+        .section-num {
+            font-size: 9px;
+            letter-spacing: 0.45em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(38px, 4.5vw, 68px);
+            font-weight: 300;
+            line-height: 1.05;
+            margin-bottom: 36px;
+            color: var(--white);
+        }
+
+        .section-body {
+            font-size: 12px;
+            line-height: 2;
+            color: rgba(237, 232, 223, 0.6);
+        }
+
+        /* ── About ── */
+        #about-section {
+            padding: 0 10vw;
+        }
+
+        #about-section .panel {
+            max-width: 520px;
+        }
+
+        /* ── Works ── */
+        #works-section {
+            padding: 0 8vw;
+            justify-content: flex-end;
+        }
+
+        #works-section .panel {
+            width: min(620px, 90vw);
+        }
+
+        .works-list {
+            margin-top: 28px;
+        }
+
+        .work-item {
+            display: grid;
+            grid-template-columns: 40px 1fr auto;
+            align-items: center;
+            gap: 20px;
+            padding: 18px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            transition: background 0.2s;
+        }
+
+        .work-item:last-child {
+            border-bottom: none;
+        }
+
+        .work-num {
+            font-size: 9px;
+            color: var(--accent);
+            letter-spacing: 0.1em;
+        }
+
+        .work-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            font-weight: 400;
+        }
+
+        .work-tag {
+            font-size: 8px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gray);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 4px 10px;
+        }
+
+        /* ── Timeline ── */
+        #timeline-section {
+            padding: 0 10vw;
+        }
+
+        #timeline-section .panel {
+            max-width: 520px;
+        }
+
+        .tl-list {
+            margin-top: 28px;
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .tl-list::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 0;
+            width: 1px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .tl-item {
+            position: relative;
+            padding-bottom: 32px;
+        }
+
+        .tl-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .tl-item::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 7px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 12px var(--accent);
+        }
+
+        .tl-year {
+            font-size: 9px;
+            letter-spacing: 0.25em;
+            color: var(--accent);
+            margin-bottom: 6px;
+        }
+
+        .tl-role {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .tl-desc {
+            font-size: 11px;
+            color: var(--gray);
+            line-height: 1.8;
+        }
+
+        /* ── Skill ── */
+        #skill-section {
+            padding: 0 8vw;
+            justify-content: flex-end;
+        }
+
+        #skill-section .panel {
+            width: min(540px, 90vw);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            margin-top: 28px;
+        }
+
+        .skill-item {
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .skill-item:nth-child(odd) {
+            padding-right: 24px;
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .skill-item:nth-child(even) {
+            padding-left: 24px;
+        }
+
+        .skill-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+            color: var(--white);
+        }
+
+        .skill-pct {
+            color: var(--accent);
+        }
+
+        .skill-track {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.08);
+            position: relative;
+            overflow: visible;
+        }
+
+        .skill-fill {
+            height: 100%;
+            background: var(--accent);
+            position: relative;
+        }
+
+        .skill-fill::after {
+            content: '';
+            position: absolute;
+            right: -1px;
+            top: -2px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        /* ── Contact ── */
+        #contact-section {
+            justify-content: center;
+            align-items: center;
+        }
+
+        #contact-section .panel {
+            text-align: center;
+            max-width: 600px;
+            width: 90vw;
+        }
+
+        .contact-email {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(16px, 2.5vw, 30px);
+            color: var(--accent);
+            margin: 20px 0 36px;
+            letter-spacing: 0.04em;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 36px;
+        }
+
+        .contact-link {
+            font-size: 9px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gray);
+            text-decoration: none;
+            position: relative;
+            padding-bottom: 4px;
+            transition: color 0.3s;
+        }
+
+        .contact-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent);
+            transition: width 0.3s;
+        }
+
+        .contact-link:hover {
+            color: var(--white);
+        }
+
+        .contact-link:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="progressBar"></div>
+
+    <header>
+        <div class="logo">Suzuki</div>
+        <nav>
+            <a data-goto="1">About</a>
+            <a data-goto="2">Works</a>
+            <a data-goto="3">Timeline</a>
+            <a data-goto="4">Skill</a>
+            <a data-goto="5">Contact</a>
+        </nav>
+    </header>
+
+    <div id="canvas-container">
+        <canvas id="backcanvas"></canvas>
+    </div>
+
+    <!-- ① Hero -->
+    <div class="section-overlay" id="hero">
+        <div class="hero-eyebrow">Web Developer &amp; Creative Engineer</div>
+        <div class="hero-title">Suzuki<br><em>Portfolio</em></div>
+        <div class="hero-sub">Front-End · Three.js · UI Design</div>
+        <div class="scroll-hint">Scroll</div>
+    </div>
+
+    <!-- ② About -->
+    <div class="section-overlay" id="about-section">
+        <div class="panel">
+            <div class="section-num">01 — About</div>
+            <h2 class="section-title">Crafting digital<br>experiences</h2>
+            <p class="section-body">
+                フロントエンド開発を専門とするWebエンジニア。<br>
+                デザインと技術の境界を曖昧にしながら、<br>
+                ユーザーの記憶に残るインターフェースを作っています。
+            </p>
+            <p class="section-body" style="margin-top:16px;">
+                Based in Japan &nbsp;·&nbsp; 5+ years experience<br>
+                Available for freelance projects worldwide.
+            </p>
+        </div>
+    </div>
+
+    <!-- ③ Works -->
+    <div class="section-overlay" id="works-section">
+        <div class="panel">
+            <div class="section-num">02 — Works</div>
+            <h2 class="section-title">Selected<br>Projects</h2>
+            <div class="works-list">
+                <div class="work-item">
+                    <span class="work-num">001</span>
+                    <span class="work-name">Project Alpha</span>
+                    <span class="work-tag">Web Design</span>
+                </div>
+                <div class="work-item">
+                    <span class="work-num">002</span>
+                    <span class="work-name">E-Commerce Platform</span>
+                    <span class="work-tag">Development</span>
+                </div>
+                <div class="work-item">
+                    <span class="work-num">003</span>
+                    <span class="work-name">Task Manager App</span>
+                    <span class="work-tag">Mobile App</span>
+                </div>
+                <div class="work-item">
+                    <span class="work-num">004</span>
+                    <span class="work-name">Brand Identity</span>
+                    <span class="work-tag">UI / UX</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ④ Timeline -->
+    <div class="section-overlay" id="timeline-section">
+        <div class="panel">
+            <div class="section-num">03 — Timeline</div>
+            <h2 class="section-title">Journey</h2>
+            <div class="tl-list">
+                <div class="tl-item">
+                    <div class="tl-year">2024 – Present</div>
+                    <div class="tl-role">Senior Front-End Engineer</div>
+                    <div class="tl-desc">フリーランスとして国内外の<br>プロジェクトをリード。</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-year">2021 – 2024</div>
+                    <div class="tl-role">Web Developer</div>
+                    <div class="tl-desc">スタートアップにて React / Vue.js を用いた<br>プロダクト開発に従事。</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-year">2019 – 2021</div>
+                    <div class="tl-role">UI / UX Designer</div>
+                    <div class="tl-desc">デザイン会社にてWebサイト・<br>アプリのUI設計を担当。</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⑤ Skill -->
+    <div class="section-overlay" id="skill-section">
+        <div class="panel">
+            <div class="section-num">04 — Skills</div>
+            <h2 class="section-title">Expertise</h2>
+            <div class="skills-grid">
+                <div class="skill-item">
+                    <div class="skill-label"><span>HTML / CSS</span><span class="skill-pct">95%</span></div>
+                    <div class="skill-track">
+                        <div class="skill-fill" style="width:95%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-label"><span>JavaScript</span><span class="skill-pct">90%</span></div>
+                    <div class="skill-track">
+                        <div class="skill-fill" style="width:90%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-label"><span>React</span><span class="skill-pct">85%</span></div>
+                    <div class="skill-track">
+                        <div class="skill-fill" style="width:85%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-label"><span>Three.js</span><span class="skill-pct">72%</span></div>
+                    <div class="skill-track">
+                        <div class="skill-fill" style="width:72%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-label"><span>Node.js</span><span class="skill-pct">78%</span></div>
+                    <div class="skill-track">
+                        <div class="skill-fill" style="width:78%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-label"><span>UI Design</span><span class="skill-pct">82%</span></div>
+                    <div class="skill-track">
+                        <div class="skill-fill" style="width:82%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⑥ Contact -->
+    <div class="section-overlay" id="contact-section">
+        <div class="panel">
+            <div class="section-num">05 — Contact</div>
+            <h2 class="section-title">Let's work<br>together</h2>
+            <div class="contact-email">suzuki.portfolio@example.com</div>
+            <div class="contact-links">
+                <a href="#" class="contact-link">GitHub</a>
+                <a href="#" class="contact-link">Twitter</a>
+                <a href="#" class="contact-link">LinkedIn</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        /* ================================================================
+           THREE.JS SETUP
+        ================================================================ */
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 2000);
+        const renderer = new THREE.WebGLRenderer({
+            canvas: document.getElementById('backcanvas'),
+            antialias: true,
+            alpha: true
+        });
+        renderer.setSize(innerWidth, innerHeight);
+        renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+        /* ---- Diamond geometry ---- */
+        const createDiamond = () => {
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+                0, 1.1, 0, 1, 0, 0, 0, 0, 1, -1, 0, 0, 0, 0, -1, 0, -1.1, 0
+            ]), 3));
+            geo.setIndex([0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1, 5, 2, 1, 5, 3, 2, 5, 4, 3, 5, 1, 4]);
+            geo.computeVertexNormals();
+            return geo;
+        };
+
+        const crystalGeo = createDiamond();
+
+        const crystalMat = new THREE.MeshStandardMaterial({
+            color: 0x1a1a1a, metalness: 0.1, roughness: 0.7,
+            transparent: true, opacity: 0.28, flatShading: true
+        });
+
+        const crystal = new THREE.Mesh(crystalGeo, crystalMat);
+        const BASE_SCALE = 2;
+        crystal.scale.setScalar(BASE_SCALE);
+        scene.add(crystal);
+
+        // Wireframe on crystal
+        crystal.add(new THREE.LineSegments(
+            new THREE.EdgesGeometry(crystalGeo),
+            new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 })
+        ));
+
+        /* ---- Glass panels ---- */
+        const glassMat = new THREE.MeshPhysicalMaterial({
+            color: 0x289399, metalness: 0, roughness: 0,
+            transparent: true, opacity: 0.14,
+            transmission: 0.5, thickness: 0.1,
+            reflectivity: 0.9, side: THREE.DoubleSide,
+        });
+        const edgeMat = new THREE.LineBasicMaterial({
+            color: 0xcccccc, transparent: true, opacity: 0.55
+        });
+
+        const PANEL_COUNT = 16;
+        const BASE_RADIUS = 4.55;
+        const PANEL_W = 1.8, PANEL_H = 1.8;
+        const V_LAYERS = 5, V_SPACING = 1.8;
+
+        const panelGroup = new THREE.Group();
+        const panels = []; // store {mesh, angle, layer}
+
+        for (let layer = 0; layer < V_LAYERS; layer++) {
+            const offsetY = (layer - (V_LAYERS - 1) / 2) * V_SPACING;
+            const start = layer % 2; // stagger every other layer
+
+            for (let i = start; i < PANEL_COUNT; i += 2) {
+                const angle = (i / PANEL_COUNT) * Math.PI * 2;
+                const pGeo = new THREE.PlaneGeometry(PANEL_W, PANEL_H);
+                const mesh = new THREE.Mesh(pGeo, glassMat);
+                mesh.position.set(Math.cos(angle) * BASE_RADIUS, offsetY, Math.sin(angle) * BASE_RADIUS);
+                mesh.rotation.y = -angle + Math.PI / 2;
+                mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(pGeo), edgeMat));
+                panelGroup.add(mesh);
+                panels.push({ mesh, angle, offsetY });
+            }
+
+        }
+        scene.add(panelGroup);
+
+        /* ---- Lights ---- */
+        scene.add(new THREE.AmbientLight(0xffffff, 1.1));
+        const dLight = new THREE.DirectionalLight(0xffffff, 0.9);
+        dLight.position.set(0, 10, 10);
+        scene.add(dLight);
+        const dLight2 = new THREE.DirectionalLight(0xb8a88a, 0.5);
+        dLight2.position.set(-5, -5, -5);
+        scene.add(dLight2);
+
+        camera.position.z = BASE_RADIUS * 3;
+
+        /* ================================================================
+           SCROLL / SECTION LOGIC
+        ================================================================ */
+        const SECTIONS = 6; // 0=hero 1=about 2=works 3=timeline 4=skill 5=contact
+        let scrollY = 0;
+        let ticker = 0;
+
+        const ease3 = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        const clamp = (v, a, b) => Math.min(Math.max(v, a), b);
+        const lerp = (a, b, t) => a + (b - a) * t;
+
+        const sectionEls = [
+            document.getElementById('hero'),
+            document.getElementById('about-section'),
+            document.getElementById('works-section'),
+            document.getElementById('timeline-section'),
+            document.getElementById('skill-section'),
+            document.getElementById('contact-section'),
+        ];
+
+        function getSF() {
+            const maxScroll = document.body.scrollHeight - innerHeight;
+            const p = maxScroll > 0 ? scrollY / maxScroll : 0;
+            return p * SECTIONS; // 0 → SECTIONS
+        }
+
+        /* ---- HTML overlays ---- */
+        function updateOverlays() {
+            const sf = getSF();
+
+            sectionEls.forEach((el, i) => {
+                if (!el) return;
+                const dist = sf - i; // <0 = not yet, 0-1 = in section, >1 = past
+
+                let opacity = 0;
+                let ty = 0;
+
+                if (i === 0) {
+                    // Hero: fully visible until dist≈0.4, then fade
+                    if (dist >= 0 && dist < 1) {
+                        const fo = clamp((dist - 0.25) / 0.45, 0, 1);
+                        opacity = 1 - ease3(fo);
+                        ty = -dist * 60;
+                    } else if (dist < 0) {
+                        opacity = 1;
+                    }
+                } else if (i === SECTIONS - 1) {
+                    // Contact: fade in, never fade out
+                    if (dist >= -0.1) {
+                        opacity = ease3(clamp((dist + 0.1) / 0.35, 0, 1));
+                    }
+                } else {
+                    // Middle sections: fade in early, fade out late
+                    if (dist > -0.15 && dist < 1) {
+                        const fi = ease3(clamp((dist + 0.15) / 0.35, 0, 1));
+                        const fo = ease3(clamp((dist - 0.65) / 0.30, 0, 1));
+                        opacity = fi * (1 - fo);
+                        ty = lerp(44, 0, ease3(clamp((dist + 0.15) / 0.35, 0, 1)));
+                    }
+                }
+
+                el.style.opacity = Math.max(0, Math.min(1, opacity));
+                el.style.transform = `translateY(${ty}px)`;
+                el.style.pointerEvents = opacity > 0.2 ? 'auto' : 'none';
+            });
+        }
+
+        /* ---- Three.js state ---- */
+        function updateScene() {
+            const sf = getSF();
+
+            // Crystal scale: BASE_SCALE at sf=0, grows large after sf≈0.5
+            const growT = ease3(clamp((sf - 0.4) / 0.9, 0, 1));
+            const targetScale = lerp(BASE_SCALE, 16, growT);
+            crystal.scale.setScalar(targetScale);
+
+            // Crystal opacity: slightly brighter when large
+            crystalMat.opacity = lerp(0.28, 0.18, growT) + Math.sin(ticker * 1.8) * 0.025;
+
+            // Panel radius: fly outward as crystal grows
+            const targetRadius = lerp(BASE_RADIUS, 28, growT);
+
+            // Panel opacity: fade as they fly away
+            const panelOpT = clamp((targetRadius - BASE_RADIUS) / (28 - BASE_RADIUS), 0, 1);
+            glassMat.opacity = lerp(0.14, 0, panelOpT);
+            edgeMat.opacity = lerp(0.55, 0, panelOpT);
+
+            // Reposition each panel radially
+            panels.forEach(({ mesh, angle, offsetY }) => {
+                mesh.position.x = Math.cos(angle) * targetRadius;
+                mesh.position.z = Math.sin(angle) * targetRadius;
+                mesh.position.y = offsetY;
+            });
+
+            // Camera distance: pull back slightly as crystal grows
+            const targetCamZ = lerp(BASE_RADIUS * 3, BASE_RADIUS * 3.8, growT * 0.5);
+            camera.position.z += (targetCamZ - camera.position.z) * 0.06;
+        }
+
+        /* ================================================================
+           ANIMATION LOOP
+        ================================================================ */
+        function animate() {
+            requestAnimationFrame(animate);
+            ticker += 0.005;
+
+            const sf = getSF();
+            const rotSpeed = sf < 1 ? 1 : 0.35;
+
+            crystal.rotation.y = scrollY * 0.008 * rotSpeed + ticker;
+            panelGroup.rotation.y = -(scrollY * 0.008 * rotSpeed + ticker);
+
+            updateScene();
+            renderer.render(scene, camera);
+        }
+
+        /* ================================================================
+           EVENTS
+        ================================================================ */
+        window.addEventListener('scroll', () => {
+            scrollY = window.scrollY;
+            const maxScroll = document.body.scrollHeight - innerHeight;
+            document.getElementById('progressBar').style.width =
+                (scrollY / maxScroll * 100).toFixed(2) + '%';
+            updateOverlays();
+        }, { passive: true });
+
+        // Nav click → scroll to section
+        document.querySelectorAll('nav a[data-goto]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                const idx = parseInt(a.dataset.goto);
+                const maxScroll = document.body.scrollHeight - innerHeight;
+                window.scrollTo({ top: (idx / SECTIONS) * maxScroll, behavior: 'smooth' });
+            });
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = innerWidth / innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(innerWidth, innerHeight);
+        });
+
+        // Init
+        updateOverlays();
+        animate();
+    </script>
+</body>
+
+</html>
