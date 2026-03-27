@@ -46,22 +46,29 @@
     /* ── Header ── */
     header {
       position: fixed; top: 0; left: 0; right: 0;
-      padding: 22px 52px;
-      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 48px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
       z-index: 200;
-      background: rgba(8,8,8,0.7);
+      background: rgba(8,8,8,0.72);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid rgba(255,255,255,0.05);
     }
     .logo {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 17px; letter-spacing: 0.4em;
+      font-size: 17px; letter-spacing: 0.45em;
       color: var(--white); text-transform: uppercase;
+      grid-column: 2; /* center */
+      white-space: nowrap;
     }
-    nav { display: flex; gap: 32px; }
+    nav {
+      display: flex; gap: 28px;
+      grid-column: 3; justify-self: end;
+    }
     nav a {
-      font-size: 9px; letter-spacing: 0.25em;
+      font-size: 9px; letter-spacing: 0.22em;
       text-transform: uppercase; color: var(--gray);
       text-decoration: none; cursor: pointer;
       transition: color 0.3s;
@@ -75,6 +82,10 @@
     .sec {
       padding: 130px 9vw 100px;
     }
+    .sec-head {
+      text-align: center;
+      margin-bottom: 72px;
+    }
     .sec-label {
       font-size: 9px; letter-spacing: 0.45em;
       text-transform: uppercase; color: var(--accent);
@@ -84,7 +95,7 @@
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(42px, 5.5vw, 84px);
       font-weight: 300; line-height: 1;
-      color: var(--white); margin-bottom: 64px;
+      color: var(--white); margin-bottom: 0;
     }
 
     /* ════════════════════════════
@@ -240,26 +251,33 @@
     /* ════════════════════════════
        SKILL
     ════════════════════════════ */
-    #skill {}
-    .skill-block { margin-bottom: 80px; }
+    .skill-block { margin-bottom: 72px; }
     .skill-block:last-of-type { margin-bottom: 0; }
     .skill-block-title {
       font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase;
-      color: var(--gray); margin-bottom: 32px;
+      color: var(--gray); margin-bottom: 28px;
       padding-bottom: 14px;
       border-bottom: 1px solid rgba(255,255,255,0.06);
     }
+    /* 縦積みレイアウト（ワイヤーフレーム準拠） */
     .skill-layout {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 24px; align-items: start;
+      display: flex; flex-direction: column;
+      gap: 16px;
     }
     .radar-box {
       background: rgba(8,8,8,0.55);
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255,255,255,0.07);
-      padding: 32px; display: flex; align-items: center; justify-content: center;
+      padding: 48px;
+      display: flex; align-items: center; justify-content: center;
+      /* ワイヤーフレームに合わせてボックス幅を制約 */
+      max-width: 600px;
     }
-    .radar-box canvas { max-width: 280px; width: 100%; }
+    /* Chart.js はこの div のサイズを参照してキャンバスを描画する */
+    .radar-canvas-wrap {
+      width: 100%;
+      position: relative;
+    }
     .skill-table-box {
       background: rgba(8,8,8,0.55);
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
@@ -288,7 +306,19 @@
     /* ════════════════════════════
        TIMELINE
     ════════════════════════════ */
-    #timeline {}
+    /* Three.js が主役になる大余白スペース */
+    .canvas-spacer {
+      height: 60vh;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; z-index: 10;
+    }
+    .canvas-spacer-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(48px, 7vw, 96px); font-weight: 300;
+      color: rgba(237,232,223,0.04);
+      letter-spacing: 0.1em; user-select: none;
+      text-transform: uppercase;
+    }
     .tl-wrap { position: relative; padding-bottom: 20px; }
     .tl-wrap::before {
       content: ''; position: absolute;
@@ -397,8 +427,10 @@
 
   <!-- ② ABOUT ───────────────────────── -->
   <section id="about" class="sec">
-    <div class="sec-label">01 — About</div>
-    <h2 class="sec-title">Who I Am</h2>
+    <div class="sec-head">
+      <div class="sec-label">01 — About</div>
+      <h2 class="sec-title">Who I Am</h2>
+    </div>
     <div class="about-grid">
       <div class="about-card">
         <div class="about-name">鈴木優太郎</div>
@@ -431,8 +463,10 @@
 
   <!-- ③ WORKS ────────────────────────── -->
   <section id="works" class="sec">
-    <div class="sec-label">02 — Works</div>
-    <h2 class="sec-title">Selected Projects</h2>
+    <div class="sec-head">
+      <div class="sec-label">02 — Works</div>
+      <h2 class="sec-title">Selected Projects</h2>
+    </div>
     <div class="works-grid">
 
       <!-- MYBLOG -->
@@ -510,15 +544,19 @@
 
   <!-- ④ SKILL ────────────────────────── -->
   <section id="skill" class="sec">
-    <div class="sec-label">03 — Skill</div>
-    <h2 class="sec-title">Expertise</h2>
+    <div class="sec-head">
+      <div class="sec-label">03 — Skill</div>
+      <h2 class="sec-title">Expertise</h2>
+    </div>
 
     <!-- コーディング -->
     <div class="skill-block">
       <div class="skill-block-title">コーディング</div>
       <div class="skill-layout">
         <div class="radar-box">
-          <canvas id="radarCoding"></canvas>
+          <div class="radar-canvas-wrap">
+            <canvas id="radarCoding"></canvas>
+          </div>
         </div>
         <div class="skill-table-box">
           <table class="skill-table">
@@ -576,7 +614,9 @@
       <div class="skill-block-title">デザイン</div>
       <div class="skill-layout">
         <div class="radar-box">
-          <canvas id="radarDesign"></canvas>
+          <div class="radar-canvas-wrap">
+            <canvas id="radarDesign"></canvas>
+          </div>
         </div>
         <div class="skill-table-box">
           <table class="skill-table">
@@ -632,9 +672,16 @@
   </section>
 
   <!-- ⑤ TIMELINE ──────────────────────── -->
-  <section id="timeline" class="sec">
-    <div class="sec-label">04 — Timeline</div>
-    <h2 class="sec-title">Journey</h2>
+  <!-- Three.js が主役になる大余白スペース -->
+  <div class="canvas-spacer">
+    <span class="canvas-spacer-label">Journey</span>
+  </div>
+
+  <section id="timeline" class="sec" style="padding-top: 40px;">
+    <div class="sec-head">
+      <div class="sec-label">04 — Timeline</div>
+      <h2 class="sec-title">Journey</h2>
+    </div>
     <div class="tl-wrap">
 
       <!-- 左 -->
@@ -706,9 +753,11 @@
   </section>
 
   <!-- ⑥ CONTACT ──────────────────────── -->
-  <section id="contact" class="sec">
-    <div class="sec-label">05 — Contact</div>
-    <h2 class="sec-title">Let's work<br>together</h2>
+  <section id="contact" class="sec" style="text-align:center; align-items:center; display:flex; flex-direction:column; justify-content:center; min-height:60vh;">
+    <div class="sec-head" style="margin-bottom:20px;">
+      <div class="sec-label">05 — Contact</div>
+      <h2 class="sec-title">Let's work<br>together</h2>
+    </div>
     <a href="mailto:suzukiyutaro119@gmail.com" class="contact-email">suzukiyutaro119@gmail.com</a>
     <div class="contact-links">
       <a href="https://github.com/suzuki119/" target="_blank" rel="noopener" class="contact-link">GitHub</a>
@@ -833,29 +882,28 @@ const radarOpts = (labels, data) => ({
     labels,
     datasets: [{
       data,
-      backgroundColor: 'rgba(184,168,138,0.12)',
-      borderColor:     'rgba(184,168,138,0.8)',
-      borderWidth: 1.5,
+      backgroundColor: 'rgba(184,168,138,0.15)',
+      borderColor:     'rgba(184,168,138,0.9)',
+      borderWidth: 2,
       pointBackgroundColor: 'rgba(184,168,138,1)',
-      pointRadius: 3,
-      pointHoverRadius: 4,
+      pointRadius: 4,
+      pointHoverRadius: 6,
     }]
   },
   options: {
     responsive: true,
+    maintainAspectRatio: true,
+    aspectRatio: 1,
     plugins: { legend: { display: false } },
     scales: {
       r: {
         min: 0, max: 5,
-        ticks: {
-          stepSize: 1,
-          display: false,
-        },
-        grid:        { color: 'rgba(255,255,255,0.07)' },
-        angleLines:  { color: 'rgba(255,255,255,0.07)' },
+        ticks: { stepSize: 1, display: false },
+        grid:        { color: 'rgba(255,255,255,0.08)' },
+        angleLines:  { color: 'rgba(255,255,255,0.08)' },
         pointLabels: {
-          color: 'rgba(237,232,223,0.6)',
-          font:  { family: "'Space Mono', monospace", size: 10 }
+          color: 'rgba(237,232,223,0.65)',
+          font:  { family: "'Space Mono', monospace", size: 11 }
         }
       }
     },
