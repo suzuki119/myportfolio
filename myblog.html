@@ -247,6 +247,43 @@
       border-top: 1px solid rgba(255,255,255,0.04);
       position: relative; z-index: 10;
     }
+
+    /* ════════════════════════════
+       RESPONSIVE — 768px
+    ════════════════════════════ */
+    @media (max-width: 768px) {
+      header { padding: 16px 20px; }
+      .work-hero { padding: 0 6vw 60px; }
+      .hero-divider { margin: 0 6vw; }
+      .work-meta-bar {
+        padding: 32px 6vw;
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      .work-meta-item {
+        padding: 20px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .work-meta-item:not(:first-child) {
+        border-left: none;
+        padding-left: 0;
+      }
+      .work-meta-item:last-child { border-bottom: none; }
+      .work-content { padding: 48px 6vw 80px; }
+      .content-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .sidebar { position: static; top: auto; }
+      .sidebar-nav { display: flex; flex-wrap: wrap; gap: 4px 0; border-top: 1px solid rgba(255,255,255,0.06); }
+      .sidebar-nav li { flex: 1 0 50%; }
+      .next-work { padding: 40px 6vw; flex-direction: column; gap: 16px; align-items: flex-start; }
+    }
+
+    @media (max-width: 480px) {
+      .work-hero-sub { font-size: 9px; letter-spacing: 0.2em; }
+      .sidebar-nav li { flex: 1 0 100%; }
+    }
   </style>
 </head>
 
