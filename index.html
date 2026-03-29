@@ -393,6 +393,89 @@
       border-top: 1px solid rgba(255,255,255,0.04);
       position: relative; z-index: 10;
     }
+
+    /* ── Hamburger Button ── */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      background: none; border: none; cursor: pointer;
+      padding: 4px;
+      grid-column: 3; justify-self: end;
+      z-index: 210;
+    }
+    .nav-toggle span {
+      display: block; width: 22px; height: 1px;
+      background: var(--gray);
+      transition: transform 0.3s, opacity 0.3s, background 0.3s;
+    }
+    .nav-toggle.open span { background: var(--white); }
+    .nav-toggle.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+    /* ════════════════════════════
+       RESPONSIVE — 768px
+    ════════════════════════════ */
+    @media (max-width: 768px) {
+      /* Header */
+      header {
+        padding: 16px 20px;
+        grid-template-columns: 1fr auto;
+      }
+      .logo { grid-column: 1; font-size: 13px; letter-spacing: 0.25em; }
+      nav {
+        display: none;
+        position: fixed; inset: 0;
+        background: rgba(8,8,8,0.96);
+        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        flex-direction: column;
+        align-items: center; justify-content: center;
+        gap: 36px; z-index: 190;
+      }
+      nav.open { display: flex; }
+      nav a { font-size: 13px; letter-spacing: 0.3em; }
+      .nav-toggle { display: flex; grid-column: 2; }
+
+      /* Sections */
+      .sec { padding: 80px 6vw 60px; }
+      .sec-head { margin-bottom: 48px; }
+
+      /* About */
+      .about-grid { grid-template-columns: 1fr; }
+      .about-photo { aspect-ratio: 4/3; }
+      .about-card { padding: 28px 20px; }
+
+      /* Works */
+      .works-grid { grid-template-columns: 1fr; gap: 16px; }
+
+      /* Skill */
+      .radar-box { padding: 24px; max-width: 100%; }
+      .skill-table-box { padding: 20px 16px; }
+
+      /* Timeline */
+      .tl-wrap::before { left: 16px; transform: none; }
+      .tl-entry { grid-template-columns: 32px 1fr; }
+      .tl-center { grid-column: 1; grid-row: 1; }
+      .tl-side {
+        grid-column: 2;
+        grid-row: 1;
+        padding: 0 0 0 16px;
+        text-align: left !important;
+      }
+
+      /* Contact */
+      .contact-links { flex-direction: column; gap: 16px; align-items: center; }
+      .contact-email { word-break: break-all; font-size: clamp(14px, 4vw, 22px); }
+      #contact { padding: 80px 6vw 60px; }
+    }
+
+    @media (max-width: 480px) {
+      .logo { font-size: 11px; letter-spacing: 0.18em; }
+      .hero-sub { font-size: 9px; letter-spacing: 0.2em; }
+      .scroll-hint { margin-top: 48px; }
+    }
   </style>
 </head>
 
@@ -402,13 +485,16 @@
 
 <header>
   <div class="logo">Suzuki&nbsp;&nbsp;Portfolio</div>
-  <nav>
+  <nav id="main-nav">
     <a href="#about">About</a>
     <a href="#works">Works</a>
     <a href="#skill">Skill</a>
     <a href="#timeline">Timeline</a>
     <a href="#contact">Contact</a>
   </nav>
+  <button class="nav-toggle" id="nav-toggle" aria-label="メニューを開く">
+    <span></span><span></span><span></span>
+  </button>
 </header>
 
 <div id="canvas-container">
@@ -916,6 +1002,26 @@ new Chart(
   document.getElementById('radarDesign'),
   radarOpts(['Illustrator', 'Photoshop', 'Figma', 'Canva'], [4, 2, 4, 3])
 );
+
+/* ============================================================
+   HAMBURGER MENU
+============================================================ */
+const navToggle = document.getElementById('nav-toggle');
+const mainNav   = document.getElementById('main-nav');
+navToggle.addEventListener('click', () => {
+  const isOpen = mainNav.classList.toggle('open');
+  navToggle.classList.toggle('open', isOpen);
+  navToggle.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+});
+mainNav.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    mainNav.classList.remove('open');
+    navToggle.classList.remove('open');
+    navToggle.setAttribute('aria-label', 'メニューを開く');
+    document.body.style.overflow = '';
+  });
+});
 </script>
 
 </body>

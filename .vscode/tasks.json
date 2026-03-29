@@ -1,0 +1,42 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Sass: Watch",
+      "type": "shell",
+      "command": "sass",
+      "args": ["--watch", "sass/style.scss:css/style.css", "--style=expanded"],
+      "group": "build",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      },
+      "problemMatcher": {
+        "owner": "scss",
+        "pattern": {
+          "regexp": "^Error: (.+)$",
+          "message": 1
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^Sass is watching",
+          "endsPattern": "^Compiled"
+        }
+      }
+    },
+    {
+      "label": "Sass: Build",
+      "type": "shell",
+      "command": "sass",
+      "args": ["sass/style.scss:css/style.css", "--style=expanded", "--source-map"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always"
+      }
+    }
+  ]
+}
