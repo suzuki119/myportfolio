@@ -1,0 +1,45 @@
+{
+  // ── エディター ──────────────────────────
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // ── Live Sass Compiler ───────────────────
+  // sass/style.scss → css/style.css に自動コンパイル
+  "liveSassCompile.settings.formats": [
+    {
+      "format": "expanded",
+      "extensionName": ".css",
+      "savePath": "/css"
+    }
+  ],
+  "liveSassCompile.settings.generateMap": true,
+  "liveSassCompile.settings.excludeList": [
+    "**/node_modules/**",
+    ".vscode/**"
+  ],
+  "liveSassCompile.settings.watchOnLaunch": true,
+
+  // ── Live Server ──────────────────────────
+  "liveServer.settings.donotShowInfoMsg": true,
+  "liveServer.settings.file": "index.html",
+  "liveServer.settings.port": 5500,
+
+  // ── ファイルエクスプローラー ─────────────
+  "files.associations": {
+    "*.scss": "scss"
+  },
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/.git": false
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "recommendations": [
+    // ブラウザでリアルタイムプレビュー
+    "ritwickdey.liveserver",
+    // SCSS → CSS 自動コンパイル
+    "glenn2223.live-sass",
+    // コードフォーマッター
+    "esbenp.prettier-vscode",
+    // HTML タグの自動リネーム
+    "formulahendry.auto-rename-tag",
+    // HTML/CSS クラス補完
+    "zignd.html-css-class-completion",
+    // CSS カラープレビュー
+    "naumovs.color-highlight",
+    // パスの補完
+    "christian-kohler.path-intellisense"
+  ]
+}
