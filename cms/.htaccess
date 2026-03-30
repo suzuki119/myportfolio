@@ -1,0 +1,9 @@
+# CMS ディレクトリのPHP設定
+php_value upload_max_filesize 10M
+php_value post_max_size 12M
+
+# アップロードフォルダへの直接PHPアクセスを禁止
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^uploads/.*\.php$ - [F,L]
+</IfModule>

@@ -27,7 +27,7 @@
     "**/node_modules/**",
     ".vscode/**"
   ],
-  "liveSassCompile.settings.watchOnLaunch": true,
+  "liveSassCompile.settings.watchOnLaunch": false,
 
   // ── Live Server ──────────────────────────
   "liveServer.settings.donotShowInfoMsg": true,

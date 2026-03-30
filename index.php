@@ -1,3 +1,7 @@
+<?php
+$works = json_decode(file_get_contents(__DIR__ . '/cms/works.json'), true) ?? [];
+function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
+?>
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -5,6 +9,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Suzuki Yutaro — Portfolio</title>
+  <meta name="description" content="鈴木優太郎のポートフォリオ。フロントエンドエンジニア志望。WordPress・JavaScript・SCSSによるWeb制作実績を掲載しています。">
+  <meta property="og:type"        content="website">
+  <meta property="og:title"       content="Suzuki Yutaro — Portfolio">
+  <meta property="og:description" content="鈴木優太郎のポートフォリオ。フロントエンドエンジニア志望。Web制作実績を掲載しています。">
+  <meta property="og:url"         content="https://susuki-island.heavy.jp/myportfolio/">
+  <meta property="og:image"       content="https://susuki-island.heavy.jp/myportfolio/ogp.png">
+  <meta property="og:site_name"   content="Suzuki Yutaro Portfolio">
+  <meta name="twitter:card"       content="summary_large_image">
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap"
     rel="stylesheet">
@@ -43,12 +55,11 @@
     <!-- ② ABOUT ───────────────────────── -->
     <section id="about" class="sec">
       <div class="sec__head">
-        <div class="sec__label">01 — About</div>
-        <h2 class="sec__title">Who I Am</h2>
+        <h2 class="sec__title">About</h2>
       </div>
       <div class="about__grid">
         <div class="about__card">
-          <div class="about__name">鈴木優太郎</div>
+          <div class="about__name">鈴木 優太郎</div>
           <div class="about__name-en">Suzuki Yutaro</div>
           <div class="about__icons">
             <!-- Mail -->
@@ -78,7 +89,7 @@
           </p>
         </div>
         <div class="about__photo">
-          <span>Photo</span>
+          <img src="./img/about.jpg" alt="鈴木 優太郎">
         </div>
       </div>
     </section>
@@ -86,91 +97,41 @@
     <!-- ③ WORKS ────────────────────────── -->
     <section id="works" class="sec">
       <div class="sec__head">
-        <div class="sec__label">02 — Works</div>
-        <h2 class="sec__title">Selected Projects</h2>
+        <h2 class="sec__title">Works</h2>
       </div>
       <div class="works__grid">
 
-        <!-- MYBLOG -->
-        <a class="works__card works__card--blog" href="myblog.html">
+        <?php foreach ($works as $w): ?>
+        <a class="works__card"
+           href="cms/work.php?id=<?= (int)$w['id'] ?>">
           <div class="works__card-img">
-            <div class="works__card-img-bg"></div>
-            <span class="works__card-img-label">BLOG</span>
+            <?php if (!empty($w['image'])): ?>
+              <img src="<?= h($w['image']) ?>" alt="<?= h($w['title']) ?>">
+            <?php else: ?>
+              <div class="works__card-img-bg"></div>
+              <span class="works__card-img-label"><?= h($w['title']) ?></span>
+            <?php endif; ?>
           </div>
           <div class="works__card-body">
             <div class="works__card-tags">
-              <span class="works__card-tag">WordPress</span>
-              <span class="works__card-tag">SCSS</span>
-              <span class="works__card-tag">JavaScript</span>
+              <?php foreach ($w['tags'] as $tag): ?>
+              <span class="works__card-tag"><?= h($tag) ?></span>
+              <?php endforeach; ?>
             </div>
-            <div class="works__card-title">MYBLOG</div>
-            <div class="works__card-period">2025.06 – 08</div>
+            <div class="works__card-title"><?= h($w['title']) ?></div>
+            <div class="works__card-period"><?= h($w['period']) ?></div>
           </div>
         </a>
-
-        <!-- 島トゥク -->
-        <a class="works__card works__card--twuku" href="https://www.simatwuku.shop/" target="_blank" rel="noopener">
-          <div class="works__card-img">
-            <div class="works__card-img-bg"></div>
-            <span class="works__card-img-label">TWUKU</span>
-          </div>
-          <div class="works__card-body">
-            <div class="works__card-tags">
-              <span class="works__card-tag">WordPress</span>
-              <span class="works__card-tag">SCSS</span>
-              <span class="works__card-tag">JavaScript</span>
-            </div>
-            <div class="works__card-title">島トゥク</div>
-            <div class="works__card-period">2025.09 – 2026.01</div>
-          </div>
-        </a>
-
-        <!-- シール帳アプリ -->
-        <a class="works__card works__card--seal" href="https://susuki-island.heavy.jp/files_1/" target="_blank" rel="noopener">
-          <div class="works__card-img">
-            <div class="works__card-img-bg"></div>
-            <span class="works__card-img-label">SEAL</span>
-          </div>
-          <div class="works__card-body">
-            <div class="works__card-tags">
-              <span class="works__card-tag">JavaScript</span>
-              <span class="works__card-tag">SCSS</span>
-            </div>
-            <div class="works__card-title">シール帳アプリ</div>
-            <div class="works__card-period">2025 合宿（3日間）</div>
-          </div>
-        </a>
-
-        <!-- 新校舎動画 -->
-        <a class="works__card works__card--video"
-          href="https://drive.google.com/file/d/1HD_431gODEXHR80rBYA1tPMWieHgzN5g/view?usp=drive_link" target="_blank"
-          rel="noopener">
-          <div class="works__card-img">
-            <div class="works__card-img-bg"></div>
-            <span class="works__card-img-label">VIDEO</span>
-          </div>
-          <div class="works__card-body">
-            <div class="works__card-tags">
-              <span class="works__card-tag">Premiere Pro</span>
-            </div>
-            <div class="works__card-title">新校舎紹介動画</div>
-            <div class="works__card-period">2025.12 – 2026.03</div>
-          </div>
-        </a>
+        <?php endforeach; ?>
 
       </div>
-      <div class="works__dots">
-        <div class="works__dot works__dot--active"></div>
-        <div class="works__dot"></div>
-        <div class="works__dot"></div>
-      </div>
+
     </section>
 
     <!-- ④ SKILL ────────────────────────── -->
     <section id="skill" class="sec">
       <div class="sec__head">
-        <div class="sec__label">03 — Skill</div>
-        <h2 class="sec__title">Expertise</h2>
+        <h2 class="sec__title">Skills</h2>
       </div>
 
       <!-- コーディング -->
@@ -341,13 +302,126 @@
         </div>
       </div>
 
+      <!-- その他 -->
+      <div class="skill__block">
+        <div class="skill__block-title">その他</div>
+        <div class="skill__layout">
+          <div class="skill__radar-box">
+            <div class="skill__radar-canvas">
+              <canvas id="radarOther"></canvas>
+            </div>
+          </div>
+          <div class="skill__table-box">
+            <table class="skill__table">
+              <thead>
+                <tr>
+                  <th>名称</th>
+                  <th>詳細</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="skill__name">Blender</div>
+                    <div class="skill__dots">
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot"></div>
+                      <div class="skill__dot"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="skill__detail">高校時代に3DCG制作を経験</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="skill__name">Premiere Pro</div>
+                    <div class="skill__dots">
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot"></div>
+                      <div class="skill__dot"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="skill__detail">新校舎紹介動画の編集・完成</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="skill__name">WordPress</div>
+                    <div class="skill__dots">
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="skill__detail">テーマ開発・カスタマイズで複数サイト制作</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="skill__name">Git / GitHub</div>
+                    <div class="skill__dots">
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot"></div>
+                      <div class="skill__dot"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="skill__detail">バージョン管理・チーム開発の基礎</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="skill__name">Office</div>
+                    <div class="skill__dots">
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="skill__detail">Word・Excel・PowerPointを日常的に使用</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="skill__name">After Effects</div>
+                    <div class="skill__dots">
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot skill__dot--on"></div>
+                      <div class="skill__dot"></div>
+                      <div class="skill__dot"></div>
+                      <div class="skill__dot"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="skill__detail">モーショングラフィックスの基礎</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </section>
 
     <!-- ⑤ TIMELINE ──────────────────────── -->
     <section id="timeline" class="sec">
       <div class="sec__head">
-        <div class="sec__label">04 — Timeline</div>
-        <h2 class="sec__title">Journey</h2>
+        <h2 class="sec__title">Timeline</h2>
       </div>
       <div class="tl__wrap">
 
@@ -433,14 +507,14 @@
     <section id="contact" class="sec">
       <div class="sec__head">
         <div class="sec__label">05 — Contact</div>
-        <h2 class="sec__title">Let's work<br>together</h2>
+        <h2 class="sec__title">お気軽に<br>ご連絡ください</h2>
       </div>
       <a href="mailto:suzukiyutaro119@gmail.com" class="contact__email">suzukiyutaro119@gmail.com</a>
       <div class="contact__links">
         <a href="https://github.com/suzuki119/" target="_blank" rel="noopener" class="contact__link">GitHub</a>
         <a href="mailto:suzukiyutaro119@gmail.com" class="contact__link">Mail</a>
         <a href="https://susuki-island.heavy.jp/myportfolio/" target="_blank" rel="noopener"
-          class="contact__link">Portfolio Site</a>
+          class="contact__link">ポートフォリオサイト</a>
       </div>
     </section>
 
@@ -453,171 +527,7 @@
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-  <script>
-    /* ============================================================
-       PROGRESS BAR
-    ============================================================ */
-    const bar = document.getElementById('progressBar');
-    window.addEventListener('scroll', () => {
-      const max = document.body.scrollHeight - innerHeight;
-      bar.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
-    }, { passive: true });
-
-    /* ============================================================
-       THREE.JS — 装飾的な背景クリスタル（スクロール連動なし）
-    ============================================================ */
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 2000);
-    const renderer = new THREE.WebGLRenderer({
-      canvas: document.getElementById('backcanvas'),
-      antialias: true, alpha: true
-    });
-    renderer.setSize(innerWidth, innerHeight);
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-
-    // ── クリスタル ──
-    const createDiamond = () => {
-      const geo = new THREE.BufferGeometry();
-      geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
-        0, 1.1, 0, 1, 0, 0, 0, 0, 1, -1, 0, 0, 0, 0, -1, 0, -1.1, 0
-      ]), 3));
-      geo.setIndex([0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1, 5, 2, 1, 5, 3, 2, 5, 4, 3, 5, 1, 4]);
-      geo.computeVertexNormals();
-      return geo;
-    };
-    const crystalGeo = createDiamond();
-    const crystalMat = new THREE.MeshStandardMaterial({
-      color: 0x1a1a1a, metalness: 0.1, roughness: 0.7,
-      transparent: true, opacity: 0.28, flatShading: true
-    });
-    const crystal = new THREE.Mesh(crystalGeo, crystalMat);
-    crystal.scale.setScalar(2);
-    scene.add(crystal);
-    crystal.add(new THREE.LineSegments(
-      new THREE.EdgesGeometry(crystalGeo),
-      new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 })
-    ));
-
-    // ── ガラスパネル ──
-    const glassMat = new THREE.MeshPhysicalMaterial({
-      color: 0x289399, metalness: 0, roughness: 0,
-      transparent: true, opacity: 0.14,
-      transmission: 0.5, thickness: 0.1,
-      reflectivity: 0.9, side: THREE.DoubleSide
-    });
-    const edgeMat = new THREE.LineBasicMaterial({ color: 0xcccccc, transparent: true, opacity: 0.55 });
-    const panelGroup = new THREE.Group();
-    const PANEL_COUNT = 16, BASE_RADIUS = 4.55;
-    const PANEL_W = 1.8, PANEL_H = 1.8, V_LAYERS = 5, V_SPACING = 1.8;
-    for (let layer = 0; layer < V_LAYERS; layer++) {
-      const offsetY = (layer - (V_LAYERS - 1) / 2) * V_SPACING;
-      for (let i = layer % 2; i < PANEL_COUNT; i += 2) {
-        const angle = (i / PANEL_COUNT) * Math.PI * 2;
-        const pGeo = new THREE.PlaneGeometry(PANEL_W, PANEL_H);
-        const mesh = new THREE.Mesh(pGeo, glassMat);
-        mesh.position.set(Math.cos(angle) * BASE_RADIUS, offsetY, Math.sin(angle) * BASE_RADIUS);
-        mesh.rotation.y = -angle + Math.PI / 2;
-        mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(pGeo), edgeMat));
-        panelGroup.add(mesh);
-      }
-    }
-    scene.add(panelGroup);
-
-    // ── ライト ──
-    scene.add(new THREE.AmbientLight(0xffffff, 1.1));
-    const dLight = new THREE.DirectionalLight(0xffffff, 0.9);
-    dLight.position.set(0, 10, 10);
-    scene.add(dLight);
-    const dLight2 = new THREE.DirectionalLight(0xb8a88a, 0.5);
-    dLight2.position.set(-5, -5, -5);
-    scene.add(dLight2);
-    camera.position.z = BASE_RADIUS * 3;
-
-    // ── アニメーション（ゆっくり自動回転のみ） ──
-    let ticker = 0;
-    function animate() {
-      requestAnimationFrame(animate);
-      ticker += 0.003;
-      crystal.rotation.y = ticker;
-      crystal.rotation.x = Math.sin(ticker * 0.3) * 0.15;
-      panelGroup.rotation.y = ticker * 0.4;
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    window.addEventListener('resize', () => {
-      camera.aspect = innerWidth / innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(innerWidth, innerHeight);
-    }, { passive: true });
-
-    /* ============================================================
-       CHART.JS — レーダーチャート
-    ============================================================ */
-    const radarOpts = (labels, data) => ({
-      type: 'radar',
-      data: {
-        labels,
-        datasets: [{
-          data,
-          backgroundColor: 'rgba(184,168,138,0.15)',
-          borderColor: 'rgba(184,168,138,0.9)',
-          borderWidth: 2,
-          pointBackgroundColor: 'rgba(184,168,138,1)',
-          pointRadius: 4,
-          pointHoverRadius: 6,
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        aspectRatio: 1,
-        plugins: { legend: { display: false } },
-        scales: {
-          r: {
-            min: 0, max: 5,
-            ticks: { stepSize: 1, display: false },
-            grid: { color: 'rgba(255,255,255,0.08)' },
-            angleLines: { color: 'rgba(255,255,255,0.08)' },
-            pointLabels: {
-              color: 'rgba(237,232,223,0.65)',
-              font: { family: "'Space Mono', monospace", size: 11 }
-            }
-          }
-        },
-        animation: { duration: 800, easing: 'easeInOutQuart' }
-      }
-    });
-
-    new Chart(
-      document.getElementById('radarCoding'),
-      radarOpts(['HTML', 'CSS/SCSS', 'JavaScript', 'C言語'], [5, 4, 5, 3])
-    );
-    new Chart(
-      document.getElementById('radarDesign'),
-      radarOpts(['Illustrator', 'Photoshop', 'Figma', 'Canva'], [4, 2, 4, 3])
-    );
-
-    /* ============================================================
-       HAMBURGER MENU
-    ============================================================ */
-    const navToggle = document.getElementById('nav-toggle');
-    const mainNav = document.getElementById('main-nav');
-    navToggle.addEventListener('click', () => {
-      const isOpen = mainNav.classList.toggle('open');
-      navToggle.classList.toggle('open', isOpen);
-      navToggle.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
-      document.body.style.overflow = isOpen ? 'hidden' : '';
-    });
-    mainNav.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => {
-        mainNav.classList.remove('open');
-        navToggle.classList.remove('open');
-        navToggle.setAttribute('aria-label', 'メニューを開く');
-        document.body.style.overflow = '';
-      });
-    });
-  </script>
+  <script src="script.js"></script>
 
 </body>
 

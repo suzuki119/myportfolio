@@ -283,6 +283,8 @@ main {
     #works .works__card:hover {
       border-color: rgba(184, 168, 138, 0.35);
       transform: translateY(-5px); }
+      #works .works__card:hover .works__card-img img {
+        transform: scale(1.04); }
     #works .works__card--blog .works__card-img-bg {
       background: linear-gradient(135deg, #0b0b14, #131320); }
     #works .works__card--twuku .works__card-img-bg {
@@ -300,6 +302,13 @@ main {
     display: flex;
     align-items: center;
     justify-content: center; }
+    #works .works__card-img img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s; }
   #works .works__card-img-bg {
     position: absolute;
     inset: 0;
@@ -444,9 +453,9 @@ main {
       left: 50%;
       transform: translateX(-50%);
       top: 0;
-      bottom: 0;
+      height: var(--tl-line-height, 0px);
       width: 1px;
-      background: rgba(255, 255, 255, 0.07); }
+      background: #8b8b8b; }
   #timeline .tl__entry {
     display: grid;
     grid-template-columns: 1fr 48px 1fr;
@@ -588,8 +597,7 @@ footer {
   #skill .skill__table-box {
     padding: 20px 16px; }
   #timeline .tl__wrap::before {
-    left: 16px;
-    transform: none; }
+    left: 16px; }
   #timeline .tl__entry {
     grid-template-columns: 32px 1fr; }
   #timeline .tl__center {
@@ -613,7 +621,7 @@ footer {
 @media (max-width: 480px) {
   header .header__logo {
     font-size: 11px;
-    letter-spacing: 0.18em; }
+    letter-spacing: 0.2em; }
   #hero .hero__sub {
     font-size: 9px;
     letter-spacing: 0.2em; }

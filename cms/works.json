@@ -1,0 +1,219 @@
+[
+    {
+        "id": 2,
+        "title": "島トゥク",
+        "period": "2025.09 – 2026.01",
+        "tags": [
+            "WordPress",
+            "SCSS",
+            "JavaScript"
+        ],
+        "image": "cms\/uploads\/1774862253_8bc3110f.png",
+        "detail": {
+            "hero_title": "島トゥク",
+            "meta_period": "2025年9月 – 2026年1月（約4ヶ月）",
+            "meta_type": "クライアントワーク\n観光フォトサービス",
+            "external_url": "https:\/\/www.simatwuku.shop\/",
+            "sections": [
+                {
+                    "id": "overview",
+                    "label": "Overview",
+                    "title": "日間賀島の観光フォトサービス",
+                    "body": "日間賀島にある観光フォトサービスのWebサイト制作をさせていただきました。クライアントの魅力が伝わるよう心がけ制作しました。\n\nトゥクトゥクに乗りながら島を巡り、プロのカメラマンが撮影するという唯一無二のサービスの世界観を、デザインとアニメーションで表現することを目指しました。",
+                    "highlight": "",
+                    "cta_text": "サイトを見る",
+                    "cta_url": "https:\/\/www.simatwuku.shop\/"
+                },
+                {
+                    "id": "purpose",
+                    "label": "Purpose",
+                    "title": "制作の目的",
+                    "body": "日間賀島のトゥクトゥク観光フォトサービスのクライアントから依頼を受け、サービスの魅力を伝えるWebサイトを制作するため。\n\n予約・スポット・コースなど複数の情報を、訪れた人が直感的に理解できる構成にすることが求められました。",
+                    "highlight": "",
+                    "cta_text": "",
+                    "cta_url": ""
+                },
+                {
+                    "id": "ingenuity",
+                    "label": "Ingenuity",
+                    "title": "工夫した点",
+                    "body": "島の雰囲気に合わせたイラストやアニメーションを取り入れ、観光サービスの魅力が直感的に伝わるデザインを意識しました。\n\n予約・スポット・コースなど複数ページ構成で情報を整理し、どのページからでも目的の情報にたどり着けるナビゲーション設計を心がけました。",
+                    "highlight": "",
+                    "cta_text": "",
+                    "cta_url": ""
+                },
+                {
+                    "id": "reflection",
+                    "label": "Reflection",
+                    "title": "振り返り",
+                    "body": "0からWebサイトを作る経験に疎く、デザインもプログラミングもゴールを目指して進んでは戻る繰り返しでした。\n\nサーバーやCMSの構築では1日を費やしても成果が出ないこともありましたが、クライアントのことを思い出しては奮起し、改善点やアイデアを実現させようと努め続けることができました。",
+                    "highlight": "",
+                    "cta_text": "",
+                    "cta_url": ""
+                }
+            ]
+        }
+    },
+    {
+        "id": 1,
+        "title": "MYBLOG",
+        "period": "2025.06 – 08",
+        "tags": [
+            "WordPress",
+            "SCSS",
+            "JavaScript"
+        ],
+        "image": "cms\/uploads\/1774862468_8eccc673.png",
+        "detail": {
+            "hero_title": "MYBLOG",
+            "meta_period": "2025年6月 – 8月（約3ヶ月）",
+            "meta_type": "個人制作\nブログサイト",
+            "external_url": "https:\/\/susuki-island.heavy.jp\/blog\/",
+            "sections": [
+                {
+                    "id": "overview",
+                    "label": "Overview",
+                    "title": "自身の学生生活を発信するブログ",
+                    "body": "自身の学生生活を載せるブログの制作です。WordPressやローカルサーバーを初めて使い、ゼロからテーマ制作に挑戦した個人ブログです。\n\n「宇宙」をコンセプトとしたオリジナルデザインで、ダークトーンの背景に星々が浮かぶような世界観を実装しています。",
+                    "highlight": "",
+                    "cta_text": "サイトを見る",
+                    "cta_url": "https:\/\/susuki-island.heavy.jp\/blog\/"
+                },
+                {
+                    "id": "purpose",
+                    "label": "Purpose",
+                    "title": "制作の目的",
+                    "body": "WordPressやローカルサーバーの使い方を実践的に学ぶため、また学校生活や制作活動の記録を発信するために制作しました。\n\n授業で学んだHTMLやCSSを実際のCMSと組み合わせてどう活かすかを、自分の手を動かして体験したいという思いもありました。",
+                    "highlight": "目標：WordPressのテーマをゼロから自作し、ローカル開発環境を自分で構築・運用できる技術力を身に着ける。",
+                    "cta_text": "",
+                    "cta_url": ""
+                },
+                {
+                    "id": "ingenuity",
+                    "label": "Ingenuity",
+                    "title": "工夫した点",
+                    "body": "WordPressのテーマをゼロから自作し、宇宙をイメージしたオリジナルデザインに仕上げました。テーマファイルの構造（header.php \/ footer.php \/ index.php など）を理解しながら、SCSSでスタイルを組み上げていきました。\n\nJavaScriptを使った星のアニメーションや、読みやすいタイポグラフィの設計など、デザインと実装の両面にこだわりました。",
+                    "highlight": "",
+                    "cta_text": "",
+                    "cta_url": ""
+                },
+                {
+                    "id": "reflection",
+                    "label": "Reflection",
+                    "title": "振り返り",
+                    "body": "サーバー構築やWordPressの実装など初めてのことが多く、1からサイトを作るのも初めての経験でした。エラーが出るたびに原因を調べ、少しずつ解決していく過程が非常に勉強になりました。\n\nしかしデザインやコードを自由に考えられる楽しさを強く感じることができ、最初のサイト制作として非常に良い経験になりました。この経験があったからこそ、その後のクライアントワーク（島トゥク）にも自信を持って取り組むことができました。",
+                    "highlight": "",
+                    "cta_text": "",
+                    "cta_url": ""
+                }
+            ]
+        }
+    },
+    {
+        "id": 3,
+        "title": "シール帳アプリ",
+        "period": "2025 合宿（3日間）",
+        "tags": [
+            "JavaScript",
+            "SCSS"
+        ],
+        "image": "cms\/uploads\/1774862851_94242c72.jpg",
+        "detail": {
+            "hero_title": "シール帳アプリ",
+            "meta_period": "2025年 合宿（3日間・ハッカソン形式）",
+            "meta_type": "チーム制作\nWebアプリ",
+            "external_url": "https:\/\/susuki-island.heavy.jp\/files_1\/",
+            "sections": [
+                {
+                    "id": "overview",
+                    "label": "Overview",
+                    "title": "3日間で作るシール帳",
+                    "body": "合宿でチームで制作した、オリジナルシールを作成・コレクションできるWebアプリです。\n\nユーザー登録・ログイン機能を実装し、自分だけのシール帳を作れるインタラクティブな仕組みを3日間で完成させました。",
+                    "highlight": "",
+                    "cta_text": "アプリを見る",
+                    "cta_url": "https:\/\/susuki-island.heavy.jp\/files_1\/"
+                },
+                {
+                    "id": "purpose",
+                    "label": "Purpose",
+                    "title": "制作の目的",
+                    "body": "合宿でのチーム開発を通じて、ユーザー登録・ログイン機能などの実装を経験するために取り組みました。\n\n個人制作とは異なり、チームで役割を分担しながら1つのアプリを作り上げるプロセスを学ぶことが目的でした。",
+                    "highlight": "",
+                    "cta_text": "",
+                    "cta_url": ""
+                },
+                {
+                    "id": "ingenuity",
+                    "label": "Ingenuity",
+                    "title": "工夫した点",
+                    "body": "ユーザー登録・ログイン機能を実装し、作ったシールをシール帳に貼って管理できるインタラクティブな仕組みを作りました。\n\nターゲットに合わせたかわいいデザインに仕上げ、操作していて楽しいと感じてもらえるUI設計を意識しました。",
+                    "highlight": "",
+                    "cta_text": "",
+                    "cta_url": ""
+                },
+                {
+                    "id": "reflection",
+                    "label": "Reflection",
+                    "title": "振り返り",
+                    "body": "ハッカソンを通じて、チームと連帯し協力し合いながらプロジェクトを進める大変さと意義を知ることができました。\n\n限られた時間の中で優先順位をつけて実装を進める判断力や、チームメンバーとのコミュニケーションの大切さを実感した3日間でした。",
+                    "highlight": "",
+                    "cta_text": "",
+                    "cta_url": ""
+                }
+            ]
+        }
+    },
+    {
+        "id": 4,
+        "title": "新校舎紹介動画",
+        "period": "2025.12 – 2026.03",
+        "image": "cms\/uploads\/1774871827_8ef23068.png",
+        "tags": [
+            "Premiere Pro"
+        ],
+        "detail": {
+            "hero_title": "新校舎紹介動画",
+            "meta_period": "2025年12月 – 2026年3月（約4ヶ月）",
+            "meta_type": "学校課題\n動画制作",
+            "external_url": "https:\/\/drive.google.com\/file\/d\/1HD_431gODEXHR80rBYA1tPMWieHgzN5g\/view?usp=drive_link",
+            "sections": [
+                {
+                    "id": "overview",
+                    "label": "Overview",
+                    "title": "新校舎を紹介する動画",
+                    "body": "校長・設計者へのインタビューや学生の反応を収めた、新校舎紹介動画の制作です。\n\n撮影・編集・ナレーションまで一貫して担当し、Premiere Proを使って約4ヶ月かけて完成させました。",
+                    "highlight": "",
+                    "cta_text": "動画を見る",
+                    "cta_url": "https:\/\/drive.google.com\/file\/d\/1HD_431gODEXHR80rBYA1tPMWieHgzN5g\/view?usp=drive_link"
+                },
+                {
+                    "id": "purpose",
+                    "label": "Purpose",
+                    "title": "制作の目的",
+                    "body": "新校舎の魅力を在校生・関係者に伝えるために制作しました。\n\n建物の外観だけでなく、設計に込められた思いや実際に使う学生の声を映像で届けることで、新校舎への理解と愛着を深めることを目指しました。",
+                    "highlight": "",
+                    "cta_text": "",
+                    "cta_url": ""
+                },
+                {
+                    "id": "ingenuity",
+                    "label": "Ingenuity",
+                    "title": "工夫した点",
+                    "body": "インタビュー映像と学生の反応をテンポよく編集し、新校舎の雰囲気が伝わるよう構成を工夫しました。\n\n校長・設計者それぞれの言葉が際立つよう、カットの長さや音楽のタイミングにもこだわりました。",
+                    "highlight": "",
+                    "cta_text": "",
+                    "cta_url": ""
+                },
+                {
+                    "id": "reflection",
+                    "label": "Reflection",
+                    "title": "振り返り",
+                    "body": "動画編集の機会に恵まれ、クライアントやリーダーの指示、チームからの助言など多くのことを経て制作できました。\n\n思い通りにいかない場面も多くありましたが、完成した時の達成感はひとしおでした。映像という表現の可能性を改めて感じた制作になりました。",
+                    "highlight": "",
+                    "cta_text": "",
+                    "cta_url": ""
+                }
+            ]
+        }
+    }
+]

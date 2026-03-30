@@ -1,0 +1,5 @@
+# アップロードフォルダ内でPHPを実行させない
+<FilesMatch "\.php$">
+  Deny from all
+</FilesMatch>
+php_flag engine off

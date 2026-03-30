@@ -1,10 +1,64 @@
+<?php
+$works = json_decode(file_get_contents(__DIR__ . '/works.json'), true) ?? [];
+
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$work = null;
+foreach ($works as $w) {
+  if ($w['id'] === $id) { $work = $w; break; }
+}
+
+if (!$work) {
+  http_response_code(404);
+  echo '<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>404</title></head><body style="background:#080808;color:#ede8df;font-family:monospace;padding:60px;text-align:center"><p style="font-size:11px;letter-spacing:.3em;color:#7a7a72">WORK NOT FOUND</p><p style="margin-top:24px"><a href="admin.php" style="color:#b8a88a">← 管理画面に戻る</a></p></body></html>';
+  exit;
+}
+
+$d = $work['detail'] ?? [];
+$sections = $d['sections'] ?? [];
+
+// 配列内の位置を取得
+$workIndex = array_search($id, array_column($works, 'id'));
+
+// Eyebrow を自動生成（例: 01 — Works）
+$eyebrow = sprintf('%02d — Works', $workIndex + 1);
+
+// Next work：配列の次のインデックスの作品（最後なら最初に戻る）
+$nextIndex = ($workIndex + 1) % count($works);
+$nextWork  = $works[$nextIndex] ?? null;
+
+function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
+function bodyToHtml($text) {
+  $paras = preg_split('/\n\n+/', trim((string)$text));
+  return implode('', array_map(fn($p) => '<p>' . nl2br(h($p)) . '</p>', $paras));
+}
+?>
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MYBLOG — Suzuki Portfolio</title>
+  <title><?= h($work['title']) ?> — Suzuki Portfolio</title>
+  <?php
+    $ogImg = '';
+    if (!empty($work['image'])) {
+      $ogImg = str_starts_with($work['image'], 'http')
+        ? $work['image']
+        : 'https://susuki-island.heavy.jp/myportfolio/' . $work['image'];
+    }
+    $ogDesc = '';
+    if (!empty($d['sections'][0]['body'])) {
+      $ogDesc = mb_strimwidth(strip_tags($d['sections'][0]['body']), 0, 120, '…');
+    }
+  ?>
+  <meta name="description" content="<?= h($ogDesc ?: $work['title'] . ' — Suzuki Yutaro Portfolio') ?>">
+  <meta property="og:type"        content="article">
+  <meta property="og:title"       content="<?= h($work['title']) ?> — Suzuki Portfolio">
+  <meta property="og:description" content="<?= h($ogDesc ?: $work['title']) ?>">
+  <meta property="og:url"         content="https://susuki-island.heavy.jp/myportfolio/cms/work.php?id=<?= (int)$work['id'] ?>">
+  <?php if ($ogImg): ?>
+  <meta property="og:image"       content="<?= h($ogImg) ?>">
+  <?php endif; ?>
+  <meta name="twitter:card"       content="summary_large_image">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -43,6 +97,7 @@
       backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid rgba(255,255,255,0.05);
     }
+
     .back-link {
       display: flex; align-items: center; gap: 10px;
       font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase;
@@ -51,6 +106,7 @@
     }
     .back-link:hover { color: var(--accent); }
     .back-link svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+
     .header-logo {
       font-family: 'Cormorant Garamond', serif;
       font-size: 16px; letter-spacing: 0.4em;
@@ -67,22 +123,25 @@
       justify-content: flex-end;
       padding: 0 9vw 80px;
     }
+
     .work-hero-eyebrow {
       font-size: 9px; letter-spacing: 0.45em;
       text-transform: uppercase; color: var(--accent);
       margin-bottom: 20px;
     }
+
     .work-hero-title {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(64px, 11vw, 160px);
       font-weight: 300; line-height: 0.92;
       color: var(--white);
     }
-    .work-hero-title em { font-style: italic; color: var(--accent); }
+
     .work-hero-sub {
       margin-top: 28px; font-size: 10px;
       letter-spacing: 0.3em; text-transform: uppercase; color: var(--gray);
     }
+
     .hero-divider {
       margin: 0 9vw;
       height: 1px;
@@ -94,17 +153,23 @@
       padding: 40px 9vw;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0;
       border-bottom: 1px solid rgba(255,255,255,0.06);
     }
+
     .work-meta-item { padding: 0 32px 0 0; }
-    .work-meta-item:not(:first-child) { border-left: 1px solid rgba(255,255,255,0.06); padding-left: 32px; }
+    .work-meta-item:not(:first-child) {
+      border-left: 1px solid rgba(255,255,255,0.06);
+      padding-left: 32px;
+    }
+
     .work-meta-label {
       font-size: 8px; letter-spacing: 0.35em;
       text-transform: uppercase; color: var(--accent);
       margin-bottom: 10px;
     }
+
     .work-meta-value { font-size: 11px; line-height: 1.9; color: rgba(237,232,223,0.7); }
+
     .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
     .tag {
       font-size: 8px; letter-spacing: 0.18em; text-transform: uppercase;
@@ -114,6 +179,7 @@
 
     /* ── Content ── */
     .work-content { padding: 80px 9vw 120px; }
+
     .content-grid {
       display: grid;
       grid-template-columns: 1fr 2fr;
@@ -122,6 +188,7 @@
 
     /* ── Sidebar ── */
     .sidebar { position: sticky; top: 120px; }
+
     .sidebar-nav { list-style: none; }
     .sidebar-nav li { margin-bottom: 4px; }
     .sidebar-nav a {
@@ -145,6 +212,7 @@
     /* ── Article blocks ── */
     .article-block { margin-bottom: 72px; }
     .article-block:last-child { margin-bottom: 0; }
+
     .block-label {
       font-size: 9px; letter-spacing: 0.4em;
       text-transform: uppercase; color: var(--accent);
@@ -156,18 +224,19 @@
       flex: 1; height: 1px;
       background: rgba(255,255,255,0.07);
     }
+
     .block-title {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(26px, 3vw, 40px);
       font-weight: 300; line-height: 1.2;
       color: var(--white); margin-bottom: 24px;
     }
+
     .block-body {
       font-size: 11px; line-height: 2.2;
       color: rgba(237,232,223,0.65);
     }
     .block-body p + p { margin-top: 16px; }
-    .block-body .hl { color: var(--accent); }
 
     /* ── Mock image area ── */
     .mock-img {
@@ -175,19 +244,22 @@
       background: linear-gradient(135deg, #0b0b14 0%, #131328 100%);
       border: 1px solid rgba(255,255,255,0.06);
       display: flex; align-items: center; justify-content: center;
-      margin-bottom: 24px; overflow: hidden; position: relative;
+      margin-bottom: 40px; overflow: hidden; position: relative;
     }
+    .mock-img img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .mock-img.twuku  { background: linear-gradient(135deg, #090e0b, #0f1a10); }
+    .mock-img.seal   { background: linear-gradient(135deg, #120b0b, #1e0f0f); }
+    .mock-img.video  { background: linear-gradient(135deg, #0c0c0b, #1a1806); }
+
     .mock-img-label {
       font-family: 'Cormorant Garamond', serif;
       font-size: 80px; font-weight: 300;
       color: rgba(255,255,255,0.04);
       letter-spacing: -0.02em; user-select: none;
-    }
-    .mock-img-badge {
-      position: absolute; bottom: 16px; right: 16px;
-      font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--gray); border: 1px solid rgba(255,255,255,0.1);
-      padding: 4px 10px;
     }
 
     /* ── Highlight box ── */
@@ -198,13 +270,13 @@
       font-size: 11px; line-height: 2;
       color: rgba(237,232,223,0.7);
     }
-    .highlight-box strong { color: var(--accent); }
 
     /* ── CTA ── */
     .work-cta {
       margin-top: 40px;
       display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
     }
+
     .btn-primary {
       display: inline-flex; align-items: center; gap: 10px;
       padding: 14px 28px;
@@ -232,11 +304,9 @@
       transition: background 0.3s;
     }
     .next-work:hover { background: rgba(255,255,255,0.02); }
+
     .next-label { font-size: 8px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gray); margin-bottom: 8px; }
-    .next-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(24px, 3vw, 38px); font-weight: 300;
-    }
+    .next-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(24px, 3vw, 38px); font-weight: 300; }
     .next-arrow { font-size: 28px; color: var(--accent); }
 
     /* ── Footer ── */
@@ -248,9 +318,26 @@
       position: relative; z-index: 10;
     }
 
-    /* ════════════════════════════
-       RESPONSIVE — 768px
-    ════════════════════════════ */
+    /* ── Admin bar ── */
+    .admin-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(15,15,15,0.95);
+      border-top: 1px solid rgba(184,168,138,0.2);
+      padding: 10px 32px;
+      display: flex; align-items: center; gap: 16px;
+      z-index: 300;
+    }
+    .admin-bar span { font-size: 8px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); }
+    .admin-bar a {
+      font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gray); text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 5px 12px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .admin-bar a:hover { color: var(--white); border-color: var(--gray); }
+
+    /* ── Responsive ── */
     @media (max-width: 768px) {
       header { padding: 16px 20px; }
       .work-hero { padding: 0 6vw 60px; }
@@ -258,24 +345,17 @@
       .work-meta-bar {
         padding: 32px 6vw;
         grid-template-columns: 1fr;
-        gap: 0;
       }
       .work-meta-item {
         padding: 20px 0;
         border-bottom: 1px solid rgba(255,255,255,0.06);
       }
-      .work-meta-item:not(:first-child) {
-        border-left: none;
-        padding-left: 0;
-      }
+      .work-meta-item:not(:first-child) { border-left: none; padding-left: 0; }
       .work-meta-item:last-child { border-bottom: none; }
       .work-content { padding: 48px 6vw 80px; }
-      .content-grid {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-      .sidebar { position: static; top: auto; }
-      .sidebar-nav { display: flex; flex-wrap: wrap; gap: 4px 0; border-top: 1px solid rgba(255,255,255,0.06); }
+      .content-grid { grid-template-columns: 1fr; gap: 40px; }
+      .sidebar { position: static; }
+      .sidebar-nav { display: flex; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,0.06); }
       .sidebar-nav li { flex: 1 0 50%; }
       .next-work { padding: 40px 6vw; flex-direction: column; gap: 16px; align-items: flex-start; }
     }
@@ -286,7 +366,6 @@
     }
   </style>
 </head>
-
 <body>
 
 <div id="canvas-container">
@@ -294,7 +373,7 @@
 </div>
 
 <header>
-  <a href="index.html" class="back-link">
+  <a href="../index.php" class="back-link">
     <svg viewBox="0 0 24 24"><path d="M19 12H5M5 12l7 7M5 12l7-7"/></svg>
     Back to Portfolio
   </a>
@@ -305,9 +384,8 @@
 
   <!-- Hero -->
   <div class="work-hero">
-    <div class="work-hero-eyebrow">01 — Works / Personal Blog</div>
-    <h1 class="work-hero-title">MY<br><em>BLOG</em></h1>
-    <p class="work-hero-sub">WordPress · HTML / CSS(SCSS) · JavaScript</p>
+    <div class="work-hero-eyebrow"><?= h($eyebrow) ?></div>
+    <h1 class="work-hero-title"><?= h($d['hero_title'] ?? $work['title']) ?></h1>
   </div>
 
   <div class="hero-divider"></div>
@@ -316,22 +394,21 @@
   <div class="work-meta-bar">
     <div class="work-meta-item">
       <div class="work-meta-label">制作期間</div>
-      <div class="work-meta-value">2025年6月 – 8月<br>（約3ヶ月）</div>
+      <div class="work-meta-value"><?= nl2br(h($d['meta_period'] ?? $work['period'])) ?></div>
     </div>
     <div class="work-meta-item">
       <div class="work-meta-label">使用技術</div>
       <div class="work-meta-value">
         <div class="tag-list">
-          <span class="tag">WordPress</span>
-          <span class="tag">HTML</span>
-          <span class="tag">SCSS</span>
-          <span class="tag">JavaScript</span>
+          <?php foreach ($work['tags'] as $tag): ?>
+            <span class="tag"><?= h($tag) ?></span>
+          <?php endforeach; ?>
         </div>
       </div>
     </div>
     <div class="work-meta-item">
       <div class="work-meta-label">種別</div>
-      <div class="work-meta-value">個人制作<br>ブログサイト</div>
+      <div class="work-meta-value"><?= nl2br(h($d['meta_type'] ?? '')) ?></div>
     </div>
   </div>
 
@@ -342,82 +419,47 @@
       <!-- Sidebar -->
       <aside class="sidebar">
         <ul class="sidebar-nav">
-          <li><a href="#overview">概要</a></li>
-          <li><a href="#purpose">目的</a></li>
-          <li><a href="#ingenuity">工夫した点</a></li>
-          <li><a href="#reflection">感想</a></li>
+          <?php foreach ($sections as $sec): ?>
+            <li><a href="#<?= h($sec['id']) ?>"><?= h($sec['label']) ?></a></li>
+          <?php endforeach; ?>
         </ul>
       </aside>
 
       <!-- Article -->
       <article>
 
-        <div class="mock-img">
-          <span class="mock-img-label">MYBLOG</span>
-          <span class="mock-img-badge">宇宙テーマ</span>
+        <div class="mock-img <?= h($work['theme'] ?? '') ?>">
+          <?php if (!empty($work['image'])):
+            $imgSrc = str_starts_with($work['image'], 'http')
+              ? $work['image']
+              : '../' . $work['image'];
+          ?>
+            <img src="<?= h($imgSrc) ?>" alt="<?= h($work['title']) ?>">
+          <?php else: ?>
+            <span class="mock-img-label"><?= h($work['label'] ?? $work['title']) ?></span>
+          <?php endif; ?>
         </div>
 
-        <!-- 概要 -->
-        <div class="article-block" id="overview">
-          <div class="block-label">Overview</div>
-          <h2 class="block-title">自身の学生生活を<br>発信するブログ</h2>
-          <div class="block-body">
-            <p>
-              専門学校での学びや日々の制作活動を記録・発信するための個人ブログです。<span class="hl">WordPress</span> とローカルサーバーを初めて使い、テーマ制作からゼロで挑戦しました。
-            </p>
-            <p>
-              「宇宙」をコンセプトとしたオリジナルデザインで、ダークトーンの背景に星々が浮かぶような世界観を実装しています。
-            </p>
+        <?php foreach ($sections as $sec): ?>
+          <div class="article-block" id="<?= h($sec['id']) ?>">
+            <div class="block-label"><?= h($sec['label']) ?></div>
+            <h2 class="block-title"><?= h($sec['title']) ?></h2>
+            <div class="block-body">
+              <?= bodyToHtml($sec['body'] ?? '') ?>
+            </div>
+            <?php if (!empty($sec['highlight'])): ?>
+              <div class="highlight-box"><?= nl2br(h($sec['highlight'])) ?></div>
+            <?php endif; ?>
+            <?php if (!empty($sec['cta_text']) && !empty($sec['cta_url'])): ?>
+              <div class="work-cta">
+                <a href="<?= h($sec['cta_url']) ?>" target="_blank" rel="noopener" class="btn-primary">
+                  <?= h($sec['cta_text']) ?>
+                  <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+              </div>
+            <?php endif; ?>
           </div>
-          <div class="work-cta">
-            <a href="https://susuki-island.heavy.jp/blog/" target="_blank" rel="noopener" class="btn-primary">
-              サイトを見る
-              <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            </a>
-          </div>
-        </div>
-
-        <!-- 目的 -->
-        <div class="article-block" id="purpose">
-          <div class="block-label">Purpose</div>
-          <h2 class="block-title">制作の目的</h2>
-          <div class="block-body">
-            <p>
-              WordPressやローカルサーバーの使い方を<span class="hl">実践的に学ぶ</span>ことが一番の目的でした。授業で学んだHTMLやCSSを、実際のCMSと組み合わせてどう活かすかを体験したいと考えていました。
-            </p>
-          </div>
-          <div class="highlight-box">
-            <strong>目標：</strong>WordPressのテーマをゼロから自作し、ローカル開発環境を自分で構築・運用できる技術力を身に着ける。
-          </div>
-        </div>
-
-        <!-- 工夫した点 -->
-        <div class="article-block" id="ingenuity">
-          <div class="block-label">Ingenuity</div>
-          <h2 class="block-title">工夫した点</h2>
-          <div class="block-body">
-            <p>
-              WordPressのテーマを<span class="hl">ゼロから自作</span>し、宇宙をイメージしたオリジナルデザインに仕上げました。テーマファイルの構造（header.php / footer.php / index.php など）を理解しながら、SCSSでスタイルを組み上げていきました。
-            </p>
-            <p>
-              JavaScriptを使った星のアニメーションや、読みやすいタイポグラフィの設計など、デザインと実装の両面にこだわりました。
-            </p>
-          </div>
-        </div>
-
-        <!-- 感想 -->
-        <div class="article-block" id="reflection">
-          <div class="block-label">Reflection</div>
-          <h2 class="block-title">振り返り</h2>
-          <div class="block-body">
-            <p>
-              サーバー構築やWordPressの実装など初めてのことが多く、1からサイトを作るのも初めての経験でした。エラーが出るたびに原因を調べ、少しずつ解決していく過程が非常に勉強になりました。
-            </p>
-            <p>
-              しかし<span class="hl">デザインやコードを自由に考えられる楽しさ</span>を強く感じることができ、最初のサイト制作として非常に良い経験になりました。この経験があったからこそ、その後のクライアントワーク（島トゥク）にも自信を持って取り組むことができました。
-            </p>
-          </div>
-        </div>
+        <?php endforeach; ?>
 
       </article>
     </div>
@@ -426,15 +468,24 @@
 </main>
 
 <!-- Next work -->
-<a href="https://www.simatwuku.shop/" target="_blank" rel="noopener" class="next-work">
-  <div>
-    <div class="next-label">Next Work</div>
-    <div class="next-title">島トゥク — 観光フォトサービスWebサイト</div>
-  </div>
-  <div class="next-arrow">→</div>
-</a>
+<?php if ($nextWork): ?>
+  <a href="work.php?id=<?= (int)$nextWork['id'] ?>" class="next-work">
+    <div>
+      <div class="next-label">Next Work</div>
+      <div class="next-title"><?= h($nextWork['title']) ?></div>
+    </div>
+    <div class="next-arrow">→</div>
+  </a>
+<?php endif; ?>
 
 <footer>&copy; 2026 Suzuki Yutaro — All Rights Reserved</footer>
+
+<!-- Admin bar -->
+<div class="admin-bar">
+  <span>CMS Preview</span>
+  <a href="admin.php">管理画面</a>
+  <a href="preview.php" target="_blank">一覧プレビュー</a>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
