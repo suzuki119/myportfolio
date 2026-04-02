@@ -377,40 +377,42 @@ main {
 // ─── About ────────────────────────────────────────────
 #about {
     min-height: 100vh;
+}
 
-    .about__grid {
+.about{
+    &__grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 40px;
         align-items: center;
     }
 
-    .about__card {
+    &__card {
         @include glass-card(0.62, 24px);
         padding: 48px 44px;
     }
 
-    .about__name {
+    &__name {
         font-family: $font-serif;
         font-size: 34px;
         font-weight: 300;
         margin-bottom: 4px;
     }
 
-    .about__name-en {
+    &__name-en {
         font-size: 10px;
         letter-spacing: 0.28em;
         color: $color-accent;
         margin-bottom: 24px;
     }
 
-    .about__icons {
+    &__icons {
         display: flex;
         gap: 10px;
         margin-bottom: 28px;
     }
 
-    .about__icon-link {
+    &__icon-link {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -440,7 +442,7 @@ main {
         }
     }
 
-    .about__meta {
+    &__meta {
         font-size: 11px;
         line-height: 2.1;
         margin-bottom: 28px;
@@ -450,12 +452,12 @@ main {
         }
     }
 
-    .about__body {
+    &__body {
         font-size: 11px;
         line-height: 2;
     }
 
-    .about__photo {
+    &__photo {
         aspect-ratio: 3/4;
         background: rgba(255, 255, 255, 0.025);
         border: 1px solid rgba(255, 255, 255, 0.06);
@@ -641,7 +643,7 @@ main {
     .skill__table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 11px;
+        font-size: 14px;
 
         th {
             @include label-text($size: 8px, $spacing: 0.25em);
@@ -662,14 +664,14 @@ main {
     }
 
     .skill__name {
-        font-size: 11px;
+        font-size: 20px;
         color: $color-white;
         white-space: nowrap;
         min-width: 110px;
     }
 
     .skill__detail {
-        font-size: 10px;
+        font-size: 14px;
         color: $color-white;
         line-height: 1.6;
         margin-top: 3px;

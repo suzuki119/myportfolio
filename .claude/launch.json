@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "portfolio",
-      "runtimeExecutable": "php",
+      "runtimeExecutable": "/opt/homebrew/bin/php",
       "runtimeArgs": ["-S", "localhost:3456"],
       "port": 3456
     }

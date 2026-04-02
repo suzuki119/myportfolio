@@ -62,7 +62,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
       </div>
       <div class="about__grid">
         <div class="about__card">
-          <div class="about__name">鈴木 優太郎</div>
+          <h3 class="about__name">鈴木 優太郎</h3>
           <div class="about__name-en">Suzuki Yutaro</div>
           <div class="about__icons">
             <!-- GitHub -->
@@ -82,6 +82,20 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
           </div>
           <p class="about__body">
             JavaScript・CSSアニメーション実装に興味を持ち、日々制作に取り組んでいます。UIの見やすさと実装の再現性を両立できるエンジニアを目指し、思いついたものはすぐ手を動かして形にするようにしています。
+
+
+          </p>
+
+
+          <h4 class="about__mypr">自己PR</h4>
+          <p class="about__body">
+            私の強みは、好奇心と継続力です。
+
+自己紹介で挙げたアニメーション実装や、blenderのように、私は様々なものに興味を示し、そして一度興味を持った物事については、途中で辞めることなく、区切りがつくまでは継続することができるからです。
+
+この特性を活かして、進級展のWebサイト制作では、こだわり抜いたアニメーションを実装し、完成度の高い作品に仕上げることができました。
+
+**今後：** 今後はReact/Three.jsなどにも挑戦したりチーム開発経験を増やせるイベントに参加する予定で、それをまた自分の成長に繋げられればと感じています。
           </p>
         </div>
         <div class="about__photo">
