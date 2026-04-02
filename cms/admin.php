@@ -14,390 +14,17 @@ $works = json_decode(file_get_contents(__DIR__ . '/works.json'), true) ?? [];
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Works CMS — 管理画面</title>
-  <style>
-    :root {
-      --bg: #0f0f0f;
-      --surface: #1a1a1a;
-      --border: #2e2e2e;
-      --accent: #b8a88a;
-      --white: #ede8df;
-      --gray: #7a7a72;
-      --danger: #c0392b;
-      --success: #27ae60;
-    }
-
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      background: var(--bg);
-      color: var(--white);
-      font-family: 'Space Mono', monospace, sans-serif;
-      min-height: 100vh;
-    }
-
-    header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
-
-    header h1 { font-size: 13px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); }
-
-    header a {
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      color: var(--gray);
-      text-decoration: none;
-      border: 1px solid var(--border);
-      padding: 6px 14px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    header a:hover { color: var(--white); border-color: var(--gray); }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 1fr 440px;
-      height: calc(100vh - 57px);
-      overflow: hidden;
-    }
-
-    .list-pane { overflow-y: auto; }
-
-    /* ── 左：一覧 ── */
-    .list-pane { padding: 32px; border-right: 1px solid var(--border); overflow-y: auto; }
-
-    .list-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-    }
-
-    .list-header h2 { font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gray); }
-
-    .btn {
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      padding: 8px 18px;
-      border: none;
-      cursor: pointer;
-      transition: opacity 0.2s;
-      font-family: inherit;
-    }
-    .btn:hover { opacity: 0.8; }
-    .btn--primary { background: var(--accent); color: #0f0f0f; }
-    .btn--danger  { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
-    .btn--ghost   { background: transparent; color: var(--gray); border: 1px solid var(--border); }
-
-    .works-list { display: flex; flex-direction: column; gap: 8px; }
-
-    .work-item {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 14px 18px;
-      cursor: pointer;
-      transition: border-color 0.2s;
-      gap: 12px;
-      user-select: none;
-    }
-    .work-item:hover { border-color: var(--accent); }
-    .work-item.active { border-color: var(--accent); background: rgba(184,168,138,0.06); }
-    .work-item.dragging { opacity: 0.3; }
-    .work-item.drag-over { border-color: var(--accent); border-style: dashed; }
-
-    .work-item__title { font-size: 13px; margin-bottom: 4px; }
-    .work-item__meta  { font-size: 9px; color: var(--gray); letter-spacing: 0.15em; }
-
-    .work-item__tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
-
-    .tag {
-      font-size: 8px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--accent);
-      border: 1px solid rgba(184,168,138,0.3);
-      padding: 2px 7px;
-    }
-
-    .work-item__actions { display: flex; gap: 6px; flex-shrink: 0; }
-
-    .icon-btn {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--gray);
-      width: 30px;
-      height: 30px;
-      cursor: pointer;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: color 0.2s, border-color 0.2s;
-      font-family: inherit;
-    }
-    .icon-btn:hover { color: var(--white); border-color: var(--gray); }
-    .icon-btn.delete:hover { color: var(--danger); border-color: var(--danger); }
-
-    /* ── 右：フォーム ── */
-    .form-pane { padding: 32px; background: var(--surface); overflow-y: auto; }
-    .form-pane h2 { font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gray); margin-bottom: 24px; }
-
-    /* ── タブ ── */
-    .tab-bar {
-      display: flex;
-      gap: 0;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 24px;
-    }
-    .tab-btn {
-      font-family: inherit;
-      font-size: 9px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      background: none;
-      border: none;
-      border-bottom: 2px solid transparent;
-      color: var(--gray);
-      padding: 10px 18px;
-      cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
-      margin-bottom: -1px;
-    }
-    .tab-btn:hover { color: var(--white); }
-    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-    .form-group { margin-bottom: 20px; }
-
-    label {
-      display: block;
-      font-size: 9px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--gray);
-      margin-bottom: 8px;
-    }
-
-    input[type=text], select {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--white);
-      padding: 10px 14px;
-      font-size: 12px;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    input[type=text]:focus, select:focus { border-color: var(--accent); }
-    select option { background: var(--bg); }
-
-    .tags-input-wrap {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      padding: 8px;
-      min-height: 44px;
-      align-items: center;
-      cursor: text;
-      transition: border-color 0.2s;
-    }
-    .tags-input-wrap:focus-within { border-color: var(--accent); }
-
-    .tag-chip {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 9px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent);
-      border: 1px solid rgba(184,168,138,0.3);
-      padding: 3px 8px;
-    }
-    .tag-chip button {
-      background: none;
-      border: none;
-      color: var(--gray);
-      cursor: pointer;
-      font-size: 11px;
-      line-height: 1;
-      padding: 0;
-    }
-    .tag-chip button:hover { color: var(--danger); }
-
-    #tagInput {
-      background: none;
-      border: none;
-      color: var(--white);
-      font-size: 12px;
-      font-family: inherit;
-      outline: none;
-      flex: 1;
-      min-width: 80px;
-      padding: 2px 4px;
-    }
-
-    .form-actions { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
-
-    textarea {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--white);
-      padding: 10px 14px;
-      font-size: 12px;
-      font-family: inherit;
-      outline: none;
-      resize: vertical;
-      min-height: 80px;
-      line-height: 1.7;
-      transition: border-color 0.2s;
-    }
-    textarea:focus { border-color: var(--accent); }
-
-    /* ── セクションエディタ ── */
-    .section-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; }
-
-    .section-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      overflow: hidden;
-    }
-
-    .section-card-head {
-      display: flex;
-      align-items: center;
-      padding: 10px 14px;
-      cursor: pointer;
-      background: rgba(255,255,255,0.02);
-      gap: 10px;
-    }
-    .section-card-head:hover { background: rgba(255,255,255,0.04); }
-
-    .section-card-label {
-      flex: 1;
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
-
-    .section-card-actions { display: flex; gap: 6px; }
-
-    .section-card-body {
-      padding: 16px;
-      display: none;
-      border-top: 1px solid var(--border);
-    }
-    .section-card-body.open { display: block; }
-    .section-card-body .form-group { margin-bottom: 14px; }
-    .section-card-body .form-group:last-child { margin-bottom: 0; }
-
-    .add-section-btn {
-      width: 100%;
-      font-family: inherit;
-      font-size: 9px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      background: transparent;
-      border: 1px dashed var(--border);
-      color: var(--gray);
-      padding: 10px;
-      cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .add-section-btn:hover { color: var(--accent); border-color: var(--accent); }
-
-    /* ── 画像アップロード ── */
-    .img-field { display: flex; flex-direction: column; gap: 10px; }
-
-    .img-preview {
-      width: 100%;
-      aspect-ratio: 4/3;
-      object-fit: cover;
-      border: 1px solid var(--border);
-      display: block;
-    }
-
-    .img-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-
-    .upload-btn {
-      font-family: inherit;
-      font-size: 9px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--gray);
-      padding: 7px 14px;
-      cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .upload-btn:hover { color: var(--accent); border-color: var(--accent); }
-
-    .img-url-hint {
-      font-size: 9px;
-      color: var(--gray);
-      letter-spacing: 0.1em;
-    }
-
-    .preview-link {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--gray); text-decoration: none;
-      border: 1px solid var(--border);
-      padding: 5px 12px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .preview-link:hover { color: var(--accent); border-color: var(--accent); }
-
-    .empty-state {
-      text-align: center;
-      padding: 60px 0;
-      color: var(--gray);
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      line-height: 2.5;
-    }
-
-    /* トースト */
-    .toast {
-      position: fixed;
-      bottom: 32px;
-      right: 32px;
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      padding: 12px 24px;
-      opacity: 0;
-      transition: opacity 0.3s;
-      pointer-events: none;
-      z-index: 100;
-    }
-    .toast.ok   { background: var(--accent); color: #0f0f0f; }
-    .toast.err  { background: var(--danger); color: #fff; }
-    .toast.show { opacity: 1; }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300&family=Space+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/admin.css">
 </head>
-<body>
+<body class="admin-body">
 
 <header>
   <h1>Works CMS</h1>
-  <div style="display:flex;gap:12px;align-items:center">
+  <div class="header__links">
     <a href="../index.php" target="_blank">ポートフォリオ ↗</a>
     <a href="preview.php" target="_blank">一覧プレビュー ↗</a>
-    <a href="logout.php" style="color:#c0392b;border-color:#c0392b40">ログアウト</a>
+    <a href="logout.php" class="link--danger">ログアウト</a>
   </div>
 </header>
 
@@ -470,7 +97,7 @@ $works = json_decode(file_get_contents(__DIR__ . '/works.json'), true) ?? [];
       item.dataset.index = i;
 
       item.innerHTML = `
-        <div onclick="openEdit(${w.id})" style="min-width:0;cursor:pointer">
+        <div class="work-item__info" onclick="openEdit(${w.id})"
           <div class="work-item__title">${w.title}</div>
           <div class="work-item__meta">${w.period}</div>
           <div class="work-item__tags">
@@ -478,7 +105,7 @@ $works = json_decode(file_get_contents(__DIR__ . '/works.json'), true) ?? [];
           </div>
         </div>
         <div class="work-item__actions">
-          <a class="icon-btn" title="詳細ページを見る" href="work.php?id=${w.id}" target="_blank" style="text-decoration:none;font-size:11px">↗</a>
+          <a class="icon-btn" title="詳細ページを見る" href="work.php?id=${w.id}" target="_blank">↗</a>
           <button class="icon-btn" title="上へ" onclick="moveUp(${i})">↑</button>
           <button class="icon-btn" title="下へ" onclick="moveDown(${i})">↓</button>
           <button class="icon-btn delete" title="削除" onclick="deleteWork(${w.id})">✕</button>
@@ -528,7 +155,7 @@ $works = json_decode(file_get_contents(__DIR__ . '/works.json'), true) ?? [];
   function switchTab(tab) {
     activeTab = tab;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-    document.querySelectorAll('.tab-panel').forEach(p => p.style.display = p.dataset.panel === tab ? '' : 'none');
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('is-hidden', p.dataset.panel !== tab));
   }
 
   function renderForm(w) {
@@ -544,7 +171,7 @@ $works = json_decode(file_get_contents(__DIR__ . '/works.json'), true) ?? [];
       </div>` : ''}
 
       <!-- 基本情報タブ -->
-      <div class="tab-panel" data-panel="basic" style="${!isNew && activeTab!=='basic' ? 'display:none' : ''}">
+      <div class="tab-panel ${!isNew && activeTab!=='basic' ? 'is-hidden' : ''}" data-panel="basic">
         <div class="form-group">
           <label>タイトル</label>
           <input id="f_title" type="text" value="${esc(w?.title)}" placeholder="MYBLOG">
@@ -562,12 +189,12 @@ $works = json_decode(file_get_contents(__DIR__ . '/works.json'), true) ?? [];
           <div class="img-field" id="imgField">
             ${w?.image ? `<img class="img-preview" id="imgPreviewEl" src="${buildPreviewSrc(w.image)}" alt="">` : ''}
             <div class="img-actions">
-              <input type="file" id="imgFile" accept="image/*" style="display:none" onchange="uploadImage(this)">
+              <input type="file" id="imgFile" accept="image/*" class="u-hidden" onchange="uploadImage(this)">
               <button type="button" class="upload-btn" onclick="document.getElementById('imgFile').click()">↑ ファイルをアップロード</button>
-              ${w?.image ? `<button type="button" class="btn btn--danger" style="font-size:9px;padding:6px 12px" onclick="clearImage()">画像を削除</button>` : ''}
+              ${w?.image ? `<button type="button" class="btn btn--danger btn--sm" onclick="clearImage()">画像を削除</button>` : ''}
             </div>
-            <div style="display:flex;gap:6px;align-items:center">
-              <input id="f_image" type="text" value="${esc(w?.image)}" placeholder="または画像URLを直接入力（https://...）" style="flex:1" oninput="onImageUrlChange(this.value)">
+            <div class="input-row">
+              <input id="f_image" type="text" class="input--flex" value="${esc(w?.image)}" placeholder="または画像URLを直接入力（https://...）" oninput="onImageUrlChange(this.value)">
             </div>
             <p class="img-url-hint">jpg / png / webp / gif  ·  最大10MB</p>
           </div>
@@ -582,7 +209,7 @@ $works = json_decode(file_get_contents(__DIR__ . '/works.json'), true) ?? [];
 
       <!-- 詳細ページタブ -->
       ${!isNew ? `
-      <div class="tab-panel" data-panel="detail" style="${activeTab!=='detail' ? 'display:none' : ''}">
+      <div class="tab-panel ${activeTab!=='detail' ? 'is-hidden' : ''}" data-panel="detail">
         <div class="form-group">
           <label>ヒーロータイトル</label>
           <input id="d_hero_title" type="text" value="${esc(d.hero_title ?? w?.title)}" placeholder="MYBLOG">
@@ -600,11 +227,11 @@ $works = json_decode(file_get_contents(__DIR__ . '/works.json'), true) ?? [];
           <input id="d_external_url" type="text" value="${esc(d.external_url)}" placeholder="https://...">
         </div>
 
-        <label style="margin-bottom:12px">セクション</label>
+        <label class="label--gap">セクション</label>
         <div class="section-list" id="sectionList"></div>
         <button class="add-section-btn" onclick="addSection()">＋ セクションを追加</button>
 
-        <div class="form-actions" style="margin-top:20px">
+        <div class="form-actions form-actions--mt">
           <button class="btn btn--primary" onclick="submitDetail()">詳細を保存</button>
           <a class="preview-link" href="work.php?id=${w.id}" target="_blank">詳細ページを見る ↗</a>
         </div>
@@ -648,6 +275,21 @@ $works = json_decode(file_get_contents(__DIR__ . '/works.json'), true) ?? [];
           <div class="form-group">
             <label>タイトル</label>
             <input type="text" value="${esc(sec.title)}" oninput="updateSec(${i},'title',this.value)" placeholder="セクションタイトル">
+          </div>
+          <div class="form-group">
+            <label>セクション画像（タイトル下に表示）</label>
+            <div class="img-field" id="secImgField_${i}">
+              ${sec.image ? `<img class="img-preview" id="secImgPreview_${i}" src="${buildPreviewSrc(sec.image)}" alt="">` : ''}
+              <div class="img-actions">
+                <input type="file" id="secImgFile_${i}" accept="image/*" class="u-hidden" onchange="uploadSecImage(this,${i})">
+                <button type="button" class="upload-btn" onclick="document.getElementById('secImgFile_${i}').click()">↑ ファイルをアップロード</button>
+                ${sec.image ? `<button type="button" class="btn btn--danger btn--sm" id="secImgClear_${i}" onclick="clearSecImage(${i})">画像を削除</button>` : ''}
+              </div>
+              <div class="input-row">
+                <input id="secImgUrl_${i}" type="text" class="input--flex" value="${esc(sec.image)}" placeholder="またはURLを直接入力" oninput="updateSec(${i},'image',this.value);showSecImagePreview(${i},this.value)">
+              </div>
+              <p class="img-url-hint">jpg / png / webp / gif &nbsp;·&nbsp; 最大10MB</p>
+            </div>
           </div>
           <div class="form-group">
             <label>本文（段落間は空行で区切る）</label>
@@ -855,6 +497,81 @@ $works = json_decode(file_get_contents(__DIR__ . '/works.json'), true) ?? [];
     if (img) img.remove();
     const btn = document.getElementById('imgClearBtn');
     if (btn) btn.remove();
+  }
+
+  /* ── セクション画像アップロード ── */
+  async function uploadSecImage(input, secIdx) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const ext = file.name.split('.').pop().toLowerCase();
+    const allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    if (!allowed.includes(ext)) {
+      toast('jpg / png / webp / gif のみアップロードできます', 'err');
+      input.value = ''; return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast('ファイルサイズは10MB以下にしてください', 'err');
+      input.value = ''; return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    const btn = input.nextElementSibling;
+    if (btn) btn.disabled = true;
+    toast('アップロード中...', 'ok');
+
+    try {
+      const res = await fetch('api.php?action=upload', { method: 'POST', body: formData });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      if (!data.ok) { toast(data.error || 'アップロード失敗', 'err'); return; }
+
+      currentSections[secIdx].image = data.path;
+      const urlInput = document.getElementById(`secImgUrl_${secIdx}`);
+      if (urlInput) urlInput.value = data.path;
+      showSecImagePreview(secIdx, data.path);
+      toast('画像を設定しました。「詳細を保存」で確定してください ✓');
+    } catch (e) {
+      toast('通信エラー: ' + e.message, 'err');
+    } finally {
+      if (btn) btn.disabled = false;
+      input.value = '';
+    }
+  }
+
+  function showSecImagePreview(secIdx, path) {
+    const field = document.getElementById(`secImgField_${secIdx}`);
+    if (!field) return;
+    let img = document.getElementById(`secImgPreview_${secIdx}`);
+    if (!img) {
+      img = document.createElement('img');
+      img.id = `secImgPreview_${secIdx}`;
+      img.className = 'img-preview';
+      field.insertBefore(img, field.firstChild);
+    }
+    img.src = path ? buildPreviewSrc(path) : '';
+
+    if (path && !document.getElementById(`secImgClear_${secIdx}`)) {
+      const actions = field.querySelector('.img-actions');
+      const clearBtn = document.createElement('button');
+      clearBtn.id = `secImgClear_${secIdx}`;
+      clearBtn.type = 'button';
+      clearBtn.className = 'btn btn--danger btn--sm';
+      clearBtn.textContent = '画像を削除';
+      clearBtn.onclick = () => clearSecImage(secIdx);
+      actions.appendChild(clearBtn);
+    }
+  }
+
+  function clearSecImage(secIdx) {
+    currentSections[secIdx].image = '';
+    const img = document.getElementById(`secImgPreview_${secIdx}`);
+    if (img) img.remove();
+    const btn = document.getElementById(`secImgClear_${secIdx}`);
+    if (btn) btn.remove();
+    const urlInput = document.getElementById(`secImgUrl_${secIdx}`);
+    if (urlInput) urlInput.value = '';
   }
 
   /* ── 基本情報を保存 ── */

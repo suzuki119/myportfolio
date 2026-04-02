@@ -1,0 +1,693 @@
+@use "sass:math";
+
+// ═══════════════════════════════════════════════════════
+//  Variables
+// ═══════════════════════════════════════════════════════
+
+// --- Colors ---
+$admin-bg:      #0f0f0f;
+$admin-surface: #1a1a1a;
+$admin-border:  #2e2e2e;
+$admin-accent:  #b8a88a;
+$admin-white:   #ede8df;
+$admin-gray:    #7a7a72;
+$admin-danger:  #c0392b;
+
+// --- Typography ---
+$font-serif: 'Cormorant Garamond', serif;
+$font-mono:  'Space Mono', monospace;
+
+
+// ═══════════════════════════════════════════════════════
+//  Reset & Base
+// ═══════════════════════════════════════════════════════
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+// ─── Admin Base ───────────────────────────────────────
+.admin-body,
+.login-page,
+.preview-page {
+    background: $admin-bg;
+    color: $admin-white;
+    font-family: $font-mono, sans-serif;
+    min-height: 100vh;
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  Utility
+// ═══════════════════════════════════════════════════════
+.u-hidden  { display: none; }
+.is-hidden { display: none !important; }
+
+
+// ═══════════════════════════════════════════════════════
+//  Header（admin.php 専用）
+// ═══════════════════════════════════════════════════════
+.admin-body header {
+    background: $admin-surface;
+    border-bottom: 1px solid $admin-border;
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+
+    h1 {
+        font-size: 13px;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: $admin-accent;
+    }
+
+    a {
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        color: $admin-gray;
+        text-decoration: none;
+        border: 1px solid $admin-border;
+        padding: 6px 14px;
+        transition: color 0.2s, border-color 0.2s;
+
+        &:hover { color: $admin-white; border-color: $admin-gray; }
+    }
+
+    .header__links { display: flex; gap: 12px; align-items: center; }
+
+    .link--danger {
+        color: $admin-danger !important;
+        border-color: rgba($admin-danger, 0.25) !important;
+    }
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  Layout（admin.php）
+// ═══════════════════════════════════════════════════════
+.layout {
+    display: grid;
+    grid-template-columns: 1fr 440px;
+    height: calc(100vh - 57px);
+    overflow: hidden;
+}
+
+.list-pane {
+    padding: 32px;
+    border-right: 1px solid $admin-border;
+    overflow-y: auto;
+}
+
+.form-pane {
+    padding: 32px;
+    background: $admin-surface;
+    overflow-y: auto;
+
+    h2 {
+        font-size: 10px;
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+        color: $admin-gray;
+        margin-bottom: 24px;
+    }
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  Work List
+// ═══════════════════════════════════════════════════════
+.list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+
+    h2 {
+        font-size: 10px;
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+        color: $admin-gray;
+    }
+}
+
+.works-list { display: flex; flex-direction: column; gap: 8px; }
+
+.work-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    background: $admin-surface;
+    border: 1px solid $admin-border;
+    padding: 14px 18px;
+    transition: border-color 0.2s;
+    gap: 12px;
+    user-select: none;
+
+    &:hover     { border-color: $admin-accent; }
+    &.active    { border-color: $admin-accent; background: rgba($admin-accent, 0.06); }
+    &.dragging  { opacity: 0.3; }
+    &.drag-over { border-color: $admin-accent; border-style: dashed; }
+
+    &__info    { min-width: 0; cursor: pointer; }
+    &__title   { font-size: 13px; margin-bottom: 4px; }
+    &__meta    { font-size: 9px; color: $admin-gray; letter-spacing: 0.15em; }
+    &__tags    { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    &__actions { display: flex; gap: 6px; flex-shrink: 0; }
+}
+
+.tag {
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: $admin-accent;
+    border: 1px solid rgba($admin-accent, 0.3);
+    padding: 2px 7px;
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  Buttons
+// ═══════════════════════════════════════════════════════
+.btn {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    font-family: inherit;
+
+    &:hover    { opacity: 0.8; }
+    &--primary { background: $admin-accent; color: $admin-bg; }
+    &--danger  { background: transparent; color: $admin-danger; border: 1px solid $admin-danger; }
+    &--ghost   { background: transparent; color: $admin-gray; border: 1px solid $admin-border; }
+    &--sm      { font-size: 9px; padding: 6px 12px; }
+}
+
+.icon-btn {
+    background: none;
+    border: 1px solid $admin-border;
+    color: $admin-gray;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s, border-color 0.2s;
+    font-family: inherit;
+    text-decoration: none;
+
+    &:hover        { color: $admin-white; border-color: $admin-gray; }
+    &.delete:hover { color: $admin-danger; border-color: $admin-danger; }
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  Tab Bar
+// ═══════════════════════════════════════════════════════
+.tab-bar {
+    display: flex;
+    border-bottom: 1px solid $admin-border;
+    margin-bottom: 24px;
+}
+
+.tab-btn {
+    font-family: inherit;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: $admin-gray;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+    margin-bottom: -1px;
+
+    &:hover  { color: $admin-white; }
+    &.active { color: $admin-accent; border-bottom-color: $admin-accent; }
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  Form
+// ═══════════════════════════════════════════════════════
+.form-group { margin-bottom: 20px; }
+
+.admin-body label,
+.login-page label {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: $admin-gray;
+    margin-bottom: 8px;
+
+    &.label--gap { margin-bottom: 12px; }
+}
+
+.admin-body,
+.login-page {
+    input[type=text],
+    input[type=password],
+    select {
+        width: 100%;
+        background: $admin-bg;
+        border: 1px solid $admin-border;
+        color: $admin-white;
+        padding: 10px 14px;
+        font-size: 12px;
+        font-family: inherit;
+        outline: none;
+        transition: border-color 0.2s;
+
+        &:focus { border-color: $admin-accent; }
+    }
+
+    select option { background: $admin-bg; }
+
+    textarea {
+        width: 100%;
+        background: $admin-bg;
+        border: 1px solid $admin-border;
+        color: $admin-white;
+        padding: 10px 14px;
+        font-size: 12px;
+        font-family: inherit;
+        outline: none;
+        resize: vertical;
+        min-height: 80px;
+        line-height: 1.7;
+        transition: border-color 0.2s;
+
+        &:focus { border-color: $admin-accent; }
+    }
+}
+
+.input-row   { display: flex; gap: 6px; align-items: center; }
+.input--flex { flex: 1; }
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+
+    &--mt { margin-top: 20px; }
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  Tags Input
+// ═══════════════════════════════════════════════════════
+.tags-input-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    background: $admin-bg;
+    border: 1px solid $admin-border;
+    padding: 8px;
+    min-height: 44px;
+    align-items: center;
+    cursor: text;
+    transition: border-color 0.2s;
+
+    &:focus-within { border-color: $admin-accent; }
+}
+
+.tag-chip {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $admin-accent;
+    border: 1px solid rgba($admin-accent, 0.3);
+    padding: 3px 8px;
+
+    button {
+        background: none;
+        border: none;
+        color: $admin-gray;
+        cursor: pointer;
+        font-size: 11px;
+        line-height: 1;
+        padding: 0;
+
+        &:hover { color: $admin-danger; }
+    }
+}
+
+#tagInput {
+    background: none;
+    border: none;
+    color: $admin-white;
+    font-size: 12px;
+    font-family: inherit;
+    outline: none;
+    flex: 1;
+    min-width: 80px;
+    padding: 2px 4px;
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  Section Editor
+// ═══════════════════════════════════════════════════════
+.section-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; }
+
+.section-card {
+    background: $admin-bg;
+    border: 1px solid $admin-border;
+    overflow: hidden;
+
+    &-head {
+        display: flex;
+        align-items: center;
+        padding: 10px 14px;
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.02);
+        gap: 10px;
+
+        &:hover { background: rgba(255, 255, 255, 0.04); }
+    }
+
+    &-label {
+        flex: 1;
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: $admin-accent;
+    }
+
+    &-actions { display: flex; gap: 6px; }
+
+    &-body {
+        padding: 16px;
+        display: none;
+        border-top: 1px solid $admin-border;
+
+        &.open { display: block; }
+
+        .form-group {
+            margin-bottom: 14px;
+            &:last-child { margin-bottom: 0; }
+        }
+    }
+}
+
+.add-section-btn {
+    width: 100%;
+    font-family: inherit;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: transparent;
+    border: 1px dashed $admin-border;
+    color: $admin-gray;
+    padding: 10px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+
+    &:hover { color: $admin-accent; border-color: $admin-accent; }
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  Image Upload
+// ═══════════════════════════════════════════════════════
+.img-field   { display: flex; flex-direction: column; gap: 10px; }
+
+.img-preview {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border: 1px solid $admin-border;
+    display: block;
+}
+
+.img-actions  { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+.upload-btn {
+    font-family: inherit;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: transparent;
+    border: 1px solid $admin-border;
+    color: $admin-gray;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+
+    &:hover { color: $admin-accent; border-color: $admin-accent; }
+}
+
+.img-url-hint { font-size: 9px; color: $admin-gray; letter-spacing: 0.1em; }
+
+
+// ═══════════════════════════════════════════════════════
+//  Preview Link / Empty State / Toast
+// ═══════════════════════════════════════════════════════
+.preview-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: $admin-gray;
+    text-decoration: none;
+    border: 1px solid $admin-border;
+    padding: 5px 12px;
+    transition: color 0.2s, border-color 0.2s;
+
+    &:hover { color: $admin-accent; border-color: $admin-accent; }
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 0;
+    color: $admin-gray;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    line-height: 2.5;
+}
+
+.toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    padding: 12px 24px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 100;
+
+    &.ok   { background: $admin-accent; color: $admin-bg; }
+    &.err  { background: $admin-danger; color: #fff; }
+    &.show { opacity: 1; }
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  Login Page（login.php）
+// ═══════════════════════════════════════════════════════
+.login-page { display: flex; align-items: center; justify-content: center; }
+
+.login-box {
+    width: 100%;
+    max-width: 360px;
+    padding: 48px;
+    background: $admin-surface;
+    border: 1px solid $admin-border;
+
+    h1 {
+        font-family: $font-serif;
+        font-size: 32px;
+        font-weight: 300;
+        margin-bottom: 6px;
+    }
+
+    .sub {
+        font-size: 8px;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: $admin-accent;
+        margin-bottom: 40px;
+    }
+
+    input[type=password] { margin-bottom: 20px; }
+
+    button {
+        width: 100%;
+        background: $admin-accent;
+        color: $admin-bg;
+        border: none;
+        padding: 12px;
+        font-family: inherit;
+        font-size: 10px;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: opacity 0.2s;
+
+        &:hover { opacity: 0.85; }
+    }
+
+    .error {
+        font-size: 10px;
+        letter-spacing: 0.15em;
+        color: $admin-danger;
+        margin-top: 14px;
+        text-align: center;
+    }
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  Preview Page（preview.php）
+// ═══════════════════════════════════════════════════════
+.preview-page { padding: 80px 9vw 100px; }
+
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba($admin-bg, 0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+
+    span {
+        font-size: 9px;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: $admin-accent;
+    }
+
+    a {
+        font-size: 9px;
+        letter-spacing: 0.2em;
+        color: $admin-gray;
+        text-decoration: none;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 6px 14px;
+        transition: color 0.2s, border-color 0.2s;
+
+        &:hover { color: $admin-white; border-color: $admin-gray; }
+    }
+}
+
+.preview-heading {
+    font-family: $font-serif;
+    font-size: clamp(42px, 5.5vw, 84px);
+    font-weight: 300;
+    margin-bottom: 48px;
+
+    small {
+        display: block;
+        font-family: $font-mono;
+        font-size: 9px;
+        letter-spacing: 0.45em;
+        text-transform: uppercase;
+        color: $admin-accent;
+        margin-bottom: 12px;
+    }
+}
+
+.works-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+.work-card {
+    background: rgba($admin-bg, 0.55);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: border-color 0.35s, transform 0.35s;
+
+    &:hover { border-color: rgba($admin-accent, 0.35); transform: translateY(-5px); }
+
+    &__img {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__img-bg {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+
+        &.blog  { background: linear-gradient(135deg, #0b0b14, #131320); }
+        &.twuku { background: linear-gradient(135deg, #090e0b, #0f1a10); }
+        &.seal  { background: linear-gradient(135deg, #120b0b, #1e0f0f); }
+        &.video { background: linear-gradient(135deg, #0c0c0b, #1a1806); }
+    }
+
+    &__img-label {
+        position: relative;
+        z-index: 1;
+        font-family: $font-serif;
+        font-size: 52px;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.05);
+        letter-spacing: -0.02em;
+        user-select: none;
+    }
+
+    &__body   { padding: 18px 22px 22px; }
+    &__tags   { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 10px; }
+
+    &__tag {
+        font-size: 8px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: $admin-accent;
+        border: 1px solid rgba($admin-accent, 0.28);
+        padding: 3px 8px;
+    }
+
+    &__title {
+        font-family: $font-serif;
+        font-size: 26px;
+        font-weight: 300;
+        margin-bottom: 5px;
+    }
+
+    &__period { font-size: 9px; letter-spacing: 0.15em; color: $admin-gray; }
+}
+
+.empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 80px;
+    color: $admin-gray;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "title": "MYBLOG",
+    "period": "2025.06 – 08",
+    "tags": ["WordPress", "SCSS", "JavaScript"],
+    "label": "BLOG",
+    "theme": "blog",
+    "url": "myblog.html"
+  },
+  {
+    "id": 2,
+    "title": "島トゥク",
+    "period": "2025.09 – 2026.01",
+    "tags": ["WordPress", "SCSS", "JavaScript"],
+    "label": "TWUKU",
+    "theme": "twuku",
+    "url": "https://www.simatwuku.shop/"
+  },
+  {
+    "id": 3,
+    "title": "シール帳アプリ",
+    "period": "2025 合宿（3日間）",
+    "tags": ["JavaScript", "SCSS"],
+    "label": "SEAL",
+    "theme": "seal",
+    "url": "https://susuki-island.heavy.jp/files_1/"
+  },
+  {
+    "id": 4,
+    "title": "新校舎紹介動画",
+    "period": "2025.12 – 2026.03",
+    "tags": ["Premiere Pro"],
+    "label": "VIDEO",
+    "theme": "video",
+    "url": "https://drive.google.com/file/d/1HD_431gODEXHR80rBYA1tPMWieHgzN5g/view"
+  }
+]

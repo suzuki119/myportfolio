@@ -30,10 +30,12 @@ const createDiamond = () => {
   return geo;
 };
 const crystalGeo = createDiamond();
+
 const crystalMat = new THREE.MeshStandardMaterial({
   color: 0x1a1a1a, metalness: 0.1, roughness: 0.7,
   transparent: true, opacity: 0.28, flatShading: true
 });
+
 const crystal = new THREE.Mesh(crystalGeo, crystalMat);
 crystal.scale.setScalar(2);
 scene.add(crystal);
@@ -105,7 +107,7 @@ const radarOpts = (labels, data) => ({
     datasets: [{
       data,
       backgroundColor: 'rgba(184,168,138,0.15)',
-      borderColor: 'rgba(184,168,138,0.9)',
+      borderColor: 'rgba(110, 110, 110, 0.9)',
       borderWidth: 2,
       pointBackgroundColor: 'rgba(184,168,138,1)',
       pointRadius: 4,
@@ -121,10 +123,10 @@ const radarOpts = (labels, data) => ({
       r: {
         min: 0, max: 5,
         ticks: { stepSize: 1, display: false },
-        grid: { color: 'rgba(255,255,255,0.08)' },
-        angleLines: { color: 'rgba(255,255,255,0.08)' },
+        grid: { color: 'rgb(145, 145, 145)' },
+        angleLines: { color: 'rgb(145, 145, 145)' },
         pointLabels: {
-          color: 'rgba(237,232,223,0.65)',
+          color: 'rgb(145, 145, 145)',
           font: { family: "'Space Mono', monospace", size: 11 }
         }
       }
@@ -151,6 +153,7 @@ radarQueue.forEach(q => {
   const el = document.getElementById(q.id);
   if (el) radarObserver.observe(el);
 });
+
 
 /* ============================================================
    SCROLL ANIMATIONS — タイムライン線（スクロール連動）

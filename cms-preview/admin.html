@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Works CMS — 管理画面</title>
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --border: #2e2e2e;
+      --accent: #b8a88a;
+      --white: #ede8df;
+      --gray: #7a7a72;
+      --danger: #c0392b;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Space Mono', monospace, sans-serif;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-size: 13px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    header a {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--gray);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    header a:hover { color: var(--white); border-color: var(--gray); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 0;
+      min-height: calc(100vh - 57px);
+    }
+
+    /* ── 左：一覧 ── */
+    .list-pane {
+      padding: 32px;
+      border-right: 1px solid var(--border);
+    }
+
+    .list-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .list-header h2 {
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+
+    .btn {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover { opacity: 0.8; }
+    .btn--primary { background: var(--accent); color: #0f0f0f; }
+    .btn--danger  { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+    .btn--ghost   { background: transparent; color: var(--gray); border: 1px solid var(--border); }
+
+    .works-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .work-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 14px 18px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      gap: 12px;
+    }
+
+    .work-item:hover { border-color: var(--accent); }
+    .work-item.active { border-color: var(--accent); background: rgba(184,168,138,0.06); }
+
+    .work-item__title {
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .work-item__meta {
+      font-size: 9px;
+      color: var(--gray);
+      letter-spacing: 0.15em;
+    }
+
+    .work-item__tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .tag {
+      font-size: 8px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(184,168,138,0.3);
+      padding: 2px 7px;
+    }
+
+    .work-item__actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .icon-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--gray);
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .icon-btn:hover { color: var(--white); border-color: var(--gray); }
+    .icon-btn.delete:hover { color: var(--danger); border-color: var(--danger); }
+
+    /* ドラッグ */
+    .work-item.dragging { opacity: 0.4; }
+    .work-item.drag-over { border-color: var(--accent); border-style: dashed; }
+
+    /* ── 右：フォーム ── */
+    .form-pane {
+      padding: 32px;
+      background: var(--surface);
+    }
+
+    .form-pane h2 {
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 9px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 8px;
+    }
+
+    input, select {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--white);
+      padding: 10px 14px;
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus { border-color: var(--accent); }
+
+    select option { background: var(--bg); }
+
+    .tags-input-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 8px;
+      min-height: 44px;
+      align-items: center;
+      cursor: text;
+      transition: border-color 0.2s;
+    }
+
+    .tags-input-wrap:focus-within { border-color: var(--accent); }
+
+    .tag-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(184,168,138,0.3);
+      padding: 3px 8px;
+    }
+
+    .tag-chip button {
+      background: none;
+      border: none;
+      color: var(--gray);
+      cursor: pointer;
+      font-size: 11px;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .tag-chip button:hover { color: var(--danger); }
+
+    #tagInput {
+      background: none;
+      border: none;
+      color: var(--white);
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+      flex: 1;
+      min-width: 80px;
+      padding: 2px 4px;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--gray);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      background: var(--accent);
+      color: #0f0f0f;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      padding: 12px 24px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Works CMS</h1>
+  <a href="preview.html" target="_blank">← プレビューを見る</a>
+</header>
+
+<div class="layout">
+
+  <!-- 左：一覧 -->
+  <div class="list-pane">
+    <div class="list-header">
+      <h2>作品一覧 <span id="count"></span></h2>
+      <button class="btn btn--primary" onclick="openNew()">＋ 追加</button>
+    </div>
+    <div class="works-list" id="worksList"></div>
+  </div>
+
+  <!-- 右：フォーム -->
+  <div class="form-pane">
+    <h2 id="formTitle">作品を選択してください</h2>
+    <div id="formBody">
+      <div class="empty-state">← 左の一覧から作品を選ぶか<br>「追加」ボタンを押してください</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">保存しました</div>
+
+<script>
+  const STORAGE_KEY = 'cms_works';
+
+  // データ初期化（初回のみworksから読み込み）
+  let works = [];
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    works = JSON.parse(saved);
+  } else {
+    fetch('works.json')
+      .then(r => r.json())
+      .then(data => { works = data; save(); renderList(); });
+  }
+
+  let editingId = null;
+  let currentTags = [];
+  let dragSrc = null;
+
+  function save() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(works));
+  }
+
+  function showToast(msg = '保存しました') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  /* ── 一覧レンダリング ── */
+  function renderList() {
+    const list = document.getElementById('worksList');
+    document.getElementById('count').textContent = `(${works.length})`;
+    list.innerHTML = '';
+
+    works.forEach((w, i) => {
+      const item = document.createElement('div');
+      item.className = 'work-item' + (w.id === editingId ? ' active' : '');
+      item.draggable = true;
+      item.dataset.index = i;
+
+      item.innerHTML = `
+        <div onclick="openEdit(${w.id})">
+          <div class="work-item__title">${w.title}</div>
+          <div class="work-item__meta">${w.period}</div>
+          <div class="work-item__tags">
+            ${w.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+          </div>
+        </div>
+        <div class="work-item__actions">
+          <button class="icon-btn" title="上へ" onclick="moveUp(${i})">↑</button>
+          <button class="icon-btn" title="下へ" onclick="moveDown(${i})">↓</button>
+          <button class="icon-btn delete" title="削除" onclick="deleteWork(${w.id})">✕</button>
+        </div>
+      `;
+
+      // ドラッグ＆ドロップ
+      item.addEventListener('dragstart', () => { dragSrc = i; item.classList.add('dragging'); });
+      item.addEventListener('dragend', () => item.classList.remove('dragging'));
+      item.addEventListener('dragover', e => { e.preventDefault(); item.classList.add('drag-over'); });
+      item.addEventListener('dragleave', () => item.classList.remove('drag-over'));
+      item.addEventListener('drop', e => {
+        e.preventDefault();
+        item.classList.remove('drag-over');
+        if (dragSrc === null || dragSrc === i) return;
+        const moved = works.splice(dragSrc, 1)[0];
+        works.splice(i, 0, moved);
+        save();
+        renderList();
+      });
+
+      list.appendChild(item);
+    });
+  }
+
+  /* ── フォーム ── */
+  function openNew() {
+    editingId = null;
+    currentTags = [];
+    renderList();
+    renderForm(null);
+  }
+
+  function openEdit(id) {
+    editingId = id;
+    const w = works.find(w => w.id === id);
+    currentTags = [...w.tags];
+    renderList();
+    renderForm(w);
+  }
+
+  function renderForm(w) {
+    const isNew = !w;
+    document.getElementById('formTitle').textContent = isNew ? '新規追加' : '編集';
+
+    document.getElementById('formBody').innerHTML = `
+      <div class="form-group">
+        <label>タイトル</label>
+        <input id="f_title" type="text" value="${w?.title ?? ''}" placeholder="MYBLOG">
+      </div>
+      <div class="form-group">
+        <label>ラベル（カード上の大文字テキスト）</label>
+        <input id="f_label" type="text" value="${w?.label ?? ''}" placeholder="BLOG">
+      </div>
+      <div class="form-group">
+        <label>期間</label>
+        <input id="f_period" type="text" value="${w?.period ?? ''}" placeholder="2025.06 – 08">
+      </div>
+      <div class="form-group">
+        <label>リンクURL</label>
+        <input id="f_url" type="text" value="${w?.url ?? ''}" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label>テーマカラー</label>
+        <select id="f_theme">
+          ${['blog','twuku','seal','video','default'].map(t =>
+            `<option value="${t}" ${w?.theme===t?'selected':''}>${t}</option>`
+          ).join('')}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>タグ（Enterで追加）</label>
+        <div class="tags-input-wrap" id="tagsWrap">
+          <input id="tagInput" type="text" placeholder="WordPress">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn--primary" onclick="submitForm(${isNew})">保存</button>
+        <button class="btn btn--ghost" onclick="cancelForm()">キャンセル</button>
+        ${!isNew ? `<button class="btn btn--danger" onclick="deleteWork(${w.id})">削除</button>` : ''}
+      </div>
+    `;
+
+    renderTags();
+
+    document.getElementById('tagInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        const val = e.target.value.trim();
+        if (val && !currentTags.includes(val)) {
+          currentTags.push(val);
+          renderTags();
+        }
+        e.target.value = '';
+      }
+      if (e.key === 'Backspace' && e.target.value === '' && currentTags.length) {
+        currentTags.pop();
+        renderTags();
+      }
+    });
+
+    document.getElementById('tagsWrap').addEventListener('click', () =>
+      document.getElementById('tagInput').focus()
+    );
+  }
+
+  function renderTags() {
+    const wrap = document.getElementById('tagsWrap');
+    const input = document.getElementById('tagInput');
+    wrap.innerHTML = '';
+    currentTags.forEach((t, i) => {
+      const chip = document.createElement('span');
+      chip.className = 'tag-chip';
+      chip.innerHTML = `${t}<button onclick="removeTag(${i})">✕</button>`;
+      wrap.appendChild(chip);
+    });
+    wrap.appendChild(input);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        const val = e.target.value.trim();
+        if (val && !currentTags.includes(val)) {
+          currentTags.push(val);
+          renderTags();
+        }
+        e.target.value = '';
+      }
+      if (e.key === 'Backspace' && e.target.value === '' && currentTags.length) {
+        currentTags.pop();
+        renderTags();
+      }
+    });
+  }
+
+  function removeTag(i) {
+    currentTags.splice(i, 1);
+    renderTags();
+  }
+
+  function submitForm(isNew) {
+    const title  = document.getElementById('f_title').value.trim();
+    const label  = document.getElementById('f_label').value.trim();
+    const period = document.getElementById('f_period').value.trim();
+    const url    = document.getElementById('f_url').value.trim();
+    const theme  = document.getElementById('f_theme').value;
+
+    if (!title) { alert('タイトルを入力してください'); return; }
+
+    if (isNew) {
+      const newId = Date.now();
+      works.push({ id: newId, title, label, period, url, theme, tags: [...currentTags] });
+      editingId = newId;
+    } else {
+      const idx = works.findIndex(w => w.id === editingId);
+      works[idx] = { ...works[idx], title, label, period, url, theme, tags: [...currentTags] };
+    }
+
+    save();
+    renderList();
+    showToast('保存しました ✓');
+  }
+
+  function cancelForm() {
+    editingId = null;
+    currentTags = [];
+    renderList();
+    document.getElementById('formTitle').textContent = '作品を選択してください';
+    document.getElementById('formBody').innerHTML =
+      '<div class="empty-state">← 左の一覧から作品を選ぶか<br>「追加」ボタンを押してください</div>';
+  }
+
+  function deleteWork(id) {
+    if (!confirm('削除しますか？')) return;
+    works = works.filter(w => w.id !== id);
+    save();
+    cancelForm();
+    showToast('削除しました');
+  }
+
+  function moveUp(i) {
+    if (i === 0) return;
+    [works[i-1], works[i]] = [works[i], works[i-1]];
+    save(); renderList();
+  }
+
+  function moveDown(i) {
+    if (i === works.length - 1) return;
+    [works[i], works[i+1]] = [works[i+1], works[i]];
+    save(); renderList();
+  }
+
+  renderList();
+</script>
+</body>
+</html>

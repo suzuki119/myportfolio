@@ -29,17 +29,20 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
   <header>
     <div class="header__logo">Suzuki&nbsp;&nbsp;Portfolio</div>
-    <nav id="main-nav" class="header__nav">
-      <a href="#about">About</a>
-      <a href="#works">Works</a>
-      <a href="#skill">Skill</a>
-      <a href="#timeline">Timeline</a>
-      <a href="#contact">Contact</a>
-    </nav>
     <button class="header__toggle" id="nav-toggle" aria-label="メニューを開く">
       <span></span><span></span><span></span>
     </button>
   </header>
+
+  <nav id="main-nav" class="header__nav">
+    <a href="#about">About</a>
+    <a href="#works">Works</a>
+    <a href="#skill">Skill</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+
 
   <div id="canvas-container">
     <canvas id="backcanvas"></canvas>
@@ -62,13 +65,6 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
           <div class="about__name">鈴木 優太郎</div>
           <div class="about__name-en">Suzuki Yutaro</div>
           <div class="about__icons">
-            <!-- Mail -->
-            <a href="mailto:suzukiyutaro119@gmail.com" class="about__icon-link" title="Mail">
-              <svg viewBox="0 0 24 24">
-                <rect x="2" y="4" width="20" height="16" rx="2" />
-                <path d="m2 7 10 7 10-7" />
-              </svg>
-            </a>
             <!-- GitHub -->
             <a href="https://github.com/suzuki119/" target="_blank" rel="noopener" class="about__icon-link"
               title="GitHub">
@@ -155,43 +151,25 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                 <tr>
                   <td>
                     <div class="skill__name">HTML</div>
-                    <div class="skill__dots">
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                    </div>
+                    <div class="skill__years">2年間</div>
                   </td>
                   <td>
-                    <div class="skill__detail">Webクリエイター能力認定試験<br>HTML5 エキスパート合格済み</div>
+                    <div class="skill__detail">今年1月に<br>Webクリエイター能力認定試験HTML5 エキスパートを合格しました</div>
                   </td>
                 </tr>
                 <tr>
                   <td>
                     <div class="skill__name">CSS / SCSS</div>
-                    <div class="skill__dots">
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot"></div>
-                    </div>
+                    <div class="skill__years">2年間</div>
                   </td>
                   <td>
-                    <div class="skill__detail">現在はSCSSで記述。<br>アニメーション実装が得意</div>
+                    <div class="skill__detail">現在、CSSは、SCSSで記述しています</div>
                   </td>
                 </tr>
                 <tr>
                   <td>
                     <div class="skill__name">JavaScript</div>
-                    <div class="skill__dots">
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                    </div>
+                    <div class="skill__years">1年間</div>
                   </td>
                   <td>
                     <div class="skill__detail">Three.js・アニメーション実装。<br>JSON/API連携は勉強中</div>
@@ -200,13 +178,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                 <tr>
                   <td>
                     <div class="skill__name">C言語</div>
-                    <div class="skill__dots">
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot"></div>
-                      <div class="skill__dot"></div>
-                    </div>
+                    <div class="skill__years">2年間</div>
                   </td>
                   <td>
                     <div class="skill__detail">個人で宝探しゲームを制作した経験あり</div>
@@ -239,13 +211,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                 <tr>
                   <td>
                     <div class="skill__name">Illustrator</div>
-                    <div class="skill__dots">
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot"></div>
-                    </div>
+                    <div class="skill__years">2年間</div>
                   </td>
                   <td>
                     <div class="skill__detail">アイコン・イラストの制作に使用</div>
@@ -254,13 +220,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                 <tr>
                   <td>
                     <div class="skill__name">Photoshop</div>
-                    <div class="skill__dots">
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot"></div>
-                      <div class="skill__dot"></div>
-                      <div class="skill__dot"></div>
-                    </div>
+                    <div class="skill__years">1年間</div>
                   </td>
                   <td>
                     <div class="skill__detail">写真の調整・補正に使用</div>
@@ -269,13 +229,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                 <tr>
                   <td>
                     <div class="skill__name">Figma</div>
-                    <div class="skill__dots">
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot"></div>
-                    </div>
+                    <div class="skill__years">半年間</div>
                   </td>
                   <td>
                     <div class="skill__detail">ワイヤーフレーム・プロトタイプ制作</div>
@@ -284,13 +238,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                 <tr>
                   <td>
                     <div class="skill__name">Canva</div>
-                    <div class="skill__dots">
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot"></div>
-                      <div class="skill__dot"></div>
-                    </div>
+                    <div class="skill__years">半年間</div>
                   </td>
                   <td>
                     <div class="skill__detail">プレゼン・名刺制作に使用</div>
@@ -323,13 +271,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                 <tr>
                   <td>
                     <div class="skill__name">Blender</div>
-                    <div class="skill__dots">
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot"></div>
-                      <div class="skill__dot"></div>
-                    </div>
+                    <div class="skill__years">1年間</div>
                   </td>
                   <td>
                     <div class="skill__detail">高校時代に3DCG制作を経験</div>
@@ -338,13 +280,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                 <tr>
                   <td>
                     <div class="skill__name">Premiere Pro</div>
-                    <div class="skill__dots">
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot"></div>
-                      <div class="skill__dot"></div>
-                    </div>
+                    <div class="skill__years">2年間</div>
                   </td>
                   <td>
                     <div class="skill__detail">新校舎紹介動画の編集・完成</div>
@@ -353,13 +289,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                 <tr>
                   <td>
                     <div class="skill__name">WordPress</div>
-                    <div class="skill__dots">
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot"></div>
-                    </div>
+                    <div class="skill__years">半年</div>
                   </td>
                   <td>
                     <div class="skill__detail">テーマ開発・カスタマイズで複数サイト制作</div>
@@ -368,13 +298,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                 <tr>
                   <td>
                     <div class="skill__name">Git / GitHub</div>
-                    <div class="skill__dots">
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot"></div>
-                      <div class="skill__dot"></div>
-                    </div>
+                    <div class="skill__years">半年</div>
                   </td>
                   <td>
                     <div class="skill__detail">バージョン管理・チーム開発の基礎</div>
@@ -383,13 +307,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                 <tr>
                   <td>
                     <div class="skill__name">Office</div>
-                    <div class="skill__dots">
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot"></div>
-                    </div>
+                    <div class="skill__years">2年間</div>
                   </td>
                   <td>
                     <div class="skill__detail">Word・Excel・PowerPointを日常的に使用</div>
@@ -398,13 +316,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                 <tr>
                   <td>
                     <div class="skill__name">After Effects</div>
-                    <div class="skill__dots">
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot skill__dot--on"></div>
-                      <div class="skill__dot"></div>
-                      <div class="skill__dot"></div>
-                      <div class="skill__dot"></div>
-                    </div>
+                    <div class="skill__years">1年間</div>
                   </td>
                   <td>
                     <div class="skill__detail">モーショングラフィックスの基礎</div>
@@ -506,15 +418,13 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
     <!-- ⑥ CONTACT ──────────────────────── -->
     <section id="contact" class="sec">
       <div class="sec__head">
-        <div class="sec__label">05 — Contact</div>
-        <h2 class="sec__title">お気軽に<br>ご連絡ください</h2>
+        <h2 class="sec__title">Contact</h2>
       </div>
       <a href="mailto:suzukiyutaro119@gmail.com" class="contact__email">suzukiyutaro119@gmail.com</a>
       <div class="contact__links">
         <a href="https://github.com/suzuki119/" target="_blank" rel="noopener" class="contact__link">GitHub</a>
         <a href="mailto:suzukiyutaro119@gmail.com" class="contact__link">Mail</a>
-        <a href="https://susuki-island.heavy.jp/myportfolio/" target="_blank" rel="noopener"
-          class="contact__link">ポートフォリオサイト</a>
+
       </div>
     </section>
 
