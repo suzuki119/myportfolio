@@ -1,4 +1,5 @@
 @use "sass:math";
+@use "sass:map";
 
 // ═══════════════════════════════════════════════════════
 //  Variables
@@ -23,33 +24,23 @@ $z-menu:     20;
 $z-progress: 300;
 
 // --- Breakpoints ---
-$bp-md: 900px;
-$bp-sm: 480px;
-
-
-// ═══════════════════════════════════════════════════════
-//  Functions
-// ═══════════════════════════════════════════════════════
-
-@function rem($px) {
-    @return #{math.div($px, 16)}rem;
-}
+$breakpoints: (
+    mobile: 375px,
+    tablet: 768px,
+    desktop: 1100px
+);
 
 
 // ═══════════════════════════════════════════════════════
 //  Mixins
 // ═══════════════════════════════════════════════════════
 
-// レスポンシブ
-@mixin mq($bp: md) {
-    @if $bp == md {
-        @media (max-width: $bp-md) { @content; }
-    } @else if $bp == sm {
-        @media (max-width: $bp-sm) { @content; }
+@mixin mq($breakpoint: desktop) {
+    @media (max-width: map.get($breakpoints, $breakpoint)) {
+        @content;
     }
 }
 
-// ガラスカード背景（繰り返し使うbackdrop-filterパターン）
 @mixin glass-card($opacity: 0.55, $blur: 16px) {
     background: rgba(var(--bg-rgb), $opacity);
     backdrop-filter: blur($blur);
@@ -57,7 +48,6 @@ $bp-sm: 480px;
     border: 1px solid var(--glass-border);
 }
 
-// 小文字大文字ラベルテキスト
 @mixin label-text($color: $color-accent, $size: 9px, $spacing: 0.45em) {
     font-size: $size;
     letter-spacing: $spacing;
@@ -70,36 +60,16 @@ $bp-sm: 480px;
 //  CSS Custom Properties — テーマ切り替えに使用
 // ═══════════════════════════════════════════════════════
 :root {
-    // ダークモード（デフォルト）
-    --bg:            #090909;
-    --text:          #d8d8d8;
-    --gray:          #7a7a72;
-    --accent:        #b8a88a;
-    --header-bg:     rgba(9, 9, 9, 0.72);
-    --nav-overlay:   rgba(9, 9, 9, 0.96);
-    --glass-55:      rgba(9, 9, 9, 0.55);
-    --glass-62:      rgba(9, 9, 9, 0.62);
-    --glass-72:      rgba(9, 9, 9, 0.72);
-    --glass-border:  rgba(255, 255, 255, 0.07);
-    --border-sub:    rgba(255, 255, 255, 0.04);
-    --inner-border:  rgba(255, 255, 255, 0.06);
+    --bg:             #090909;
+    --bg-rgb:         9, 9, 9;
+    --text:           #d8d8d8;
+    --gray:           #7a7a72;
+    --accent:         #b8a88a;
+    --header-bg:      rgba(9, 9, 9, 0.72);
+    --nav-overlay:    rgba(9, 9, 9, 0.96);
+    --glass-border:   rgba(255, 255, 255, 0.07);
+    --border-sub:     rgba(255, 255, 255, 0.04);
     --canvas-opacity: 0.55;
-}
-
-[data-theme="light"] {
-    --bg:            #f0ede8;
-    --text:          #1a1a18;
-    --gray:          #7a7a72;
-    --accent:        #8a7855;
-    --header-bg:     rgba(240, 237, 232, 0.88);
-    --nav-overlay:   rgba(240, 237, 232, 0.97);
-    --glass-55:      rgba(255, 255, 255, 0.78);
-    --glass-62:      rgba(255, 255, 255, 0.85);
-    --glass-72:      rgba(255, 255, 255, 0.92);
-    --glass-border:  rgba(0, 0, 0, 0.08);
-    --border-sub:    rgba(0, 0, 0, 0.06);
-    --inner-border:  rgba(0, 0, 0, 0.07);
-    --canvas-opacity: 0.18;
 }
 
 
@@ -124,6 +94,13 @@ body {
     font-family: $font-mono;
     overflow-x: hidden;
     transition: background 0.3s, color 0.3s;
+}
+
+img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
 }
 
 
@@ -158,8 +135,10 @@ body {
 
 
 // ─── Header ───────────────────────────────────────────
-header {
-    position: fixed;
+
+
+.header {
+        position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -174,7 +153,11 @@ header {
     border-bottom: 1px solid var(--border-sub);
     transition: background 0.3s, border-color 0.3s;
 
-    .header__logo {
+    @include mq(desktop) {
+        padding: 16px 20px;
+    }
+
+    &__logo {
         font-family: $font-serif;
         font-size: 17px;
         letter-spacing: 0.45em;
@@ -182,9 +165,14 @@ header {
         text-transform: uppercase;
         white-space: nowrap;
         transition: color 0.3s;
+
+        @include mq(desktop) {
+            font-size: 13px;
+            letter-spacing: 0.25em;
+        }
     }
 
-    .header__toggle {
+    &__toggle {
         display: none;
         flex-direction: column;
         justify-content: center;
@@ -204,65 +192,61 @@ header {
         }
 
         &.open {
-            span { background: var(--text); }
-            span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-            span:nth-child(2) { opacity: 0; }
-            span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+            span                { background: var(--text); }
+            span:nth-child(1)   { transform: translateY(6px) rotate(45deg); }
+            span:nth-child(2)   { opacity: 0; }
+            span:nth-child(3)   { transform: translateY(-6px) rotate(-45deg); }
+        }
+
+        @include mq(desktop) {
+            display: flex;
         }
     }
-}
 
-// ─── Nav（header の外・backdrop-filter の影響を受けない）
-.header__nav {
-    display: flex;
-    position: fixed;
-    top: 0;
-    right: 48px;
-    padding: 20px 0;
-    gap: 28px;
-    align-items: center;
-    z-index: $z-header;
-
-    a {
-        @include label-text($color: $color-gray, $spacing: 0.22em);
-        text-decoration: none;
-        cursor: pointer;
-        transition: color 0.3s;
-
-        &:hover {
-            color: var(--text);
-        }
-    }
-}
-
-// ─── Theme Toggle ─────────────────────────────────────
-.theme-toggle {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    border: 1px solid var(--gray);
-    background: none;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-    padding: 0;
-    transition: border-color 0.3s, transform 0.4s;
-
-    &::before {
-        content: '';
-        position: absolute;
+    &__nav {
+        display: flex;
+        position: fixed;
         top: 0;
-        left: 0;
-        width: 50%;
-        height: 100%;
-        background: var(--text);
-        transition: background 0.3s;
-    }
+        right: 48px;
+        padding: 20px 0;
+        gap: 28px;
+        align-items: center;
+        z-index: $z-header;
 
-    &:hover {
-        border-color: var(--text);
-        transform: rotate(180deg);
+        a {
+            @include label-text($color: $color-gray, $spacing: 0.22em);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.3s;
+
+            &:hover { color: var(--text); }
+        }
+
+        @include mq(desktop) {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 0;
+            background: var(--nav-overlay);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 36px;
+            z-index: $z-menu;
+
+            &.open { display: flex; }
+
+            a {
+                font-size: 13px;
+                letter-spacing: 0.3em;
+                color: var(--text);
+            }
+        }
     }
 }
 
@@ -281,11 +265,10 @@ main {
     &__head {
         text-align: center;
         margin-bottom: 72px;
-    }
 
-    &__label {
-        @include label-text;
-        margin-bottom: 14px;
+        @include mq(desktop) {
+            margin-bottom: 48px;
+        }
     }
 
     &__title {
@@ -294,7 +277,10 @@ main {
         font-weight: 300;
         line-height: 1;
         color: $color-white;
-        margin-bottom: 0;
+    }
+
+    @include mq(desktop) {
+        padding: 80px 6vw 60px;
     }
 }
 
@@ -308,13 +294,10 @@ main {
     align-items: center;
     text-align: center;
     padding-top: 80px;
+}
 
-    .hero__eyebrow {
-        @include label-text;
-        margin-bottom: 28px;
-    }
-
-    .hero__title {
+.hero {
+    &__title {
         font-family: $font-serif;
         font-size: clamp(60px, 10vw, 140px);
         font-weight: 300;
@@ -327,50 +310,6 @@ main {
             color: $color-accent;
         }
     }
-
-    .hero__sub {
-        margin-top: 32px;
-        font-size: 10px;
-        letter-spacing: 0.3em;
-        text-transform: uppercase;
-        color: $color-gray;
-    }
-
-    .hero__scroll-hint {
-        margin-top: 80px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-        font-size: 8px;
-        letter-spacing: 0.4em;
-        text-transform: uppercase;
-        color: $color-gray;
-
-        &::after {
-            content: '';
-            width: 1px;
-            height: 52px;
-            background: linear-gradient(to bottom, $color-accent, transparent);
-            animation: lineDown 1.8s ease-in-out infinite;
-        }
-    }
-}
-
-@keyframes lineDown {
-    0% {
-        transform: scaleY(0) translateY(-50%);
-        opacity: 0;
-    }
-
-    40% {
-        opacity: 1;
-    }
-
-    100% {
-        transform: scaleY(1) translateY(0);
-        opacity: 0;
-    }
 }
 
 
@@ -379,17 +318,25 @@ main {
     min-height: 100vh;
 }
 
-.about{
+.about {
     &__grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 40px;
         align-items: center;
+
+        @include mq(desktop) {
+            grid-template-columns: 1fr;
+        }
     }
 
     &__card {
         @include glass-card(0.62, 24px);
         padding: 48px 44px;
+
+        @include mq(desktop) {
+            padding: 32px 20px;
+        }
     }
 
     &__name {
@@ -447,9 +394,7 @@ main {
         line-height: 2.1;
         margin-bottom: 28px;
 
-        .hl {
-            color: $color-accent;
-        }
+        .hl { color: $color-accent; }
     }
 
     &__body {
@@ -469,6 +414,10 @@ main {
         font-size: 10px;
         letter-spacing: 0.2em;
 
+        @include mq(desktop) {
+            aspect-ratio: 4/3;
+        }
+
         img {
             width: 100%;
             height: 100%;
@@ -481,14 +430,21 @@ main {
 // ─── Works ────────────────────────────────────────────
 #works {
     min-height: 100vh;
+}
 
-    .works__grid {
+.works {
+    &__grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 20px;
+
+        @include mq(desktop) {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
     }
 
-    .works__card {
+    &__card {
         @include glass-card(0.55, 16px);
         overflow: hidden;
         text-decoration: none;
@@ -500,9 +456,7 @@ main {
             border-color: rgba($color-accent, 0.35);
             transform: translateY(-5px);
 
-            .works__card-img img {
-                transform: scale(1.04);
-            }
+            .works__card-img img { transform: scale(1.04); }
         }
 
         &--blog  .works__card-img-bg { background: linear-gradient(135deg, #0b0b14, #131320); }
@@ -511,7 +465,7 @@ main {
         &--video .works__card-img-bg { background: linear-gradient(135deg, #0c0c0b, #1a1806); }
     }
 
-    .works__card-img {
+    &__card-img {
         width: 100%;
         aspect-ratio: 4/3;
         background: #111;
@@ -531,81 +485,51 @@ main {
         }
     }
 
-    .works__card-img-bg {
+    &__card-img-bg {
         position: absolute;
         inset: 0;
         background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
     }
 
-    .works__card-img-label {
-        position: relative;
-        z-index: 1;
-        font-family: $font-serif;
-        font-size: 52px;
-        font-weight: 300;
-        color: rgba(255, 255, 255, 0.05);
-        letter-spacing: -0.02em;
-        user-select: none;
-    }
-
-    .works__card-body {
+    &__card-body {
         padding: 18px 22px 22px;
     }
 
-    .works__card-tags {
+    &__card-tags {
         display: flex;
         gap: 7px;
         flex-wrap: wrap;
         margin-bottom: 10px;
     }
 
-    .works__card-tag {
+    &__card-tag {
         @include label-text($size: 8px, $spacing: 0.18em);
         border: 1px solid rgba($color-accent, 0.28);
         padding: 3px 8px;
     }
 
-    .works__card-title {
+    &__card-title {
         font-family: $font-serif;
         font-size: 26px;
         font-weight: 300;
         margin-bottom: 5px;
     }
 
-    .works__card-period {
+    &__card-period {
         font-size: 9px;
         letter-spacing: 0.15em;
         color: $color-gray;
     }
 
-    .works__dots {
-        display: flex;
-        justify-content: center;
-        gap: 8px;
-        margin-top: 44px;
-    }
-
-    .works__dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.12);
-
-        &--active {
-            background: $color-accent;
-        }
-    }
 }
 
 
 // ─── Skill ────────────────────────────────────────────
-#skill {
-    .skill__block {
+.skill {
+    &__block {
         margin-bottom: 72px;
 
-        &:last-of-type {
-            margin-bottom: 0;
-        }
+        &:last-of-type { margin-bottom: 0; }
 
         &-title {
             @include label-text($color: $color-gray, $size: 10px, $spacing: 0.35em);
@@ -615,32 +539,41 @@ main {
         }
     }
 
-    .skill__layout {
+    &__layout {
         display: flex;
         flex-direction: column;
         gap: 16px;
     }
 
-    .skill__radar-box {
+    &__radar-box {
         @include glass-card;
         padding: 48px;
         display: flex;
         align-items: center;
         justify-content: center;
         max-width: 600px;
+
+        @include mq(desktop) {
+            padding: 24px;
+            max-width: 100%;
+        }
     }
 
-    .skill__radar-canvas {
+    &__radar-canvas {
         width: 100%;
         position: relative;
     }
 
-    .skill__table-box {
+    &__table-box {
         @include glass-card;
         padding: 32px;
+
+        @include mq(desktop) {
+            padding: 20px 16px;
+        }
     }
 
-    .skill__table {
+    &__table {
         width: 100%;
         border-collapse: collapse;
         font-size: 14px;
@@ -658,49 +591,33 @@ main {
             vertical-align: top;
         }
 
-        tr:last-child td {
-            border-bottom: none;
-        }
+        tr:last-child td { border-bottom: none; }
     }
 
-    .skill__name {
+    &__name {
         font-size: 20px;
         color: $color-white;
         white-space: nowrap;
         min-width: 110px;
     }
 
-    .skill__detail {
+    &__detail {
         font-size: 14px;
         color: $color-white;
         line-height: 1.6;
         margin-top: 3px;
     }
 
-    .skill__dots {
-        display: flex;
-        gap: 4px;
-        margin-top: 6px;
-    }
-
-    .skill__dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.1);
-
-        &--on {
-            background: $color-accent;
-        }
-    }
 }
 
 
 // ─── Timeline ─────────────────────────────────────────
 #timeline {
     padding-top: 40px;
+}
 
-    .tl__wrap {
+.tl {
+    &__wrap {
         position: relative;
         padding-bottom: 20px;
 
@@ -713,29 +630,41 @@ main {
             height: var(--tl-line-height, 0px);
             width: 1px;
             background: #8b8b8b;
+
+            @include mq(desktop) {
+                left: 16px;
+                transform: none;
+            }
         }
     }
 
-    .tl__entry {
+    &__entry {
         display: grid;
         grid-template-columns: 1fr 48px 1fr;
         margin-bottom: 56px;
         position: relative;
 
-        &:last-child {
-            margin-bottom: 0;
+        &:last-child { margin-bottom: 0; }
+
+        @include mq(desktop) {
+            grid-template-columns: 32px 1fr;
         }
     }
 
-    .tl__center {
+    &__center {
         display: flex;
         justify-content: center;
         padding-top: 14px;
         position: relative;
         z-index: 2;
+
+        @include mq(desktop) {
+            grid-column: 1;
+            grid-row: 1;
+        }
     }
 
-    .tl__dot {
+    &__dot {
         width: 10px;
         height: 10px;
         border-radius: 50%;
@@ -744,32 +673,37 @@ main {
         flex-shrink: 0;
     }
 
-    .tl__side {
+    &__side {
         padding: 0 24px;
 
-        &--right {
-            text-align: right;
+        &--right { text-align: right; }
+
+        @include mq(desktop) {
+            grid-column: 2;
+            grid-row: 1;
+            padding: 0 0 0 16px;
+            text-align: left !important;
         }
     }
 
-    .tl__card {
+    &__card {
         @include glass-card;
         padding: 22px 26px;
     }
 
-    .tl__date {
+    &__date {
         @include label-text($spacing: 0.25em);
         margin-bottom: 8px;
     }
 
-    .tl__role {
+    &__role {
         font-family: $font-serif;
         font-size: 22px;
         font-weight: 300;
         margin-bottom: 6px;
     }
 
-    .tl__desc {
+    &__desc {
         font-size: 10px;
         line-height: 1.85;
         color: $color-gray;
@@ -787,15 +721,16 @@ main {
     text-align: center;
     padding: 120px 9vw 100px;
 
-    .sec__head {
-        margin-bottom: 20px;
-    }
+    .sec__head { margin-bottom: 20px; }
+    .sec__title { margin-bottom: 16px; }
 
-    .sec__title {
-        margin-bottom: 16px;
+    @include mq(desktop) {
+        padding: 80px 6vw 60px;
     }
+}
 
-    .contact__email {
+.contact {
+    &__email {
         font-family: $font-serif;
         font-size: clamp(18px, 2.5vw, 32px);
         color: $color-accent;
@@ -804,18 +739,27 @@ main {
         letter-spacing: 0.04em;
         transition: opacity 0.3s;
 
-        &:hover {
-            opacity: 0.7;
+        &:hover { opacity: 0.7; }
+
+        @include mq(desktop) {
+            word-break: break-all;
+            font-size: clamp(14px, 4vw, 22px);
         }
     }
 
-    .contact__links {
+    &__links {
         display: flex;
         justify-content: center;
         gap: 36px;
+
+        @include mq(desktop) {
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
     }
 
-    .contact__link {
+    &__link {
         @include label-text($color: $color-gray, $size: 9px, $spacing: 0.3em);
         text-decoration: none;
         padding-bottom: 4px;
@@ -840,31 +784,6 @@ footer {
     border-top: 1px solid rgba(255, 255, 255, 0.04);
     position: relative;
     z-index: $z-main;
-}
-
-
-// ─── 404 Page ─────────────────────────────────────────
-.not-found {
-    background: $color-bg;
-    color: $color-white;
-    font-family: $font-mono;
-    padding: 60px;
-    text-align: center;
-
-    &__msg {
-        font-size: 11px;
-        letter-spacing: 0.3em;
-        color: $color-gray;
-    }
-
-    &__link {
-        margin-top: 24px;
-
-        a {
-            color: $color-accent;
-            text-decoration: none;
-        }
-    }
 }
 
 
@@ -925,13 +844,6 @@ header.header--work {
         color: $color-white;
     }
 
-    &-sub {
-        margin-top: 28px;
-        font-size: 10px;
-        letter-spacing: 0.3em;
-        text-transform: uppercase;
-        color: $color-gray;
-    }
 }
 
 .hero-divider {
@@ -1097,15 +1009,6 @@ header.header--work {
     &.video  { background: linear-gradient(135deg, #0c0c0b, #1a1806); }
 }
 
-.mock-img-label {
-    font-family: $font-serif;
-    font-size: 80px;
-    font-weight: 300;
-    color: rgba(255, 255, 255, 0.04);
-    letter-spacing: -0.02em;
-    user-select: none;
-}
-
 .highlight-box {
     background: rgba($color-accent, 0.06);
     border-left: 2px solid $color-accent;
@@ -1188,289 +1091,4 @@ header.header--work {
 .next-arrow {
     font-size: 28px;
     color: $color-accent;
-}
-
-
-// ─── Work Detail — Admin Bar ──────────────────────────
-.admin-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(15, 15, 15, 0.95);
-    border-top: 1px solid rgba($color-accent, 0.2);
-    padding: 10px 32px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    z-index: $z-progress;
-
-    span { @include label-text($size: 8px, $spacing: 0.3em); }
-
-    a {
-        @include label-text($color: $color-gray, $size: 8px, $spacing: 0.2em);
-        text-decoration: none;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 5px 12px;
-        transition: color 0.2s, border-color 0.2s;
-
-        &:hover {
-            color: $color-white;
-            border-color: $color-gray;
-        }
-    }
-}
-
-
-// ═══════════════════════════════════════════════════════
-//  Responsive — 900px
-// ═══════════════════════════════════════════════════════
-@include mq(md) {
-    header {
-        padding: 16px 20px;
-
-        .header__logo {
-            font-size: 13px;
-            letter-spacing: 0.25em;
-        }
-
-        .header__toggle {
-            display: flex;
-        }
-    }
-
-    .header__nav {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: var(--nav-overlay);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 36px;
-        z-index: $z-menu;
-
-        &.open {
-            display: flex;
-        }
-
-        a {
-            font-size: 13px;
-            letter-spacing: 0.3em;
-            color: var(--text);
-        }
-
-        .theme-toggle {
-            width: 24px;
-            height: 24px;
-        }
-    }
-
-    .sec {
-        padding: 80px 6vw 60px;
-
-        &__head {
-            margin-bottom: 48px;
-        }
-    }
-
-    #about {
-        .about__grid {
-            grid-template-columns: 1fr;
-        }
-
-        .about__photo {
-            aspect-ratio: 4/3;
-        }
-
-        .about__card {
-            padding: 28px 20px;
-        }
-    }
-
-    #works {
-        .works__grid {
-            grid-template-columns: 1fr;
-            gap: 16px;
-        }
-    }
-
-    #skill {
-        .skill__radar-box {
-            padding: 24px;
-            max-width: 100%;
-        }
-
-        .skill__table-box {
-            padding: 20px 16px;
-        }
-    }
-
-    #timeline {
-        .tl__wrap::before {
-            left: 16px;
-        }
-
-        .tl__entry {
-            grid-template-columns: 32px 1fr;
-        }
-
-        .tl__center {
-            grid-column: 1;
-            grid-row: 1;
-        }
-
-        .tl__side {
-            grid-column: 2;
-            grid-row: 1;
-            padding: 0 0 0 16px;
-            text-align: left !important;
-        }
-    }
-
-    #contact {
-        padding: 80px 6vw 60px;
-
-        .contact__links {
-            flex-direction: column;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .contact__email {
-            word-break: break-all;
-            font-size: clamp(14px, 4vw, 22px);
-        }
-    }
-
-    // work.php
-    header.header--work { padding: 16px 20px; }
-
-    .work-hero { padding: 0 6vw 60px; }
-
-    .hero-divider { margin: 0 6vw; }
-
-    .work-meta-bar {
-        padding: 32px 6vw;
-        grid-template-columns: 1fr;
-    }
-
-    .work-meta-item {
-        padding: 20px 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-
-        &:not(:first-child) {
-            border-left: none;
-            padding-left: 0;
-        }
-
-        &:last-child { border-bottom: none; }
-    }
-
-    .work-content { padding: 48px 6vw 80px; }
-
-    .content-grid {
-        grid-template-columns: 1fr;
-        gap: 40px;
-    }
-
-    .sidebar {
-        position: static;
-
-        &-nav {
-            display: flex;
-            flex-wrap: wrap;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-
-            li { flex: 1 0 50%; }
-        }
-    }
-
-    .next-work {
-        padding: 40px 6vw;
-        flex-direction: column;
-        gap: 16px;
-        align-items: flex-start;
-    }
-}
-
-
-// ═══════════════════════════════════════════════════════
-//  Responsive — 480px
-// ═══════════════════════════════════════════════════════
-@include mq(sm) {
-    header .header__logo {
-        font-size: 11px;
-        letter-spacing: 0.2em;
-    }
-
-    #hero {
-        .hero__sub {
-            font-size: 9px;
-            letter-spacing: 0.2em;
-        }
-
-        .hero__scroll-hint {
-            margin-top: 48px;
-        }
-    }
-
-    // work.php
-    .work-hero-sub {
-        font-size: 9px;
-        letter-spacing: 0.2em;
-    }
-
-    .sidebar-nav li { flex: 1 0 100%; }
-}
-
-
-// ═══════════════════════════════════════════════════════
-//  Light Theme Overrides
-// ═══════════════════════════════════════════════════════
-[data-theme="light"] {
-
-    // hero
-    h2{ color: var(--text); }
-    h1{ color: var(--text); }
-    .hero__title { color: var(--text); }
-    .hero__title em { color: var(--accent); }
-    .hero__scroll-hint::after {
-        background: linear-gradient(to bottom, var(--accent), transparent);
-    }
-
-    // about
-    .about__icon-link {
-        border-color: rgba(0, 0, 0, 0.12);
-        color: var(--text);
-    }
-    .about__photo {
-        background: rgba(0, 0, 0, 0.04);
-        border-color: rgba(0, 0, 0, 0.06);
-    }
-
-    // works
-    .works__card:hover {
-        border-color: rgba(138, 120, 85, 0.4);
-    }
-
-    // skill
-    .skill__dot { background: rgba(0, 0, 0, 0.1); }
-    .skill__table tbody tr { border-bottom-color: rgba(0, 0, 0, 0.06); }
-
-    // timeline
-    .tl__dot {
-        box-shadow: 0 0 18px rgba(138, 120, 85, 0.5);
-    }
-
-    // footer
-    footer {
-        border-top-color: rgba(0, 0, 0, 0.06);
-        color: rgba(80, 80, 75, 0.5);
-    }
 }

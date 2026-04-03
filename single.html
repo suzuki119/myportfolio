@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>MYBLOG — Suzuki Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+
+<div id="canvas-container">
+  <canvas id="bg-canvas"></canvas>
+</div>
+
+<header class="header--work">
+  <a href="./index.html" class="back-link">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M5 12l7 7M5 12l7-7"/></svg>
+    Back to Portfolio
+  </a>
+  <div class="header-logo">Suzuki Portfolio</div>
+</header>
+
+<main>
+
+  <!-- Hero -->
+  <div class="work-hero">
+    <div class="work-hero-eyebrow">01 — Works</div>
+    <h1 class="work-hero-title">MYBLOG</h1>
+  </div>
+
+  <div class="hero-divider"></div>
+
+  <!-- Meta bar -->
+  <div class="work-meta-bar">
+    <div class="work-meta-item">
+      <div class="work-meta-label">制作期間</div>
+      <div class="work-meta-value">2025年6月 – 8月（約3ヶ月）</div>
+    </div>
+    <div class="work-meta-item">
+      <div class="work-meta-label">使用技術</div>
+      <div class="work-meta-value">
+        <div class="tag-list">
+                      <span class="tag">WordPress</span>
+                      <span class="tag">SCSS</span>
+                      <span class="tag">JavaScript</span>
+                  </div>
+      </div>
+    </div>
+    <div class="work-meta-item">
+      <div class="work-meta-label">種別</div>
+      <div class="work-meta-value">個人制作<br />
+ブログサイト</div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="work-content">
+    <div class="content-grid">
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <ul class="sidebar-nav">
+                      <li><a href="#overview">Overview</a></li>
+                      <li><a href="#purpose">Purpose</a></li>
+                      <li><a href="#ingenuity">Ingenuity</a></li>
+                      <li><a href="#reflection">Reflection</a></li>
+                  </ul>
+      </aside>
+
+      <!-- Article -->
+      <article>
+
+        <div class="mock-img ">
+                      <img src="../cms/uploads/1774862468_8eccc673.png" alt="MYBLOG">
+                  </div>
+
+                  <div class="article-block" id="overview">
+            <div class="block-label">Overview</div>
+            <h2 class="block-title">自身の学生生活を発信するブログ</h2>
+                        <div class="block-body">
+              <p>自身の学生生活や制作活動を発信するためのブログサイトを制作しました。WordPressおよびローカルサーバーの使用が初めてだったため、環境構築からテーマ開発まで一貫して行い、基礎的なWeb制作スキルを実践的に習得することを目的としています。デザインから実装までを個人で担当し、自由度の高い制作を通して表現力と技術力の向上を図りました。</p>            </div>
+                                      <div class="work-cta">
+                <a href="https://susuki-island.heavy.jp/blog/" target="_blank" rel="noopener" class="btn-primary">
+                  サイトを見る                  <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+              </div>
+                      </div>
+                  <div class="article-block" id="purpose">
+            <div class="block-label">Purpose</div>
+            <h2 class="block-title">制作の目的、企画</h2>
+                        <div class="block-body">
+              <p>本制作は、これまで学習してきたHTMLやCSS、JavaScriptの知識を「実際に公開するWebサイト」として形にすることを目的に取り組みました。しかし、当初は静的なサイト制作の経験しかなく、動的にコンテンツを管理できる仕組みやサーバー環境の構築については知識が不足していました。<br />
+また、制作物を公開するだけでなく、継続的に更新できる仕組みを整えることも課題の一つでした。特に、記事投稿や編集を効率的に行える環境を構築する必要があり、CMSの導入が必要だと考えました。</p><p>本サイトでは「継続的に更新できること」と「個人の世界観を表現すること」の両立を意識して設計を行いました。ブログとしての使いやすさを重視し、記事一覧やカテゴリー構造を整理することで、閲覧者が目的の記事にアクセスしやすい構成としています。<br />
+また、デザイン面では「宇宙」をテーマに設定し、他の一般的なブログと差別化を図りました。ダークトーンをベースに、視線誘導を意識したレイアウト設計を行い、コンテンツが見やすくなるよう余白や文字サイズを調整しています。</p>            </div>
+                          <div class="highlight-box">目標：WordPressのテーマをゼロから自作し、ローカル開発環境を自分で構築・運用できる技術力を身に着ける。</div>
+                                  </div>
+                  <div class="article-block" id="ingenuity">
+            <div class="block-label">Ingenuity</div>
+            <h2 class="block-title">工夫した点</h2>
+                        <div class="block-body">
+              <p>実装にはWordPressを採用し、既存テーマは使用せず、オリジナルテーマを一から作成しました。テンプレートファイルの構造やループ処理など、WordPress特有の仕組みを理解しながら開発を進めました。<br />
+また、記事一覧や詳細ページでは、視認性を高めるためにカード型のレイアウトを採用し、CSS（SCSS）でスタイルを管理しています。JavaScriptを用いて簡単なアニメーションやインタラクションを追加し、単調にならないUIを意識しました。<br />
+さらに、ローカル環境での開発から本番環境への移行までを経験し、サーバー設定やデータベースの扱いについても理解を深めることができました。</p>            </div>
+                                  </div>
+                  <div class="article-block" id="reflection">
+            <div class="block-label">Reflection</div>
+            <h2 class="block-title">振り返り</h2>
+                        <div class="block-body">
+              <p>本制作を通して、Webサイトは単に見た目を作るだけでなく、更新性や運用面も考慮する必要があることを学びました。特にWordPressを用いたテーマ開発では、構造理解に時間がかかり試行錯誤を繰り返しましたが、その分、実務に近い経験を積むことができたと感じています。<br />
+一方で、コードの再利用性や設計の整理については改善の余地があると感じました。今後はコンポーネント化や設計手法を意識し、より効率的で保守性の高いコードを書けるようにしていきたいと考えています。<br />
+本プロジェクトで得た知識を基に、今後はより高度な機能やデザイン表現にも挑戦していきたいと考えています。</p>            </div>
+                                  </div>
+
+      </article>
+    </div>
+  </div>
+
+</main>
+
+<!-- Next work -->
+  <a href="./index.html#works" class="next-work">
+    <div>
+      <div class="next-label">Next Work</div>
+      <div class="next-title">島トゥク</div>
+    </div>
+    <div class="next-arrow">→</div>
+  </a>
+
+<footer>2026 Suzuki Yutaro — All Rights Reserved</footer>
+
+
+
+
+</body>
+</html>

@@ -13,7 +13,9 @@ window.addEventListener('scroll', () => {
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 2000);
 const renderer = new THREE.WebGLRenderer({
+
   canvas: document.getElementById('backcanvas'),
+
   antialias: true, alpha: true
 });
 renderer.setSize(innerWidth, innerHeight);

@@ -7,16 +7,7 @@ require_once __DIR__ . '/cms/helpers.php';
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Suzuki Yutaro — Portfolio</title>
-  <meta name="description" content="鈴木優太郎のポートフォリオ。フロントエンドエンジニア志望。WordPress・JavaScript・SCSSによるWeb制作実績を掲載しています。">
-  <meta property="og:type"        content="website">
-  <meta property="og:title"       content="Suzuki Yutaro — Portfolio">
-  <meta property="og:description" content="鈴木優太郎のポートフォリオ。フロントエンドエンジニア志望。Web制作実績を掲載しています。">
-  <meta property="og:url"         content="https://susuki-island.heavy.jp/myportfolio/">
-  <meta property="og:image"       content="https://susuki-island.heavy.jp/myportfolio/ogp.png">
-  <meta property="og:site_name"   content="Suzuki Yutaro Portfolio">
-  <meta name="twitter:card"       content="summary_large_image">
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap"
     rel="stylesheet">
@@ -27,8 +18,8 @@ require_once __DIR__ . '/cms/helpers.php';
 
   <div id="progressBar"></div>
 
-  <header>
-    <div class="header__logo">Suzuki&nbsp;&nbsp;Portfolio</div>
+  <header class="header">
+    <div class="header__logo">SuzukiPortfolio</div>
     <button class="header__toggle" id="nav-toggle" aria-label="メニューを開く">
       <span></span><span></span><span></span>
     </button>
@@ -68,10 +59,7 @@ require_once __DIR__ . '/cms/helpers.php';
             <!-- GitHub -->
             <a href="https://github.com/suzuki119/" target="_blank" rel="noopener" class="about__icon-link"
               title="GitHub">
-              <svg class="fill" viewBox="0 0 24 24">
-                <path
-                  d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z" />
-              </svg>
+              <img src="./img/github_logo_icon.webp" alt="GitHub" class="about__icon-link__img">
             </a>
           </div>
           <div class="about__meta">
@@ -109,6 +97,25 @@ require_once __DIR__ . '/cms/helpers.php';
       <div class="sec__head">
         <h2 class="sec__title">Works</h2>
       </div>
+      <div class="works__grid">
+
+        <a class="works__card"
+           href="./single.html">
+          <div class="works__card-img">
+              <div class="works__card-img-bg"></div>
+          </div>
+          <div class="works__card-body">
+            <div class="works__card-tags">
+              <span class="works__card-tag">WordPress</span>
+            </div>
+            <div class="works__card-title">MYBLOG</div>
+            <div class="works__card-period">2025年6月 – 8月</div>
+          </div>
+        </a>
+        <?php endforeach; ?>
+
+      </div>
+
     </section>
 
     <!-- ④ SKILL ────────────────────────── -->
