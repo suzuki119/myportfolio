@@ -1,0 +1,14 @@
+# DB接続情報（パスワードが含まれるため公開しない）
+cms/config.php
+
+# 初回セットアップ用（使用後は削除するが念のため）
+cms/setup.php
+
+# アップロード画像（容量が大きいためGitで管理しない）
+cms/uploads/
+
+# DB接続テスト用（不要になったら削除する）
+cms/test-db.php
+
+# macOSのシステムファイル
+.DS_Store
