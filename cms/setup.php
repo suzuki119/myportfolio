@@ -3,31 +3,32 @@
 //  管理者ユーザー初回登録用スクリプト
 //  使用後は必ず削除すること！
 // ===================================================
-require_once 'config.php';
+require_once 'config.php'; // [組み込み] 別ファイルを1回だけ読み込む
 
 $message = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
+if ($_SERVER['REQUEST_METHOD'] === 'POST') { // $_SERVER=サーバー情報の組み込み変数 / REQUEST_METHODでGET/POSTを判定
+    $username = trim($_POST['username'] ?? ''); // [組み込み] trim()=前後の空白を除去 / ??=nullなら右の値を使う
     $password = $_POST['password'] ?? '';
     $email    = trim($_POST['email'] ?? '');
 
     // 簡易バリデーション
     if ($username === '' || $password === '') {
         $message = 'エラー：ユーザー名とパスワードは必須です。';
-    } elseif (strlen($password) < 8) {
+    } elseif (strlen($password) < 8) { // [組み込み] strlen()=文字列の長さを返す
         $message = 'エラー：パスワードは8文字以上にしてください。';
     } else {
-        $pdo = db();
+        $pdo = db(); // [自作] config.phpのDB接続関数
 
         // すでにユーザーが存在する場合は登録させない
-        $stmt = $pdo->prepare('SELECT COUNT(*) FROM users');
-        $stmt->execute();
-        if ($stmt->fetchColumn() > 0) {
+        $stmt = $pdo->prepare('SELECT COUNT(*) FROM users'); // [PDO組み込み] SQLを準備する
+        $stmt->execute();                                    // [PDO組み込み] SQLを実行する
+        if ($stmt->fetchColumn() > 0) {                     // [PDO組み込み] 結果の1列目を取得
             $message = 'エラー：管理者はすでに登録されています。このファイルを削除してください。';
         } else {
             // password_hash() でハッシュ化してDBに保存
             $hashed = password_hash($password, PASSWORD_DEFAULT);
+            // [組み込み] password_hash()=パスワードをハッシュ化 / [組み込み定数] PASSWORD_DEFAULT=推奨アルゴリズムを自動選択
 
             $stmt = $pdo->prepare(
                 'INSERT INTO users (username, password, email) VALUES (:username, :password, :email)'
@@ -66,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <?php if ($message !== ''): ?>
-        <div class="message"><?= h($message) ?></div>
+        <div class="message"><?= h($message) ?></div><?php // [自作] h()=XSS対策エスケープ関数 ?>
     <?php endif; ?>
 
     <form method="post">
