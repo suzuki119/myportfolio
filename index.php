@@ -1,7 +1,17 @@
 <?php
-$works = json_decode(file_get_contents(__DIR__ . '/cms/works.json'), true) ?? [];
-require_once __DIR__ . '/cms/helpers.php';
+require_once 'cms/config.php';
+$pdo = db();
+
+// 公開済み記事を新しい順に取得
+$stmt = $pdo->prepare(
+    'SELECT * FROM posts WHERE status = :status ORDER BY created_at DESC'
+);
+$stmt->execute([':status' => 'published']);
+$posts = $stmt->fetchAll();
 ?>
+
+
+
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -99,20 +109,29 @@ require_once __DIR__ . '/cms/helpers.php';
       </div>
       <div class="works__grid">
 
-        <a class="works__card"
-           href="./single.html">
+        <?php foreach ($posts as $post): // [組み込み] 配列をループして1件ずつ処理する ?>
+        <a class="works__card" href="single.php?id=<?= h($post['id']) ?>">
           <div class="works__card-img">
+            <?php if ($post['thumbnail']): // サムネイルがあれば画像を表示 ?>
+              <img src="<?= UPLOAD_URL . h($post['thumbnail']) ?>"
+                   alt="<?= h($post['title']) ?>"
+                   style="width:100%;height:100%;object-fit:cover;">
+            <?php else: // なければ背景色のみ ?>
               <div class="works__card-img-bg"></div>
+            <?php endif; ?>
           </div>
           <div class="works__card-body">
-            <div class="works__card-tags">
-              <span class="works__card-tag">WordPress</span>
-            </div>
-            <div class="works__card-title">MYBLOG</div>
-            <div class="works__card-period">2025年6月 – 8月</div>
+            <div class="works__card-title"><?= h($post['title']) ?></div>
+            <div class="works__card-period"><?= h(substr($post['created_at'], 0, 10)) ?></div>
+            <?php // [組み込み] substr($str, 開始位置, 文字数)=文字列の一部を取り出す ?>
+            <?php // created_at は '2026-04-06 12:00:00' のような形式。先頭10文字で '2026-04-06' だけ取り出す ?>
           </div>
         </a>
         <?php endforeach; ?>
+
+        <?php if (empty($posts)): // [組み込み] 配列が空かどうか調べる ?>
+          <p style="color:#999;">記事はまだありません。</p>
+        <?php endif; ?>
 
       </div>
 
