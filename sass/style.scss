@@ -454,9 +454,6 @@ main {
 
         &:hover {
             border-color: rgba($color-accent, 0.35);
-            transform: translateY(-5px);
-
-            .works__card-img img { transform: scale(1.04); }
         }
 
         &--blog  .works__card-img-bg { background: linear-gradient(135deg, #0b0b14, #131320); }

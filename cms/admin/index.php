@@ -13,6 +13,9 @@ $pdo = db(); // [自作] DB接続を取得
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['delete_id'])) {//ブラウザがどの方法でアクセスしてきたかを判定 / $_POST はフォームの送信値
     $stmt = $pdo->prepare('DELETE FROM posts WHERE id = :id'); // [PDO組み込み] SQLを準備する
     $stmt->execute([':id' => $_POST['delete_id']]);            // [PDO組み込み] SQLを実行する
+
+    $pc_stmt = $pdo->prepare('DELETE FROM post_categories WHERE post_id = :post_id'); // 関連するカテゴリの紐付けも削除
+    $pc_stmt->execute([':post_id' => $_POST['delete_id']]);
     header('Location: ' . SITE_URL . '/cms/admin/index.php'); // 削除後にリロード
     exit;
 }
@@ -23,6 +26,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['delete_id'])) {//ブ
 $stmt = $pdo->prepare('SELECT * FROM posts ORDER BY created_at DESC'); // DESC=新しい順
 $stmt->execute();
 $posts = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
+
+// カテゴリ一覧を取得（selectボックスの選択肢に使う）
+$c_stmt = $pdo->prepare('SELECT * FROM categories ORDER BY id ASC');
+$c_stmt->execute();
+$categories = $c_stmt->fetchAll();
+
+// この記事に現在付与されているカテゴリIDを取得
+$pc_stmt = $pdo->prepare('SELECT category_id FROM post_categories ORDER BY post_id ASC');
+$pc_stmt->execute();
+$post_category_id  = $pc_stmt->fetchAll(); // 紐付けがなければ false
+$currentCategoryId = $post_category_id ? $post_category_id[0]['category_id'] : null;
+// [組み込み] 三項演算子：fetch()がfalseのとき null にする（Warningを防ぐ）
+
 ?>
 
 <!DOCTYPE html>
@@ -50,6 +66,7 @@ $posts = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
     <div class="header">
         <h1>記事一覧</h1>
         <a class="button" href="<?= SITE_URL ?>/cms/admin/post-new.php">+ 新規作成</a>
+        <a class="button" href="<?= SITE_URL ?>/cms/admin/categories.php">+ カテゴリー</a>
     </div>
 
     <?php if (empty($posts)): // [組み込み] 配列が空かどうか調べる ?>

@@ -5,12 +5,19 @@
 require_once '../config.php'; // [組み込み] 1つ上の階層のconfig.phpを読み込む
 require_login();              // [自作] 未ログインならログイン画面へ飛ばす
 
+$pdo   = db();
 $error = '';
 
+// カテゴリ一覧を取得
+$c_stmt = $pdo->prepare('SELECT * FROM categories ORDER BY id ASC');
+$c_stmt->execute();
+$categories = $c_stmt->fetchAll();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title   = trim($_POST['title']   ?? '');
-    $content = trim($_POST['content'] ?? '');
-    $status  = $_POST['status'] ?? 'draft';
+    $title       = trim($_POST['title']       ?? '');
+    $content     = trim($_POST['content']     ?? '');
+    $status      = $_POST['status']           ?? 'draft';
+    $category_id = $_POST['category_id']      ?? '';
 
     // バリデーション
     if ($title === '') {
@@ -51,18 +58,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($error === '') {
-            $pdo = db();
-
+            // ① 記事を INSERT して発行されたIDを取得
             $stmt = $pdo->prepare(
                 'INSERT INTO posts (title, content, thumbnail, status, author_id) VALUES (:title, :content, :thumbnail, :status, :author_id)'
             );
             $stmt->execute([
                 ':title'     => $title,
                 ':content'   => $content,
-                ':thumbnail' => $thumbnail, // null またはファイル名
+                ':thumbnail' => $thumbnail,
                 ':status'    => $status,
                 ':author_id' => $_SESSION['user_id'],
             ]);
+
+            $newPostId = $pdo->lastInsertId(); // [PDO組み込み] 直前のINSERTで発行されたIDを取得
+
+            // ② カテゴリが選択されていれば post_categories に INSERT
+            if (!empty($category_id)) {
+                $pc_stmt = $pdo->prepare(
+                    'INSERT INTO post_categories (post_id, category_id) VALUES (:post_id, :category_id)'
+                );
+                $pc_stmt->execute([
+                    ':post_id'     => $newPostId,
+                    ':category_id' => $category_id,
+                ]);
+            }
 
             header('Location: ' . SITE_URL . '/cms/admin/index.php');
             exit;
@@ -115,6 +134,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <option value="published" <?= ($_POST['status'] ?? 'draft') === 'published' ? 'selected' : '' ?>>公開</option>
             </select>
         </label>
+
+        <div class="categories">
+            <label>カテゴリー
+                <select name="category_id">
+                    <option value="">選択してください</option>
+                    <?php foreach ($categories as $category): ?>
+                        <option value="<?= h($category['id']) ?>"
+                            <?= ($_POST['category_id'] ?? '') == $category['id'] ? 'selected' : '' ?>>
+                            <?= h($category['name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </label>
+        </div>
 
         <div class="actions">
             <button type="submit">保存する</button>

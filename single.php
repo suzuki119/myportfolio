@@ -29,6 +29,8 @@ $date = date('Y年n月j日', strtotime($post['created_at']));
 // [組み込み] date('フォーマット', タイムスタンプ)=タイムスタンプを指定した形式の文字列に変換する
 // 'Y'=4桁の年 'n'=月（ゼロ埋めなし） 'j'=日（ゼロ埋めなし）
 ?>
+
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -56,8 +58,8 @@ $date = date('Y年n月j日', strtotime($post['created_at']));
 
         <div class="single__content">
             <?= $post['content'] ?>
-            <?php // h() を使わずHTMLとしてそのまま出力する ?>
-            <?php // 理由：管理者（自分）しか入力しないため。h()を使うとHTMLタグが文字列として表示されてしまう ?>
+            <!-- h() を使わずHTMLとしてそのまま出力する -->
+            <!-- 理由：管理者（自分）しか入力しないため。h()を使うとHTMLタグが文字列として表示されてしまう -->
         </div>
 
         <p style="margin-top:60px;">

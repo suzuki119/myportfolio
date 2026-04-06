@@ -7,7 +7,7 @@ $stmt = $pdo->prepare(
     'SELECT * FROM posts WHERE status = :status ORDER BY created_at DESC'
 );
 $stmt->execute([':status' => 'published']);
-$posts = $stmt->fetchAll();
+$posts = $stmt->fetchAll();// [PDO組み込み] 全行を配列で取得
 ?>
 
 
@@ -123,8 +123,8 @@ $posts = $stmt->fetchAll();
           <div class="works__card-body">
             <div class="works__card-title"><?= h($post['title']) ?></div>
             <div class="works__card-period"><?= h(substr($post['created_at'], 0, 10)) ?></div>
-            <?php // [組み込み] substr($str, 開始位置, 文字数)=文字列の一部を取り出す ?>
-            <?php // created_at は '2026-04-06 12:00:00' のような形式。先頭10文字で '2026-04-06' だけ取り出す ?>
+            <!-- [組み込み] substr($str, 開始位置, 文字数)=文字列の一部を取り出す
+            created_at は '2026-04-06 12:00:00' のような形式。先頭10文字で '2026-04-06' だけ取り出す -->
           </div>
         </a>
         <?php endforeach; ?>

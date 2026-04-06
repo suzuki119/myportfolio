@@ -19,6 +19,18 @@ $stmt = $pdo->prepare('SELECT * FROM posts WHERE id = :id LIMIT 1');
 $stmt->execute([':id' => $id]);
 $post = $stmt->fetch();
 
+// カテゴリ一覧を取得（selectボックスの選択肢に使う）
+$c_stmt = $pdo->prepare('SELECT * FROM categories ORDER BY id ASC');
+$c_stmt->execute();
+$categories = $c_stmt->fetchAll();
+
+// この記事に現在付与されているカテゴリIDを取得
+$pc_stmt = $pdo->prepare('SELECT category_id FROM post_categories WHERE post_id = :post_id');
+$pc_stmt->execute([':post_id' => $id]);
+$post_category_id  = $pc_stmt->fetch(); // 紐付けがなければ false
+$currentCategoryId = $post_category_id ? $post_category_id['category_id'] : null;
+// [組み込み] 三項演算子：fetch()がfalseのとき null にする（Warningを防ぐ）
+
 if (!$post) {
     header('Location: ' . SITE_URL . '/cms/admin/index.php');
     exit;
@@ -30,8 +42,9 @@ if (!$post) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title     = trim($_POST['title']   ?? '');
     $content   = trim($_POST['content'] ?? '');
-    $status    = $_POST['status'] ?? 'draft';
+    $status    = $_POST['status'] ?? 'draft';// 下書きがデフォルト
     $thumbnail = $post['thumbnail']; // 既存のファイル名を初期値にする
+    $category_id = $_POST['category_id'] ?? ''; // 未選択なら空文字
 
     if ($title === '') {
         $error = 'タイトルは必須です。';
@@ -84,6 +97,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':id'        => $id,
             ]);
 
+            // ===================================================
+            //  カテゴリの紐付けを更新（全削除 → 入れ直し）
+            // ===================================================
+            $pc_stmt = $pdo->prepare('DELETE FROM post_categories WHERE post_id = :post_id');
+            $pc_stmt->execute([':post_id' => $id]); // この記事の既存カテゴリをすべて削除
+
+            if (!empty($category_id)) { // カテゴリが選択されているときだけ INSERT
+                $pc_stmt = $pdo->prepare('INSERT INTO post_categories (post_id, category_id) VALUES (:post_id, :category_id)');
+                $pc_stmt->execute([':post_id' => $id, ':category_id' => $category_id]);
+            }
+
             header('Location: ' . SITE_URL . '/cms/admin/index.php');
             exit;
         }
@@ -91,8 +115,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $post['title']   = $title;
     $post['content'] = $content;
-    $post['status']  = $status;
+    $post['status']  = $status;// フォームの内容で上書きしておく（エラーがあってもフォームに入力値を保持するため）
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -152,6 +177,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <option value="published" <?= $post['status'] === 'published' ? 'selected' : '' ?>>公開</option>
             </select>
         </label>
+
+        <div class="categories">
+            <label>カテゴリー
+                <select name="category_id">
+                    <option value="">選択してください</option>
+                    <?php foreach ($categories as $category): ?>
+
+                        <option value="<?= h($category['id']) ?>"
+                            <?= $category['id'] == $currentCategoryId ? 'selected' : '' ?>>
+                            <?php // $currentCategoryId と一致するものに selected をつける ?>
+                            <?= h($category['name']) ?>
+                        </option>
+
+                    <?php endforeach; ?>
+                </select>
+            </label>
+        </div>
 
         <div class="actions">
             <button type="submit">更新する</button>

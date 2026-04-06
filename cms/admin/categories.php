@@ -41,6 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['action'])) {
         $stmt = $pdo->prepare('DELETE FROM categories WHERE id = :id');
         $stmt->execute([':id' => $_POST['delete_id']]);
 
+        $pc_stmt = $pdo->prepare('DELETE FROM post_categories WHERE category_id = :category_id'); // 関連する記事の紐付けも削除
+        $pc_stmt->execute([':category_id' => $_POST['delete_id']]);
+
         header('Location: ' . SITE_URL . '/cms/admin/categories.php');
         exit;
     }

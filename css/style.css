@@ -340,7 +340,8 @@ main {
 .about__photo img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
 #works {
@@ -371,10 +372,6 @@ main {
 }
 .works__card:hover {
   border-color: rgba(184, 168, 138, 0.35);
-  transform: translateY(-5px);
-}
-.works__card:hover .works__card-img img {
-  transform: scale(1.04);
 }
 .works__card--blog .works__card-img-bg {
   background: linear-gradient(135deg, #0b0b14, #131320);
@@ -403,7 +400,8 @@ main {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  -o-object-fit: cover;
+     object-fit: cover;
   transition: transform 0.5s;
 }
 .works__card-img-bg {
@@ -826,6 +824,7 @@ header.header--work {
 }
 
 .sidebar {
+  position: -webkit-sticky;
   position: sticky;
   top: 120px;
 }
@@ -922,7 +921,8 @@ header.header--work {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 .mock-img.twuku {
   background: linear-gradient(135deg, #090e0b, #0f1a10);
@@ -1015,5 +1015,4 @@ header.header--work {
   font-size: 28px;
   color: #b8a88a;
 }
-
 /*# sourceMappingURL=style.css.map */
