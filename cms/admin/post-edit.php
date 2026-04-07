@@ -46,6 +46,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $thumbnail = $post['thumbnail']; // 既存のファイル名を初期値にする
     $category_id = $_POST['category_id'] ?? ''; // 未選択なら空文字
 
+
+    // 追加の情報
+    $period      = trim($_POST['period']      ?? '');
+    $meta_period = trim($_POST['meta_period'] ?? '');
+    $meta_type   = trim($_POST['meta_type']   ?? '');
+    $external_url = trim($_POST['external_url'] ?? '');
+    $tags        = trim($_POST['tags']         ?? '');
+
     if ($title === '') {
         $error = 'タイトルは必須です。';
     } else {
@@ -87,14 +95,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($error === '') {
             $stmt = $pdo->prepare(
-                'UPDATE posts SET title = :title, content = :content, thumbnail = :thumbnail, status = :status WHERE id = :id'
+                'UPDATE posts SET title = :title, content = :content, thumbnail = :thumbnail, status = :status, period = :period, meta_period = :meta_period, meta_type = :meta_type, external_url = :external_url, tags = :tags WHERE id = :id'
             );
             $stmt->execute([
                 ':title'     => $title,
                 ':content'   => $content,
                 ':thumbnail' => $thumbnail,
                 ':status'    => $status,
-                ':id'        => $id,
+                ':period'    => $period,
+                ':meta_period' => $meta_period,
+                ':meta_type'   => $meta_type,
+                ':external_url' => $external_url,
+                ':tags'        => $tags,
+                ':id'          => $id,
             ]);
 
             // ===================================================
@@ -116,6 +129,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $post['title']   = $title;
     $post['content'] = $content;
     $post['status']  = $status;// フォームの内容で上書きしておく（エラーがあってもフォームに入力値を保持するため）
+
+    // 追加の情報も上書きしておく
+    $post['period']      = $period;
+    $post['meta_period'] = $meta_period;
+    $post['meta_type']   = $meta_type;
+    $post['external_url'] = $external_url;
+    $post['tags']        = $tags;
 }
 
 ?>

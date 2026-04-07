@@ -19,6 +19,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $status      = $_POST['status']           ?? 'draft';
     $category_id = $_POST['category_id']      ?? '';
 
+    // 追加の情報
+    $period      = trim($_POST['period']      ?? '');
+    $meta_period = trim($_POST['meta_period'] ?? '');
+    $meta_type   = trim($_POST['meta_type']   ?? '');
+    $external_url = trim($_POST['external_url'] ?? '');
+    $tags        = trim($_POST['tags']         ?? '');
+
+
     // バリデーション
     if ($title === '') {
         $error = 'タイトルは必須です。';
@@ -60,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($error === '') {
             // ① 記事を INSERT して発行されたIDを取得
             $stmt = $pdo->prepare(
-                'INSERT INTO posts (title, content, thumbnail, status, author_id) VALUES (:title, :content, :thumbnail, :status, :author_id)'
+                'INSERT INTO posts (title, content, thumbnail, status, author_id, period, meta_period, meta_type, external_url, tags) VALUES (:title, :content, :thumbnail, :status, :author_id, :period, :meta_period, :meta_type, :external_url, :tags)'
             );
             $stmt->execute([
                 ':title'     => $title,
@@ -68,6 +76,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':thumbnail' => $thumbnail,
                 ':status'    => $status,
                 ':author_id' => $_SESSION['user_id'],
+
+                // 追加の情報
+                ':period'    => $period,
+                ':meta_period' => $meta_period,
+                ':meta_type'   => $meta_type,
+                ':external_url' => $external_url,
+                ':tags'        => $tags,
             ]);
 
             $newPostId = $pdo->lastInsertId(); // [PDO組み込み] 直前のINSERTで発行されたIDを取得

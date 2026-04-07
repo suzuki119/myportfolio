@@ -23,50 +23,107 @@ if (!$post) {
     exit;
 }
 
-// 日付を読みやすい形式に変換（例：2026年4月6日）
-$date = date('Y年n月j日', strtotime($post['created_at']));
-// [組み込み] strtotime()='2026-04-06 12:00:00' のような日付文字列をUNIXタイムスタンプ（数値）に変換する
-// [組み込み] date('フォーマット', タイムスタンプ)=タイムスタンプを指定した形式の文字列に変換する
-// 'Y'=4桁の年 'n'=月（ゼロ埋めなし） 'j'=日（ゼロ埋めなし）
+// セクションを sort_order 順に取得
+$s_stmt = $pdo->prepare(
+    'SELECT * FROM post_sections WHERE post_id = :post_id ORDER BY sort_order ASC'
+);
+$s_stmt->execute([':post_id' => $id]);
+$sections = $s_stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
+
+// tags をカンマ区切りから配列に変換
+$tags = !empty($post['tags']) ? explode(',', $post['tags']) : [];
+// [組み込み] explode('区切り文字', 文字列) = 文字列を分割して配列にする
 ?>
-
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title><?= h($post['title']) ?> — Portfolio</title>
+    <title><?= h($post['title']) ?> — Suzuki Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-    <header class="header">
-        <div class="header__logo"><a href="index.php" style="color:inherit;text-decoration:none;">SuzukiPortfolio</a></div>
-    </header>
+<div id="canvas-container">
+    <canvas id="bg-canvas"></canvas>
+</div>
 
-    <main style="max-width:800px;margin:100px auto;padding:0 24px;">
+<header class="header--work">
+    <a href="./index.php" class="back-link">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5M5 12l7 7M5 12l7-7"/></svg>
+        Back to Portfolio
+    </a>
+    <div class="header-logo">Suzuki Portfolio</div>
+</header>
 
-        <?php if ($post['thumbnail']): ?>
-            <img src="<?= UPLOAD_URL . h($post['thumbnail']) ?>"
-                 alt="<?= h($post['title']) ?>"
-                 style="width:100%;max-height:400px;object-fit:cover;margin-bottom:32px;">
-        <?php endif; ?>
+<main>
 
-        <p style="font-size:.85rem;color:#999;margin-bottom:8px;"><?= h($date) ?></p>
-        <h1 style="font-size:2rem;margin-bottom:32px;"><?= h($post['title']) ?></h1>
+    <!-- Hero -->
+    <div class="work-hero">
+        <div class="work-hero-eyebrow">Works</div>
+        <h1 class="work-hero-title"><?= h($post['title']) ?></h1>
+    </div>
 
-        <div class="single__content">
-            <?= $post['content'] ?>
-            <!-- h() を使わずHTMLとしてそのまま出力する -->
-            <!-- 理由：管理者（自分）しか入力しないため。h()を使うとHTMLタグが文字列として表示されてしまう -->
+    <div class="hero-divider"></div>
+
+    <!-- Meta bar -->
+    <div class="work-meta-bar">
+        <div class="work-meta-item">
+            <div class="work-meta-label">制作期間</div>
+            <div class="work-meta-value"><?= h($post['meta_period']) ?></div>
         </div>
+        <div class="work-meta-item">
+            <div class="work-meta-label">使用技術</div>
+            <div class="work-meta-value">
+                <div class="tag-list">
+                    <?php foreach ($tags as $tag): ?>
+                        <span class="tag"><?= h(trim($tag)) ?></span>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+        <div class="work-meta-item">
+            <div class="work-meta-label">種別</div>
+            <div class="work-meta-value"><?= nl2br(h($post['meta_type'])) ?></div>
+            <?php // [組み込み] nl2br() = 文字列中の改行(\n)をHTMLの<br>タグに変換する ?>
+        </div>
+    </div>
 
-        <p style="margin-top:60px;">
-            <a href="index.php" style="color:#999;font-size:.9rem;">← 一覧へ戻る</a>
-        </p>
+    <!-- Content -->
+    <div class="work-content">
+        <article>
 
-    </main>
+            <?php if ($post['thumbnail']): ?>
+                <div class="mock-img">
+                    <img src="<?= UPLOAD_URL . h($post['thumbnail']) ?>" alt="<?= h($post['title']) ?>">
+                </div>
+            <?php endif; ?>
 
+            <?php if (!empty($post['external_url'])): ?>
+                <div class="work-cta">
+                    <a href="<?= h($post['external_url']) ?>" target="_blank" rel="noopener" class="btn-primary">
+                        サイトを見る
+                        <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    </a>
+                </div>
+            <?php endif; ?>
+
+            <?php foreach ($sections as $section): ?>
+                <div class="article-block">
+                    <h2 class="block-title"><?= h($section['title']) ?></h2>
+                    <div class="block-body">
+                        <?= nl2br(h($section['body'])) ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+
+        </article>
+    </div>
+
+</main>
+
+<footer>2026 Suzuki Yutaro — All Rights Reserved</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
