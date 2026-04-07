@@ -24,7 +24,7 @@ if (!$post) {
     exit;
 }
 
-// カテゴリ一覧を取得（selectボックスの選択肢に使う）
+// カテゴリ一覧を取得
 $c_stmt = $pdo->prepare('SELECT * FROM categories ORDER BY id ASC');
 $c_stmt->execute();
 $categories = $c_stmt->fetchAll();
@@ -32,7 +32,7 @@ $categories = $c_stmt->fetchAll();
 // この記事に現在付与されているカテゴリIDを取得
 $pc_stmt = $pdo->prepare('SELECT category_id FROM post_categories WHERE post_id = :post_id');
 $pc_stmt->execute([':post_id' => $id]);
-$post_category_id  = $pc_stmt->fetch(); // 紐付けがなければ false
+$post_category_id  = $pc_stmt->fetch();
 $currentCategoryId = $post_category_id ? $post_category_id['category_id'] : null;
 
 // 既存セクションを取得
@@ -45,12 +45,11 @@ $sections = $sec_stmt->fetchAll();
 // ===================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title        = trim($_POST['title']        ?? '');
-    $content      = trim($_POST['content']      ?? '');
     $status       = $_POST['status']            ?? 'draft';
-    $thumbnail    = $post['thumbnail']; // 既存のファイル名を初期値にする
+    $thumbnail    = $post['thumbnail'];
     $category_id  = $_POST['category_id']       ?? '';
     $period       = trim($_POST['period']       ?? '');
-    $type    = trim($_POST['type']    ?? '');
+    $type         = trim($_POST['type']         ?? '');
     $external_url = trim($_POST['external_url'] ?? '');
     $tags         = trim($_POST['tags']         ?? '');
 
@@ -84,7 +83,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // サムネイルを削除するチェックボックスが入った場合
         if (!empty($_POST['delete_thumbnail']) && $post['thumbnail']) {
             if (file_exists(UPLOAD_DIR . $post['thumbnail'])) {
                 unlink(UPLOAD_DIR . $post['thumbnail']);
@@ -96,14 +94,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // posts テーブルを更新
             $stmt = $pdo->prepare(
                 'UPDATE posts SET
-                    title = :title, content = :content, thumbnail = :thumbnail, status = :status,
+                    title = :title, thumbnail = :thumbnail, status = :status,
                     period = :period, type = :type,
                     external_url = :external_url, tags = :tags
                  WHERE id = :id'
             );
             $stmt->execute([
                 ':title'        => $title,
-                ':content'      => $content,
                 ':thumbnail'    => $thumbnail,
                 ':status'       => $status,
                 ':period'       => $period,
@@ -113,9 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':id'           => $id,
             ]);
 
-            // ===================================================
-            //  カテゴリの紐付けを更新（全削除 → 入れ直し）
-            // ===================================================
+            // カテゴリの紐付けを更新（全削除 → 入れ直し）
             $pc_stmt = $pdo->prepare('DELETE FROM post_categories WHERE post_id = :post_id');
             $pc_stmt->execute([':post_id' => $id]);
 
@@ -124,9 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pc_stmt->execute([':post_id' => $id, ':category_id' => $category_id]);
             }
 
-            // ===================================================
-            //  セクションの更新（全削除 → 入れ直し）
-            // ===================================================
+            // セクションの更新（全削除 → 入れ直し）
             $pdo->prepare('DELETE FROM post_sections WHERE post_id = :post_id')
                 ->execute([':post_id' => $id]);
 
@@ -154,7 +147,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // エラー時：フォームの入力値を保持する
     $post['title']        = $title;
-    $post['content']      = $content;
     $post['status']       = $status;
     $post['period']       = $period;
     $post['type']         = $type;
@@ -174,17 +166,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         input[type="text"], input[type="url"], textarea, select { width: 100%; padding: 8px; box-sizing: border-box; margin-top: 6px; border: 1px solid #ccc; font-size: 1rem; }
         textarea { height: 200px; resize: vertical; font-family: monospace; }
         .actions { margin-top: 24px; display: flex; gap: 12px; align-items: center; }
-        button { padding: 10px 24px; background: #222; color: #fff; border: none; cursor: pointer; font-size: 1rem; }
+        button[type="submit"] { padding: 10px 24px; background: #222; color: #fff; border: none; cursor: pointer; font-size: 1rem; }
         a.back { font-size: .9rem; color: #666; }
         .error { margin-top: 16px; padding: 10px; background: #fdecea; border-left: 4px solid #c0392b; font-size: .9rem; }
         .meta { margin-top: 8px; font-size: .8rem; color: #999; }
         .thumbnail-preview img { max-width: 200px; margin-top: 8px; display: block; }
         .thumbnail-preview label { font-weight: normal; font-size: .85rem; color: #c0392b; margin-top: 6px; }
-        .section-block { border: 1px solid #ddd; padding: 16px; margin-top: 16px; }
+        .section-block { border: 1px solid #ddd; padding: 16px; margin-top: 16px; position: relative; }
         .section-block label { margin-top: 10px; }
         .section-block textarea { height: 120px; }
+        .section-delete-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; color: #c0392b; cursor: pointer; font-size: .85rem; }
         .add-section-btn { margin-top: 12px; padding: 8px 16px; background: #555; color: #fff; border: none; cursor: pointer; font-size: .9rem; }
-        .section-heading { font-size: 1rem; font-weight: bold; margin-bottom: 8px; }
+        .section-heading { font-size: 1rem; font-weight: bold; margin-top: 32px; margin-bottom: 8px; }
     </style>
 </head>
 <body>
@@ -201,15 +194,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="text" name="title" value="<?= h($post['title']) ?>" required>
         </label>
 
-        <label>本文
-            <textarea name="content"><?= h($post['content']) ?></textarea>
-        </label>
-
         <label>一覧用期間（例：2025.06 – 08）
             <input type="text" name="period" value="<?= h($post['period'] ?? '') ?>">
         </label>
-
-
 
         <label>種別（例：個人制作 / ブログサイト）
             <input type="text" name="type" value="<?= h($post['type'] ?? '') ?>">
@@ -257,27 +244,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </label>
         </div>
 
-        <!-- ===================================================
-             セクション管理
-        =================================================== -->
-        <div style="margin-top:32px;">
-            <div class="section-heading">セクション</div>
+        <!-- セクション管理 -->
+        <div class="section-heading">セクション</div>
 
-            <div id="sections-wrap">
-                <?php foreach ($sections as $i => $sec): ?>
-                    <div class="section-block">
-                        <label>見出し
-                            <input type="text" name="section_title[]" value="<?= h($sec['title']) ?>">
-                        </label>
-                        <label>本文
-                            <textarea name="section_body[]"><?= h($sec['body']) ?></textarea>
-                        </label>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-
-            <button type="button" class="add-section-btn" onclick="addSection()">＋ セクションを追加</button>
+        <div id="sections-wrap">
+            <?php foreach ($sections as $i => $sec): ?>
+                <div class="section-block">
+                    <button type="button" class="section-delete-btn" onclick="deleteSection(this)">削除</button>
+                    <label>見出し
+                        <input type="text" name="section_title[]" value="<?= h($sec['title']) ?>">
+                    </label>
+                    <label>本文
+                        <textarea name="section_body[]"><?= h($sec['body']) ?></textarea>
+                    </label>
+                </div>
+            <?php endforeach; ?>
         </div>
+
+        <button type="button" class="add-section-btn" onclick="addSection()">＋ セクションを追加</button>
 
         <div class="actions">
             <button type="submit">更新する</button>
@@ -291,10 +275,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const block = document.createElement('div');
         block.className = 'section-block';
         block.innerHTML = `
+            <button type="button" class="section-delete-btn" onclick="deleteSection(this)">削除</button>
             <label>見出し<input type="text" name="section_title[]" style="width:100%;padding:8px;box-sizing:border-box;margin-top:6px;border:1px solid #ccc;font-size:1rem;"></label>
             <label style="margin-top:10px;">本文<textarea name="section_body[]" style="width:100%;padding:8px;box-sizing:border-box;margin-top:6px;border:1px solid #ccc;font-size:1rem;height:120px;resize:vertical;font-family:monospace;"></textarea></label>
         `;
         wrap.appendChild(block);
+    }
+
+    function deleteSection(btn) {
+        // ボタンの親要素（.section-block）をDOMから削除する
+        btn.closest('.section-block').remove();
     }
     </script>
 </body>

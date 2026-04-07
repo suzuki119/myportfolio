@@ -11,11 +11,16 @@ $pdo = db(); // [自作] DB接続を取得
 //  削除処理（POSTで id が送られてきたとき）
 // ===================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['delete_id'])) {//ブラウザがどの方法でアクセスしてきたかを判定 / $_POST はフォームの送信値
-    $stmt = $pdo->prepare('DELETE FROM posts WHERE id = :id'); // [PDO組み込み] SQLを準備する
-    $stmt->execute([':id' => $_POST['delete_id']]);            // [PDO組み込み] SQLを実行する
+    $delete_id = $_POST['delete_id'];
 
-    $pc_stmt = $pdo->prepare('DELETE FROM post_categories WHERE post_id = :post_id'); // 関連するカテゴリの紐付けも削除
-    $pc_stmt->execute([':post_id' => $_POST['delete_id']]);
+    // 外部キー制約があるため、子テーブルを先に削除してから posts を削除する
+    $pdo->prepare('DELETE FROM post_categories WHERE post_id = :id') // 関連するカテゴリの紐付けを削除
+        ->execute([':id' => $delete_id]);
+    $pdo->prepare('DELETE FROM post_sections WHERE post_id = :id')   // 関連するセクションを削除
+        ->execute([':id' => $delete_id]);
+    $pdo->prepare('DELETE FROM posts WHERE id = :id')                // 最後に記事本体を削除
+        ->execute([':id' => $delete_id]);
+
     header('Location: ' . SITE_URL . '/cms/admin/index.php'); // 削除後にリロード
     exit;
 }
@@ -67,6 +72,9 @@ $currentCategoryId = $post_category_id ? $post_category_id[0]['category_id'] : n
         <h1>記事一覧</h1>
         <a class="button" href="<?= SITE_URL ?>/cms/admin/post-new.php">+ 新規作成</a>
         <a class="button" href="<?= SITE_URL ?>/cms/admin/categories.php">+ カテゴリー</a>
+        <a href="<?= SITE_URL ?>/index.php" class="back-link">
+        Back to Portfolio
+    </a>
     </div>
 
     <?php if (empty($posts)): // [組み込み] 配列が空かどうか調べる ?>

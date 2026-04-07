@@ -14,20 +14,14 @@ $c_stmt->execute();
 $categories = $c_stmt->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title       = trim($_POST['title']       ?? '');
-    $content     = trim($_POST['content']     ?? '');
-    $status      = $_POST['status']           ?? 'draft';
-    $category_id = $_POST['category_id']      ?? '';
-
-    // 追加の情報
-    $period      = trim($_POST['period']      ?? '');
-    $meta_period = trim($_POST['meta_period'] ?? '');
-    $meta_type   = trim($_POST['meta_type']   ?? '');
+    $title        = trim($_POST['title']        ?? '');
+    $status       = $_POST['status']            ?? 'draft';
+    $category_id  = $_POST['category_id']       ?? '';
+    $period       = trim($_POST['period']       ?? '');
+    $type         = trim($_POST['type']         ?? '');
     $external_url = trim($_POST['external_url'] ?? '');
-    $tags        = trim($_POST['tags']         ?? '');
+    $tags         = trim($_POST['tags']         ?? '');
 
-
-    // バリデーション
     if ($title === '') {
         $error = 'タイトルは必須です。';
     } else {
@@ -37,28 +31,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $thumbnail = null; // アップロードなしの場合は null
 
         if (!empty($_FILES['thumbnail']['name'])) { // $_FILES=アップロードファイルの情報
-            $file     = $_FILES['thumbnail'];
-            $ext      = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $file    = $_FILES['thumbnail'];
+            $ext     = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
             // [組み込み] strtolower()=小文字に変換 / pathinfo()=ファイルパスの情報を取得
 
-            $allowed  = ['jpg', 'jpeg', 'png', 'gif', 'webp']; // 許可する拡張子
+            $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp']; // 許可する拡張子
 
             if (!in_array($ext, $allowed)) {
                 // [組み込み] in_array()=配列に値が含まれるか調べる
                 $error = '画像はjpg・png・gif・webpのみ使用できます。';
             } elseif ($file['size'] > 2 * 1024 * 1024) {
-                // 2MB以上は拒否（2 * 1024 * 1024 = 2097152バイト）
                 $error = '画像サイズは2MB以下にしてください。';
             } else {
-                // ファイル名をユニークな名前に変更して保存（重複防止）
-                $filename  = uniqid() . '.' . $ext;
+                $filename = uniqid() . '.' . $ext;
                 // [組み込み] uniqid()=現在時刻ベースのユニークなIDを生成
 
-                $savePath  = UPLOAD_DIR . $filename; // [自作定数] 保存先の絶対パス
+                $savePath = UPLOAD_DIR . $filename; // [自作定数] 保存先の絶対パス
 
                 if (move_uploaded_file($file['tmp_name'], $savePath)) {
                     // [組み込み] move_uploaded_file()=アップロードされた一時ファイルを指定場所に移動
-                    $thumbnail = $filename; // 保存成功したらファイル名をセット
+                    $thumbnail = $filename;
                 } else {
                     $error = '画像の保存に失敗しました。';
                 }
@@ -68,21 +60,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($error === '') {
             // ① 記事を INSERT して発行されたIDを取得
             $stmt = $pdo->prepare(
-                'INSERT INTO posts (title, content, thumbnail, status, author_id, period, meta_period, meta_type, external_url, tags) VALUES (:title, :content, :thumbnail, :status, :author_id, :period, :meta_period, :meta_type, :external_url, :tags)'
+                'INSERT INTO posts (title, thumbnail, status, author_id, period, type, external_url, tags)
+                 VALUES (:title, :thumbnail, :status, :author_id, :period, :type, :external_url, :tags)'
             );
             $stmt->execute([
-                ':title'     => $title,
-                ':content'   => $content,
-                ':thumbnail' => $thumbnail,
-                ':status'    => $status,
-                ':author_id' => $_SESSION['user_id'],
-
-                // 追加の情報
-                ':period'    => $period,
-                ':meta_period' => $meta_period,
-                ':meta_type'   => $meta_type,
+                ':title'        => $title,
+                ':thumbnail'    => $thumbnail,
+                ':status'       => $status,
+                ':author_id'    => $_SESSION['user_id'],
+                ':period'       => $period,
+                ':type'         => $type,
                 ':external_url' => $external_url,
-                ':tags'        => $tags,
+                ':tags'         => $tags,
             ]);
 
             $newPostId = $pdo->lastInsertId(); // [PDO組み込み] 直前のINSERTで発行されたIDを取得
@@ -113,16 +102,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
         h1 { font-size: 1.4rem; margin-bottom: 24px; }
         label { display: block; margin-top: 20px; font-size: .9rem; font-weight: bold; }
-        input[type="text"], textarea, select { width: 100%; padding: 8px; box-sizing: border-box; margin-top: 6px; border: 1px solid #ccc; font-size: 1rem; }
-        textarea { height: 300px; resize: vertical; font-family: monospace; }
+        input[type="text"], input[type="url"], textarea, select { width: 100%; padding: 8px; box-sizing: border-box; margin-top: 6px; border: 1px solid #ccc; font-size: 1rem; }
         .actions { margin-top: 24px; display: flex; gap: 12px; align-items: center; }
         button { padding: 10px 24px; background: #222; color: #fff; border: none; cursor: pointer; font-size: 1rem; }
         a.back { font-size: .9rem; color: #666; }
         .error { margin-top: 16px; padding: 10px; background: #fdecea; border-left: 4px solid #c0392b; font-size: .9rem; }
+        .note { margin-top: 12px; font-size: .8rem; color: #999; }
     </style>
 </head>
 <body>
     <h1>記事新規作成</h1>
+    <p class="note">※ セクションは作成後、編集画面から追加できます。</p>
 
     <?php if ($error !== ''): ?>
         <div class="error"><?= h($error) ?></div>
@@ -135,8 +125,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="text" name="title" value="<?= h($_POST['title'] ?? '') ?>" required>
         </label>
 
-        <label>本文
-            <textarea name="content"><?= h($_POST['content'] ?? '') ?></textarea>
+        <label>一覧用期間（例：2025.06 – 08）
+            <input type="text" name="period" value="<?= h($_POST['period'] ?? '') ?>">
+        </label>
+
+        <label>種別（例：個人制作 / ブログサイト）
+            <input type="text" name="type" value="<?= h($_POST['type'] ?? '') ?>">
+        </label>
+
+        <label>外部リンクURL
+            <input type="url" name="external_url" value="<?= h($_POST['external_url'] ?? '') ?>">
+        </label>
+
+        <label>使用技術タグ（カンマ区切り 例：WordPress,SCSS,JavaScript）
+            <input type="text" name="tags" value="<?= h($_POST['tags'] ?? '') ?>">
         </label>
 
         <label>サムネイル画像（任意）

@@ -121,10 +121,15 @@ $posts = $stmt->fetchAll();// [PDO組み込み] 全行を配列で取得
             <?php endif; ?>
           </div>
           <div class="works__card-body">
+            <?php if (!empty($post['tags'])): ?>
+              <div class="works__card-tags">
+                <?php foreach (explode(',', $post['tags']) as $tag): ?>
+                  <span class="tag"><?= h(trim($tag)) ?></span>
+                <?php endforeach; ?>
+              </div>
+            <?php endif; ?>
             <div class="works__card-title"><?= h($post['title']) ?></div>
-            <div class="works__card-period"><?= h(substr($post['created_at'], 0, 10)) ?></div>
-            <!-- [組み込み] substr($str, 開始位置, 文字数)=文字列の一部を取り出す
-            created_at は '2026-04-06 12:00:00' のような形式。先頭10文字で '2026-04-06' だけ取り出す -->
+            <div class="works__card-period"><?= h($post['period']) ?></div>
           </div>
         </a>
         <?php endforeach; ?>
