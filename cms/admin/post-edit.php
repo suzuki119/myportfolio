@@ -124,10 +124,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ->execute([':post_id' => $id]);
 
             // name="section_title[]" / name="section_body[]" でフォームから配列として受け取る
-            $sec_titles = $_POST['section_title'] ?? []; // [組み込み] ??=nullなら空配列
-            $sec_bodies = $_POST['section_body']  ?? [];
+            $section_titles = $_POST['section_title'] ?? []; // [組み込み] ??=nullなら空配列
+            $section_bodies = $_POST['section_body']  ?? [];
 
-            foreach ($sec_titles as $i => $t) {
+            foreach ($section_titles as $i => $t) {
                 if (trim($t) === '') continue; // タイトルが空のセクションはスキップ（削除ボタンを押さず空にしたものも対応）
                 $s_stmt = $pdo->prepare(
                     'INSERT INTO post_sections (post_id, sort_order, title, body)
@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':post_id'    => $id,
                     ':sort_order' => $i,
                     ':title'      => trim($t),
-                    ':body'       => trim($sec_bodies[$i] ?? ''),
+                    ':body'       => trim($section_bodies[$i] ?? ''),
                 ]);
             }
 
@@ -161,6 +161,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>記事編集 | 管理画面</title>
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.css">
+
+
     <script type="importmap">
     {
         "imports": {
@@ -169,6 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     </script>
+
     <style>
         body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
         h1 { font-size: 1.4rem; margin-bottom: 24px; }
@@ -266,6 +269,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </label>
                     <label>本文
                         <textarea name="section_body[]" class="wysiwyg"><?= $sec['body'] ?></textarea>
+
+                        <!-- [重要] WYSIWYGエディタの内容はHTMLのまま保存するため、h()でエスケープせずそのまま出力する。 --- IGNORE --- -->
                     </label>
                 </div>
             <?php endforeach; ?>
@@ -279,19 +284,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </form>
 
-    <script type="module">
-    import {
-        ClassicEditor,
-        Essentials,
-        Bold, Italic, Underline, Strikethrough,
-        Heading,
-        Paragraph,
-        List,
-        Link,
-        BlockQuote,
-        Indent, IndentBlock,
-    } from 'ckeditor5';
+    <script type="module">// [CKEditor 5] ここではClassicEditorを使用。必要に応じて他のビルドやカスタムビルドも利用可能
+import {
+    ClassicEditor,
+    Essentials,
+    Bold, Italic, Underline, Strikethrough,
+    Heading,
+    Paragraph,
+    List,
+    Link,
+    BlockQuote,
+    Indent, IndentBlock,
+    SimpleUploadAdapter,
+    Image, ImageCaption, ImageStyle, ImageToolbar, ImageResize, ImageUpload,
+    Table, TableToolbar // ←ここに含める
+} from 'ckeditor5';
     import 'ckeditor5/translations/ja.js';
+
 
     const editorConfig = {
         plugins: [
@@ -303,18 +312,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             Link,
             BlockQuote,
             Indent, IndentBlock,
+            SimpleUploadAdapter,
+            Table, TableToolbar,
+            Image, ImageCaption, ImageStyle, ImageToolbar, ImageResize, ImageUpload,
         ],
         toolbar: {
             items: [
                 'heading', '|',
                 'bold', 'italic', 'underline', 'strikethrough', '|',
                 'bulletedList', 'numberedList', 'indent', 'outdent', '|',
-                'link', 'blockQuote', '|',
-                'undo', 'redo',
+                'link', 'blockQuote', 'uploadImage', '|',
+                'undo', 'redo','table',
+            ]
+        },
+        simpleUpload: {
+            uploadUrl: '<?= SITE_URL ?>/cms/admin/upload-image.php',
+            withCredentials: true,
+        },
+        image: {
+            toolbar: [
+                'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+                'toggleImageCaption', 'imageTextAlternative', '|',
+                'resizeImage',
             ]
         },
         language: 'ja',
     };
+
+
 
     // textarea要素 → エディタインスタンス の対応を管理
     const editorInstances = new Map();
@@ -340,6 +365,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const wrap = document.getElementById('sections-wrap');
         const block = document.createElement('div');
         block.className = 'section-block';
+
         block.innerHTML = `
             <button type="button" class="section-delete-btn" onclick="deleteSection(this)">削除</button>
             <label>見出し
@@ -349,11 +375,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <textarea name="section_body[]" class="wysiwyg" style="width:100%;height:200px;"></textarea>
             </label>
         `;
+
         wrap.appendChild(block);
         initEditor(block.querySelector('.wysiwyg'));
     };
 
-    window.deleteSection = function(btn) {
+    window.deleteSection = function(btn) {// セクション削除ボタンが押されたときの処理
         const block = btn.closest('.section-block');
         const textarea = block.querySelector('textarea');
         if (textarea && editorInstances.has(textarea)) {
