@@ -19,6 +19,11 @@ $stmt = $pdo->prepare('SELECT * FROM posts WHERE id = :id LIMIT 1');
 $stmt->execute([':id' => $id]);
 $post = $stmt->fetch();
 
+if (!$post) {
+    header('Location: ' . SITE_URL . '/cms/admin/index.php');
+    exit;
+}
+
 // カテゴリ一覧を取得（selectボックスの選択肢に使う）
 $c_stmt = $pdo->prepare('SELECT * FROM categories ORDER BY id ASC');
 $c_stmt->execute();
@@ -29,30 +34,25 @@ $pc_stmt = $pdo->prepare('SELECT category_id FROM post_categories WHERE post_id 
 $pc_stmt->execute([':post_id' => $id]);
 $post_category_id  = $pc_stmt->fetch(); // 紐付けがなければ false
 $currentCategoryId = $post_category_id ? $post_category_id['category_id'] : null;
-// [組み込み] 三項演算子：fetch()がfalseのとき null にする（Warningを防ぐ）
 
-if (!$post) {
-    header('Location: ' . SITE_URL . '/cms/admin/index.php');
-    exit;
-}
+// 既存セクションを取得
+$sec_stmt = $pdo->prepare('SELECT * FROM post_sections WHERE post_id = :post_id ORDER BY sort_order ASC');
+$sec_stmt->execute([':post_id' => $id]);
+$sections = $sec_stmt->fetchAll();
 
 // ===================================================
 //  更新処理
 // ===================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title     = trim($_POST['title']   ?? '');
-    $content   = trim($_POST['content'] ?? '');
-    $status    = $_POST['status'] ?? 'draft';// 下書きがデフォルト
-    $thumbnail = $post['thumbnail']; // 既存のファイル名を初期値にする
-    $category_id = $_POST['category_id'] ?? ''; // 未選択なら空文字
-
-
-    // 追加の情報
-    $period      = trim($_POST['period']      ?? '');
-    $meta_period = trim($_POST['meta_period'] ?? '');
-    $meta_type   = trim($_POST['meta_type']   ?? '');
+    $title        = trim($_POST['title']        ?? '');
+    $content      = trim($_POST['content']      ?? '');
+    $status       = $_POST['status']            ?? 'draft';
+    $thumbnail    = $post['thumbnail']; // 既存のファイル名を初期値にする
+    $category_id  = $_POST['category_id']       ?? '';
+    $period       = trim($_POST['period']       ?? '');
+    $type    = trim($_POST['type']    ?? '');
     $external_url = trim($_POST['external_url'] ?? '');
-    $tags        = trim($_POST['tags']         ?? '');
+    $tags         = trim($_POST['tags']         ?? '');
 
     if ($title === '') {
         $error = 'タイトルは必須です。';
@@ -60,23 +60,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // ===================================================
         //  画像アップロード処理
         // ===================================================
-        if (!empty($_FILES['thumbnail']['name'])) { // $_FILES=アップロードファイルの情報
+        if (!empty($_FILES['thumbnail']['name'])) {
             $file    = $_FILES['thumbnail'];
-            $ext     = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));// [組み込み] strtolower()=小文字に変換 / pathinfo()=ファイルパスの情報を取得
+            $ext     = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)); // [組み込み] 拡張子を小文字で取得
             $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
-            if (!in_array($ext, $allowed)) {// [組み込み] in_array()=配列に値が含まれるか調べる
+            if (!in_array($ext, $allowed)) {
                 $error = '画像はjpg・png・gif・webpのみ使用できます。';
             } elseif ($file['size'] > 2 * 1024 * 1024) {
                 $error = '画像サイズは2MB以下にしてください。';
             } else {
-                $filename = uniqid() . '.' . $ext;// [組み込み] uniqid()=現在時刻ベースのユニークなIDを生成
+                $filename = uniqid() . '.' . $ext; // [組み込み] uniqid()=ユニークなIDを生成
                 $savePath = UPLOAD_DIR . $filename;
 
-                if (move_uploaded_file($file['tmp_name'], $savePath)) {// [組み込み] move_uploaded_file()=アップロードされた一時ファイルを指定場所に移動
-                    // 新しい画像を保存できたら古い画像を削除する
-                    if ($post['thumbnail'] && file_exists(UPLOAD_DIR . $post['thumbnail'])) {// [組み込み] file_exists()=ファイルが存在するか確認
-                        unlink(UPLOAD_DIR . $post['thumbnail']);// [組み込み] unlink()=ファイルを削除する
+                if (move_uploaded_file($file['tmp_name'], $savePath)) { // [組み込み] 一時ファイルを指定場所に移動
+                    if ($post['thumbnail'] && file_exists(UPLOAD_DIR . $post['thumbnail'])) {
+                        unlink(UPLOAD_DIR . $post['thumbnail']); // [組み込み] 古い画像を削除
                     }
                     $thumbnail = $filename;
                 } else {
@@ -94,31 +93,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($error === '') {
+            // posts テーブルを更新
             $stmt = $pdo->prepare(
-                'UPDATE posts SET title = :title, content = :content, thumbnail = :thumbnail, status = :status, period = :period, meta_period = :meta_period, meta_type = :meta_type, external_url = :external_url, tags = :tags WHERE id = :id'
+                'UPDATE posts SET
+                    title = :title, content = :content, thumbnail = :thumbnail, status = :status,
+                    period = :period, type = :type,
+                    external_url = :external_url, tags = :tags
+                 WHERE id = :id'
             );
             $stmt->execute([
-                ':title'     => $title,
-                ':content'   => $content,
-                ':thumbnail' => $thumbnail,
-                ':status'    => $status,
-                ':period'    => $period,
-                ':meta_period' => $meta_period,
-                ':meta_type'   => $meta_type,
+                ':title'        => $title,
+                ':content'      => $content,
+                ':thumbnail'    => $thumbnail,
+                ':status'       => $status,
+                ':period'       => $period,
+                ':type'         => $type,
                 ':external_url' => $external_url,
-                ':tags'        => $tags,
-                ':id'          => $id,
+                ':tags'         => $tags,
+                ':id'           => $id,
             ]);
 
             // ===================================================
             //  カテゴリの紐付けを更新（全削除 → 入れ直し）
             // ===================================================
             $pc_stmt = $pdo->prepare('DELETE FROM post_categories WHERE post_id = :post_id');
-            $pc_stmt->execute([':post_id' => $id]); // この記事の既存カテゴリをすべて削除
+            $pc_stmt->execute([':post_id' => $id]);
 
-            if (!empty($category_id)) { // カテゴリが選択されているときだけ INSERT
+            if (!empty($category_id)) {
                 $pc_stmt = $pdo->prepare('INSERT INTO post_categories (post_id, category_id) VALUES (:post_id, :category_id)');
                 $pc_stmt->execute([':post_id' => $id, ':category_id' => $category_id]);
+            }
+
+            // ===================================================
+            //  セクションの更新（全削除 → 入れ直し）
+            // ===================================================
+            $pdo->prepare('DELETE FROM post_sections WHERE post_id = :post_id')
+                ->execute([':post_id' => $id]);
+
+            $sec_titles = $_POST['section_title'] ?? []; // [組み込み] ??=nullなら空配列
+            $sec_bodies = $_POST['section_body']  ?? [];
+
+            foreach ($sec_titles as $i => $t) {
+                if (trim($t) === '') continue; // タイトルが空のセクションはスキップ
+                $s_stmt = $pdo->prepare(
+                    'INSERT INTO post_sections (post_id, sort_order, title, body)
+                     VALUES (:post_id, :sort_order, :title, :body)'
+                );
+                $s_stmt->execute([
+                    ':post_id'    => $id,
+                    ':sort_order' => $i,
+                    ':title'      => trim($t),
+                    ':body'       => trim($sec_bodies[$i] ?? ''),
+                ]);
             }
 
             header('Location: ' . SITE_URL . '/cms/admin/index.php');
@@ -126,18 +152,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    $post['title']   = $title;
-    $post['content'] = $content;
-    $post['status']  = $status;// フォームの内容で上書きしておく（エラーがあってもフォームに入力値を保持するため）
-
-    // 追加の情報も上書きしておく
-    $post['period']      = $period;
-    $post['meta_period'] = $meta_period;
-    $post['meta_type']   = $meta_type;
+    // エラー時：フォームの入力値を保持する
+    $post['title']        = $title;
+    $post['content']      = $content;
+    $post['status']       = $status;
+    $post['period']       = $period;
+    $post['type']         = $type;
     $post['external_url'] = $external_url;
-    $post['tags']        = $tags;
+    $post['tags']         = $tags;
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -148,8 +171,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
         h1 { font-size: 1.4rem; margin-bottom: 24px; }
         label { display: block; margin-top: 20px; font-size: .9rem; font-weight: bold; }
-        input[type="text"], textarea, select { width: 100%; padding: 8px; box-sizing: border-box; margin-top: 6px; border: 1px solid #ccc; font-size: 1rem; }
-        textarea { height: 300px; resize: vertical; font-family: monospace; }
+        input[type="text"], input[type="url"], textarea, select { width: 100%; padding: 8px; box-sizing: border-box; margin-top: 6px; border: 1px solid #ccc; font-size: 1rem; }
+        textarea { height: 200px; resize: vertical; font-family: monospace; }
         .actions { margin-top: 24px; display: flex; gap: 12px; align-items: center; }
         button { padding: 10px 24px; background: #222; color: #fff; border: none; cursor: pointer; font-size: 1rem; }
         a.back { font-size: .9rem; color: #666; }
@@ -157,6 +180,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .meta { margin-top: 8px; font-size: .8rem; color: #999; }
         .thumbnail-preview img { max-width: 200px; margin-top: 8px; display: block; }
         .thumbnail-preview label { font-weight: normal; font-size: .85rem; color: #c0392b; margin-top: 6px; }
+        .section-block { border: 1px solid #ddd; padding: 16px; margin-top: 16px; }
+        .section-block label { margin-top: 10px; }
+        .section-block textarea { height: 120px; }
+        .add-section-btn { margin-top: 12px; padding: 8px 16px; background: #555; color: #fff; border: none; cursor: pointer; font-size: .9rem; }
+        .section-heading { font-size: 1rem; font-weight: bold; margin-bottom: 8px; }
     </style>
 </head>
 <body>
@@ -175,7 +203,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label>本文
             <textarea name="content"><?= h($post['content']) ?></textarea>
+        </label>
 
+        <label>一覧用期間（例：2025.06 – 08）
+            <input type="text" name="period" value="<?= h($post['period'] ?? '') ?>">
+        </label>
+
+
+
+        <label>種別（例：個人制作 / ブログサイト）
+            <input type="text" name="type" value="<?= h($post['type'] ?? '') ?>">
+        </label>
+
+        <label>外部リンクURL
+            <input type="url" name="external_url" value="<?= h($post['external_url'] ?? '') ?>">
+        </label>
+
+        <label>使用技術タグ（カンマ区切り 例：WordPress,SCSS,JavaScript）
+            <input type="text" name="tags" value="<?= h($post['tags'] ?? '') ?>">
         </label>
 
         <label>サムネイル画像
@@ -203,16 +248,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <select name="category_id">
                     <option value="">選択してください</option>
                     <?php foreach ($categories as $category): ?>
-
                         <option value="<?= h($category['id']) ?>"
                             <?= $category['id'] == $currentCategoryId ? 'selected' : '' ?>>
-                            <?php // $currentCategoryId と一致するものに selected をつける ?>
                             <?= h($category['name']) ?>
                         </option>
-
                     <?php endforeach; ?>
                 </select>
             </label>
+        </div>
+
+        <!-- ===================================================
+             セクション管理
+        =================================================== -->
+        <div style="margin-top:32px;">
+            <div class="section-heading">セクション</div>
+
+            <div id="sections-wrap">
+                <?php foreach ($sections as $i => $sec): ?>
+                    <div class="section-block">
+                        <label>見出し
+                            <input type="text" name="section_title[]" value="<?= h($sec['title']) ?>">
+                        </label>
+                        <label>本文
+                            <textarea name="section_body[]"><?= h($sec['body']) ?></textarea>
+                        </label>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <button type="button" class="add-section-btn" onclick="addSection()">＋ セクションを追加</button>
         </div>
 
         <div class="actions">
@@ -220,5 +284,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <a class="back" href="<?= SITE_URL ?>/cms/admin/index.php">← 一覧へ戻る</a>
         </div>
     </form>
+
+    <script>
+    function addSection() {
+        const wrap = document.getElementById('sections-wrap');
+        const block = document.createElement('div');
+        block.className = 'section-block';
+        block.innerHTML = `
+            <label>見出し<input type="text" name="section_title[]" style="width:100%;padding:8px;box-sizing:border-box;margin-top:6px;border:1px solid #ccc;font-size:1rem;"></label>
+            <label style="margin-top:10px;">本文<textarea name="section_body[]" style="width:100%;padding:8px;box-sizing:border-box;margin-top:6px;border:1px solid #ccc;font-size:1rem;height:120px;resize:vertical;font-family:monospace;"></textarea></label>
+        `;
+        wrap.appendChild(block);
+    }
+    </script>
 </body>
 </html>

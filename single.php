@@ -70,7 +70,7 @@ $tags = !empty($post['tags']) ? explode(',', $post['tags']) : [];
     <div class="work-meta-bar">
         <div class="work-meta-item">
             <div class="work-meta-label">制作期間</div>
-            <div class="work-meta-value"><?= h($post['meta_period']) ?></div>
+            <div class="work-meta-value"><?= h($post['period']) ?></div>
         </div>
         <div class="work-meta-item">
             <div class="work-meta-label">使用技術</div>
@@ -84,7 +84,7 @@ $tags = !empty($post['tags']) ? explode(',', $post['tags']) : [];
         </div>
         <div class="work-meta-item">
             <div class="work-meta-label">種別</div>
-            <div class="work-meta-value"><?= nl2br(h($post['meta_type'])) ?></div>
+            <div class="work-meta-value"><?= nl2br(h($post['type'])) ?></div>
             <?php // [組み込み] nl2br() = 文字列中の改行(\n)をHTMLの<br>タグに変換する ?>
         </div>
     </div>
