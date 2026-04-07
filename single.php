@@ -42,7 +42,7 @@ $tags = !empty($post['tags']) ? explode(',', $post['tags']) : [];
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body id="single">
 
 <div id="canvas-container">
     <canvas id="bg-canvas"></canvas>
@@ -112,9 +112,7 @@ $tags = !empty($post['tags']) ? explode(',', $post['tags']) : [];
                 <div class="article-block">
                     <h2 class="block-title"><?= h($section['title']) ?></h2>
                     <div class="block-body">
-                        <?= nl2br(h($section['body'])) ?>
-                        <?php // [組み込み] ① h()でXSS対策（特殊文字を無害化）→ ② nl2br()で改行を<br>に変換
-                              // 順序が重要：h()を先にかけないとnl2br()が生成した<br>もエスケープされてしまう ?>
+                        <?= $section['body'] ?>
                     </div>
                 </div>
             <?php endforeach; ?>

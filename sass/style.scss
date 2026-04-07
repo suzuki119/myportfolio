@@ -1,21 +1,27 @@
 @use "sass:math";
 @use "sass:map";
 
-// ═══════════════════════════════════════════════════════
-//  Variables
-// ═══════════════════════════════════════════════════════
+//--------変数--------
 
-// --- Colors ---
-$color-white:  #d8d8d8;
-$color-gray:   #e5e5e5;
+// --- カラー ---
+$color-white:  #ffffff;
+$color-gray:   #e3e3e3;
 $color-accent: #b8a88a;
 $color-bg:     #090909;
+$color-text:   #d8d8d8;
+$gray:         #7a7a72;
 
-// --- Typography ---
+// --- レイアウト / エフェクト ---
+$nav-overlay:    rgba($color-bg, 0.96);
+$glass-border:   rgba(255, 255, 255, 0.248);
+$border-sub:     rgba(255, 255, 255, 0.405);
+$canvas-opacity: 0.55;
+
+// --- タイポグラフィ ---
 $font-serif: 'Cormorant Garamond', serif;
 $font-mono:  'Space Mono', monospace;
 
-// --- Z-index ---
+// --- 重なり順 ---
 $z-canvas:   0;
 $z-main:     10;
 $z-header:   50;
@@ -23,7 +29,7 @@ $z-toggle:   210;
 $z-menu:     20;
 $z-progress: 300;
 
-// --- Breakpoints ---
+// --- ブレークポイント ---
 $breakpoints: (
     mobile: 375px,
     tablet: 768px,
@@ -31,9 +37,7 @@ $breakpoints: (
 );
 
 
-// ═══════════════════════════════════════════════════════
-//  Mixins
-// ═══════════════════════════════════════════════════════
+//--------ミックスイン--------
 
 @mixin mq($breakpoint: desktop) {
     @media (max-width: map.get($breakpoints, $breakpoint)) {
@@ -42,39 +46,28 @@ $breakpoints: (
 }
 
 @mixin glass-card($opacity: 0.55, $blur: 16px) {
-    background: rgba(var(--bg-rgb), $opacity);
+    background: rgba($color-bg, $opacity);
     backdrop-filter: blur($blur);
     -webkit-backdrop-filter: blur($blur);
-    border: 1px solid var(--glass-border);
+    border: 1px solid $glass-border;
 }
 
-@mixin label-text($color: $color-accent, $size: 14px, $spacing: 0.45em) {
-    font-size: $size;
+@mixin label-text($color: $color-accent, $size: 16, $spacing: 0.45em) {
+    font-size: rem($size);
     letter-spacing: $spacing;
     text-transform: uppercase;
     color: $color;
 }
 
+//--------関数--------
 
-// ═══════════════════════════════════════════════════════
-//  CSS Custom Properties — テーマ切り替えに使用
-// ═══════════════════════════════════════════════════════
-:root {
-    --bg:             #090909;
-    --bg-rgb:         9, 9, 9;
-    --text:           #d8d8d8;
-    --gray:           #7a7a72;
-    --accent:         #b8a88a;
-    --header-bg:      rgba(9, 9, 9, 0.72);
-    --nav-overlay:    rgba(9, 9, 9, 0.96);
-    --glass-border:   rgba(255, 255, 255, 0.07);
-    --border-sub:     rgba(255, 255, 255, 0.04);
-    --canvas-opacity: 0.55;
+@function rem($px-value) {
+    @return #{math.div($px-value, 16)}rem;
 }
 
 
 // ═══════════════════════════════════════════════════════
-//  Reset & Base
+//  リセット & ベース
 // ═══════════════════════════════════════════════════════
 *,
 *::before,
@@ -89,22 +82,20 @@ html {
 }
 
 body {
-    background: var(--bg);
-    color: var(--text);
+    background: $color-bg;
+    color: $color-text;
     font-family: $font-mono;
     overflow-x: hidden;
-    transition: background 0.3s, color 0.3s;
 }
 
 img {
     width: 100%;
-    max-width: 100%;
     height: auto;
     vertical-align: middle;
 }
 
 
-// ─── Progress Bar ─────────────────────────────────────
+// ─── プログレスバー ────────────────────────────────────
 #progressBar {
     position: fixed;
     top: 0;
@@ -117,12 +108,12 @@ img {
 }
 
 
-// ─── Three.js Canvas ──────────────────────────────────
+// ─── Three.js キャンバス ───────────────────────────────
 #canvas-container {
     position: fixed;
     inset: 0;
     z-index: $z-canvas;
-    opacity: var(--canvas-opacity);
+    opacity: $canvas-opacity;
     pointer-events: none;
     transition: opacity 0.6s;
 }
@@ -134,11 +125,11 @@ img {
 }
 
 
-// ─── Header ───────────────────────────────────────────
+// ─── ヘッダー ─────────────────────────────────────────
 
 
 .header {
-        position: fixed;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -147,33 +138,23 @@ img {
     align-items: center;
     justify-content: space-between;
     z-index: $z-header;
-    background: var(--header-bg);
+    background: $color-bg;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border-sub);
-    transition: background 0.3s, border-color 0.3s;
-
-    @include mq(desktop) {
-        padding: 16px 20px;
-    }
+    border-bottom: 1px solid $border-sub;
 
     &__logo {
         font-family: $font-serif;
-        font-size: 17px;
+        font-size: rem(17);
         letter-spacing: 0.45em;
-        color: var(--text);
+        color: $color-text;
         text-transform: uppercase;
         white-space: nowrap;
-        transition: color 0.3s;
-
-        @include mq(desktop) {
-            font-size: 14px;
-            letter-spacing: 0.25em;
-        }
     }
 
     &__toggle {
         display: none;
+        position: relative;
         flex-direction: column;
         justify-content: center;
         gap: 5px;
@@ -183,16 +164,30 @@ img {
         padding: 4px;
         z-index: $z-toggle;
 
+
+        &::after {
+            content: 'menu';
+            position: absolute;
+            text-align: center;
+            display: block;
+            width: 100%;
+            bottom: -20px;
+            left: 50%;
+            right: 50%;
+            font-size: rem(16);
+            color: $gray;
+        }
+
         span {
             display: block;
-            width: 22px;
-            height: 1px;
-            background: var(--gray);
+            width: 30px;
+            height: 2px;
+            background: $gray;
             transition: transform 0.3s, opacity 0.3s, background 0.3s;
         }
 
         &.open {
-            span                { background: var(--text); }
+            span                { background: $color-text; }
             span:nth-child(1)   { transform: translateY(6px) rotate(45deg); }
             span:nth-child(2)   { opacity: 0; }
             span:nth-child(3)   { transform: translateY(-6px) rotate(-45deg); }
@@ -201,6 +196,8 @@ img {
         @include mq(desktop) {
             display: flex;
         }
+
+
     }
 
     &__nav {
@@ -219,7 +216,7 @@ img {
             cursor: pointer;
             transition: color 0.3s;
 
-            &:hover { color: var(--text); }
+            &:hover { color: $color-text; }
         }
 
         @include mq(desktop) {
@@ -230,7 +227,7 @@ img {
             right: 0;
             bottom: 0;
             padding: 0;
-            background: var(--nav-overlay);
+            background: $nav-overlay;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             flex-direction: column;
@@ -242,23 +239,23 @@ img {
             &.open { display: flex; }
 
             a {
-                font-size: 14px;
+                font-size: rem(16);
                 letter-spacing: 0.3em;
-                color: var(--text);
+                color: $color-text;
             }
         }
     }
 }
 
 
-// ─── Main Wrapper ─────────────────────────────────────
+// ─── メインラッパー ────────────────────────────────────
 main {
     position: relative;
     z-index: $z-main;
 }
 
 
-// ─── Shared Section Styles ────────────────────────────
+// ─── セクション共通スタイル ─────────────────────────────
 .sec {
     padding: 130px 9vw 100px;
 
@@ -273,7 +270,7 @@ main {
 
     &__title {
         font-family: $font-serif;
-        font-size: clamp(42px, 5.5vw, 84px);
+        font-size: clamp(rem(42), 5.5vw, rem(84));
         font-weight: 300;
         line-height: 1;
         color: $color-white;
@@ -285,7 +282,7 @@ main {
 }
 
 
-// ─── Hero ─────────────────────────────────────────────
+// ─── ヒーロー ─────────────────────────────────────────
 #hero {
     min-height: 100vh;
     display: flex;
@@ -299,7 +296,7 @@ main {
 .hero {
     &__title {
         font-family: $font-serif;
-        font-size: clamp(60px, 10vw, 140px);
+        font-size: clamp(rem(60), 10vw, rem(140));
         font-weight: 300;
         line-height: 0.95;
         letter-spacing: -0.01em;
@@ -313,7 +310,7 @@ main {
 }
 
 
-// ─── About ────────────────────────────────────────────
+// ─── アバウト ─────────────────────────────────────────
 #about {
     min-height: 100vh;
 }
@@ -341,13 +338,13 @@ main {
 
     &__name {
         font-family: $font-serif;
-        font-size: 34px;
+        font-size: rem(34);
         font-weight: 300;
         margin-bottom: 4px;
     }
 
     &__name-en {
-        font-size: 14px;
+        font-size: rem(16);
         letter-spacing: 0.28em;
         color: $color-accent;
         margin-bottom: 24px;
@@ -366,39 +363,46 @@ main {
         width: 36px;
         height: 36px;
         border: 1px solid rgba(255, 255, 255, 0.12);
-        color: $color-white;
         text-decoration: none;
-        transition: color 0.3s, border-color 0.3s;
+        transition: border-color 0.3s;
 
         &:hover {
-            color: $color-accent;
             border-color: $color-accent;
         }
 
-        svg {
-            width: 16px;
-            height: 16px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 1.5;
-
-            &.fill {
-                fill: currentColor;
-                stroke: none;
-            }
+        &__img {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
         }
     }
 
     &__meta {
-        font-size: 14px;
+        font-size: rem(16);
         line-height: 2.1;
         margin-bottom: 28px;
 
         .hl { color: $color-accent; }
     }
 
+    &__info {
+        font-size: rem(16);
+        line-height: 2.1;
+        margin-bottom: 24px;
+    }
+
+    &__mypr {
+        font-family: $font-serif;
+        font-size: rem(17);
+        font-weight: 300;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: $color-accent;
+        margin: 24px 0 8px;
+    }
+
     &__body {
-        font-size: 14px;
+        font-size: rem(16);
         line-height: 2;
     }
 
@@ -411,7 +415,7 @@ main {
         justify-content: center;
         overflow: hidden;
         color: $color-gray;
-        font-size: 14px;
+        font-size: rem(16);
         letter-spacing: 0.2em;
 
         @include mq(desktop) {
@@ -421,13 +425,13 @@ main {
         img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
         }
     }
 }
 
 
-// ─── Works ────────────────────────────────────────────
+// ─── ワークス ─────────────────────────────────────────
 #works {
     min-height: 100vh;
 }
@@ -456,10 +460,6 @@ main {
             border-color: rgba($color-accent, 0.35);
         }
 
-        &--blog  .works__card-img-bg { background: linear-gradient(135deg, #0b0b14, #131320); }
-        &--twuku .works__card-img-bg { background: linear-gradient(135deg, #090e0b, #0f1a10); }
-        &--seal  .works__card-img-bg { background: linear-gradient(135deg, #120b0b, #1e0f0f); }
-        &--video .works__card-img-bg { background: linear-gradient(135deg, #0c0c0b, #1a1806); }
     }
 
     &__card-img {
@@ -500,7 +500,7 @@ main {
     }
 
     &__card-tag {
-        @include label-text($size: 8px, $spacing: 0.18em);
+        @include label-text($size: 16, $spacing: 0.18em);
         border: 1px solid rgba($color-accent, 0.28);
         padding: 3px 8px;
     }
@@ -513,7 +513,7 @@ main {
     }
 
     &__card-period {
-        font-size: 14px;
+        font-size: rem(16);
         letter-spacing: 0.15em;
         color: $color-gray;
     }
@@ -521,7 +521,7 @@ main {
 }
 
 
-// ─── Skill ────────────────────────────────────────────
+// ─── スキル ───────────────────────────────────────────
 .skill {
     &__block {
         margin-bottom: 72px;
@@ -529,7 +529,7 @@ main {
         &:last-of-type { margin-bottom: 0; }
 
         &-title {
-            @include label-text($color: $color-gray, $size: 10px, $spacing: 0.35em);
+            @include label-text($color: $color-gray, $size: 16, $spacing: 0.35em);
             margin-bottom: 28px;
             padding-bottom: 14px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -573,10 +573,10 @@ main {
     &__table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 14px;
+        font-size: rem(16);
 
         th {
-            @include label-text($size: 8px, $spacing: 0.25em);
+            @include label-text($size: 16, $spacing: 0.25em);
             text-align: left;
             padding: 0 12px 12px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -592,14 +592,21 @@ main {
     }
 
     &__name {
-        font-size: 20px;
+        font-size: rem(20);
         color: $color-white;
         white-space: nowrap;
         min-width: 110px;
     }
 
+    &__years {
+        font-size: rem(13);
+        color: $gray;
+        margin-top: 2px;
+        letter-spacing: 0.05em;
+    }
+
     &__detail {
-        font-size: 14px;
+        font-size: rem(16);
         color: $color-white;
         line-height: 1.6;
         margin-top: 3px;
@@ -608,7 +615,7 @@ main {
 }
 
 
-// ─── Timeline ─────────────────────────────────────────
+// ─── タイムライン ──────────────────────────────────────
 #timeline {
     padding-top: 40px;
 }
@@ -695,20 +702,20 @@ main {
 
     &__role {
         font-family: $font-serif;
-        font-size: 22px;
+        font-size: rem(22);
         font-weight: 300;
         margin-bottom: 6px;
     }
 
     &__desc {
-        font-size: 14px;
+        font-size: rem(16);
         line-height: 1.85;
         color: $color-gray;
     }
 }
 
 
-// ─── Contact ──────────────────────────────────────────
+// ─── コンタクト ────────────────────────────────────────
 #contact {
     min-height: 60vh;
     display: flex;
@@ -729,7 +736,7 @@ main {
 .contact {
     &__email {
         font-family: $font-serif;
-        font-size: clamp(18px, 2.5vw, 32px);
+        font-size: clamp(rem(18), 2.5vw, rem(32));
         color: $color-accent;
         margin: 20px 0 44px;
         text-decoration: none;
@@ -740,7 +747,7 @@ main {
 
         @include mq(desktop) {
             word-break: break-all;
-            font-size: clamp(14px, 4vw, 22px);
+            font-size: clamp(rem(16), 4vw, rem(22));
         }
     }
 
@@ -757,7 +764,7 @@ main {
     }
 
     &__link {
-        @include label-text($color: $color-gray, $size: 9px, $spacing: 0.3em);
+        @include label-text($color: $color-gray, $size: 16, $spacing: 0.3em);
         text-decoration: none;
         padding-bottom: 4px;
         border-bottom: 1px solid transparent;
@@ -771,11 +778,11 @@ main {
 }
 
 
-// ─── Footer ───────────────────────────────────────────
+// ─── フッター ─────────────────────────────────────────
 footer {
     text-align: center;
     padding: 28px;
-    font-size: 14px;
+    font-size: rem(16);
     letter-spacing: 0.25em;
     color: rgba($color-gray, 0.35);
     border-top: 1px solid rgba(255, 255, 255, 0.04);
@@ -784,7 +791,7 @@ footer {
 }
 
 
-// ─── Work Detail — Header Variant ────────────────────
+// ─── 作品詳細 — ヘッダー ───────────────────────────────
 header.header--work {
     padding: 22px 52px;
     display: flex;
@@ -813,14 +820,14 @@ header.header--work {
 
 .header-logo {
     font-family: $font-serif;
-    font-size: 16px;
+    font-size: rem(16);
     letter-spacing: 0.4em;
     color: rgba($color-white, 0.4);
     text-transform: uppercase;
 }
 
 
-// ─── Work Detail — Hero ───────────────────────────────
+// ─── 作品詳細 — ヒーロー ───────────────────────────────
 .work-hero {
     min-height: 70vh;
     display: flex;
@@ -835,7 +842,7 @@ header.header--work {
 
     &-title {
         font-family: $font-serif;
-        font-size: clamp(64px, 11vw, 160px);
+        font-size: clamp(rem(64), 11vw, rem(160));
         font-weight: 300;
         line-height: 0.92;
         color: $color-white;
@@ -850,7 +857,7 @@ header.header--work {
 }
 
 
-// ─── Work Detail — Meta Bar ───────────────────────────
+// ─── 作品詳細 — メタバー ───────────────────────────────
 .work-meta-bar {
     padding: 40px 9vw;
     display: grid;
@@ -868,12 +875,12 @@ header.header--work {
 }
 
 .work-meta-label {
-    @include label-text($size: 8px, $spacing: 0.35em);
+    @include label-text($size: 16, $spacing: 0.35em);
     margin-bottom: 10px;
 }
 
 .work-meta-value {
-    font-size: 14px;
+    font-size: rem(16);
     line-height: 1.9;
     color: rgba($color-white, 0.7);
 }
@@ -886,13 +893,13 @@ header.header--work {
 }
 
 .tag {
-    @include label-text($size: 8px, $spacing: 0.18em);
+    @include label-text($size: 16, $spacing: 0.18em);
     border: 1px solid rgba($color-accent, 0.28);
     padding: 3px 8px;
 }
 
 
-// ─── Work Detail — Content ────────────────────────────
+// ─── 作品詳細 — コンテンツ ─────────────────────────────
 .work-content {
     padding: 80px 9vw 120px;
 }
@@ -914,7 +921,7 @@ header.header--work {
         li { margin-bottom: 4px; }
 
         a {
-            @include label-text($color: $color-gray, $size: 9px, $spacing: 0.25em);
+            @include label-text($color: $color-gray, $size: 16, $spacing: 0.25em);
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -948,7 +955,7 @@ header.header--work {
 }
 
 .block-label {
-    @include label-text($size: 9px, $spacing: 0.4em);
+    @include label-text($size: 16, $spacing: 0.4em);
     margin-bottom: 20px;
     display: flex;
     align-items: center;
@@ -964,7 +971,7 @@ header.header--work {
 
 .block-title {
     font-family: $font-serif;
-    font-size: clamp(26px, 3vw, 40px);
+    font-size: clamp(rem(26), 3vw, rem(40));
     font-weight: 300;
     line-height: 1.2;
     color: $color-white;
@@ -972,7 +979,7 @@ header.header--work {
 }
 
 .block-body {
-    font-size: 14px;
+    font-size: rem(16);
     line-height: 2.2;
     color: $color-white;
 
@@ -980,7 +987,7 @@ header.header--work {
 }
 
 
-// ─── Work Detail — Mock Image ─────────────────────────
+// ─── 作品詳細 — サムネイル ─────────────────────────────
 .mock-img {
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -1011,13 +1018,13 @@ header.header--work {
     border-left: 2px solid $color-accent;
     padding: 20px 24px;
     margin: 28px 0;
-    font-size: 14px;
+    font-size: rem(16);
     line-height: 2;
     color: rgba($color-white, 0.7);
 }
 
 
-// ─── Work Detail — CTA ────────────────────────────────
+// ─── 作品詳細 — CTA ────────────────────────────────────
 .work-cta {
     margin-top: 40px;
     display: flex;
@@ -1035,7 +1042,7 @@ header.header--work {
     border: 1px solid rgba($color-accent, 0.5);
     color: $color-accent;
     font-family: $font-mono;
-    font-size: 14px;
+    font-size: rem(16);
     letter-spacing: 0.3em;
     text-transform: uppercase;
     text-decoration: none;
@@ -1055,37 +1062,4 @@ header.header--work {
         stroke: currentColor;
         stroke-width: 1.5;
     }
-}
-
-
-// ─── Work Detail — Next Work ──────────────────────────
-.next-work {
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-    padding: 64px 9vw;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-decoration: none;
-    color: inherit;
-    position: relative;
-    z-index: $z-main;
-    transition: background 0.3s;
-
-    &:hover { background: rgba(255, 255, 255, 0.02); }
-}
-
-.next-label {
-    @include label-text($color: $color-gray, $size: 8px, $spacing: 0.35em);
-    margin-bottom: 8px;
-}
-
-.next-title {
-    font-family: $font-serif;
-    font-size: clamp(24px, 3vw, 38px);
-    font-weight: 300;
-}
-
-.next-arrow {
-    font-size: 28px;
-    color: $color-accent;
 }

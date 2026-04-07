@@ -30,6 +30,7 @@
 | 記事一覧 | 管理画面での記事一覧表示 | ✅ 完了 |
 | カテゴリ管理 | カテゴリの作成・削除・記事への紐付け | ✅ 完了 |
 | 画像アップロード | サムネイル画像のアップロード・保存 | ✅ 完了 |
+| WYSIWYGエディタ | CKEditor 5 によるリッチテキスト入力 | ✅ 完了 |
 
 ### 開発ステップ
 
@@ -41,6 +42,7 @@
 | Step 4 | 記事の投稿・編集・削除 | ✅ 完了 |
 | Step 5 | カテゴリ管理・記事への紐付け | ✅ 完了 |
 | Step 6 | 画像アップロード | ✅ 完了 |
+| Step 7 | CKEditor 5 WYSIWYGエディタ導入 | ✅ 完了 |
 
 ---
 
@@ -1631,6 +1633,171 @@ $category['id'] == $currentCategoryId ? 'selected' : ''
 - 外部キー制約があるときは子テーブルを先に削除しないと `1451` エラーになる
 - `closest('セレクタ')` で祖先要素を上に向かって検索できる
 - `element.remove()` でDOM要素を削除できる
+
+---
+
+---
+
+### 2026-04-07 CKEditor 5 WYSIWYG エディタの導入
+
+**目的：**
+- セクション本文の入力欄をプレーンテキストから WYSIWYG（見たまま編集）に変更
+- 太字・箇条書き・リンクなどの書式をボタン操作で付けられるようにする
+
+---
+
+**実装ファイル：**
+- `cms/admin/post-edit.php` — エディタの読み込み・初期化
+- `single.php` — 本文の出力方法を変更
+
+---
+
+**CKEditor 4 → 5 に切り替えた理由：**
+
+最初は CKEditor 4（ローカルに ZIP を展開したもの）を使おうとしたが、CKEditor 5 に切り替えた。
+
+| | CKEditor 4 | CKEditor 5 |
+|--|--|--|
+| 形式 | 従来の `<script>` タグで読み込める | ESモジュール（`import/export`）形式 |
+| API | `CKEDITOR.replace(el)` | `ClassicEditor.create(el, config)` |
+| インスタンス管理 | `CKEDITOR.instances` に自動登録 | 自前で管理が必要 |
+| メンテナンス | 2023年にサポート終了 | 現行バージョン（推奨） |
+
+---
+
+**読み込み方法（ESモジュール対応）：**
+
+CKEditor 5 v42以降は内部コードが `export` 構文で書かれているため、通常の `<script src="...">` では読み込めず `Unexpected token 'export'` エラーになる。
+
+対応策として **importmap + `type="module"`** を使う：
+
+```html
+<!-- ① URL のエイリアスを定義（"ckeditor5" という名前でCDNを指定） -->
+<script type="importmap">
+{
+    "imports": {
+        "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.js",
+        "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.3.1/"
+    }
+}
+</script>
+
+<!-- ② モジュールとして読み込む -->
+<script type="module">
+import { ClassicEditor, ... } from 'ckeditor5';
+import 'ckeditor5/translations/ja.js';
+</script>
+```
+
+**importmap とは：**  
+`import 'ckeditor5'` という短い名前が実際にどのURLを指すかをブラウザに教える仕組み。  
+`<script type="importmap">` は必ず `<script type="module">` より前に書く必要がある。
+
+---
+
+**`type="module"` のスコープ問題と対策：**
+
+`<script type="module">` の中で定義した関数は、モジュールスコープに閉じられる。  
+そのままでは HTML 側の `onclick="addSection()"` から呼び出せず `ReferenceError` になる。
+
+→ **`window.xxx = function` でグローバルに公開**することで解決：
+
+```javascript
+// モジュールスコープ内では onclick から呼べない
+function addSection() { ... }          // ❌
+
+// window に代入すればどこからでも呼べる
+window.addSection = function() { ... }; // ✅
+```
+
+---
+
+**エディタのインスタンス管理（Map を使う理由）：**
+
+CKEditor 5 には CKEditor 4 の `CKEDITOR.instances` のようなグローバル管理機能がない。  
+セクションの追加・削除時にエディタを操作するため、自前で `Map` を使って管理する。
+
+```javascript
+// textarea要素をキー、エディタインスタンスを値として保持
+const editorInstances = new Map();
+
+// 初期化時に登録
+ClassicEditor.create(textarea, config).then(editor => {
+    editorInstances.set(textarea, editor);
+});
+
+// セクション削除時にインスタンスも破棄
+editorInstances.get(textarea).destroy();
+editorInstances.delete(textarea);
+```
+
+**`Map` を選んだ理由：**  
+エディタを「どのtextareaに対応するか」で引き当てたいため、要素をキーにできる `Map` が適切。  
+配列だと「何番目か」で管理することになり、セクション削除時にインデックスがズレる危険がある。
+
+---
+
+**フォーム送信時の同期処理：**
+
+CKEditor 5 は textarea を隠して独自の編集領域を表示する。  
+そのままフォームを送信すると textarea は空のまま → **送信前に `getData()` で内容を取り出して textarea に書き戻す**：
+
+```javascript
+document.querySelector('form').addEventListener('submit', function() {
+    editorInstances.forEach((editor, textarea) => {
+        textarea.value = editor.getData(); // エディタのHTMLをtextareaに同期
+    });
+});
+```
+
+---
+
+**本文の保存・表示の流れ：**
+
+```
+[管理画面で入力]
+      ↓ CKEditor が HTML を生成（例：<p>テキスト</p><ul><li>項目</li></ul>）
+      ↓ 送信前に textarea.value へ同期
+[POSTで送信]
+      ↓ $_POST['section_body[]'] にHTMLが入る
+      ↓ そのまま DB（post_sections.body）に保存
+[single.php で表示]
+      ↓ <?= $section['body'] ?>  ← h() でエスケープせずそのまま出力
+[ブラウザがHTMLとしてレンダリング]
+```
+
+**注意：** `h()` でエスケープすると `<p>` が `&lt;p&gt;` になりタグが文字として表示されてしまう。  
+管理者しか入力できない前提で、`h()` を外してHTMLをそのまま出力している。
+
+---
+
+**ツールバー構成：**
+
+```
+見出し | 太字・斜体・下線・打消し | 箇条書き・番号・インデント | リンク・引用 | 戻す・やり直し
+```
+
+```javascript
+toolbar: {
+    items: [
+        'heading', '|',
+        'bold', 'italic', 'underline', 'strikethrough', '|',
+        'bulletedList', 'numberedList', 'indent', 'outdent', '|',
+        'link', 'blockQuote', '|',
+        'undo', 'redo',
+    ]
+}
+```
+
+---
+
+**学んだこと：**
+- CKEditor 5 v42以降は ESモジュール形式のため `<script src>` では読み込めない
+- `importmap` でCDNのURLにエイリアスを設定し、`import` 文で読み込む
+- `type="module"` はスコープが独立するので、`onclick` から呼ぶ関数は `window.xxx` に代入する
+- CKEditor 5 は textarea を隠すため、フォーム送信前に `getData()` → `textarea.value` で同期が必要
+- エディタが生成した HTML は `h()` でエスケープせず出力する（エスケープするとタグが文字化けする）
+- `Map` は任意の値（DOM要素など）をキーにできるため、要素とインスタンスの紐付けに便利
 
 ---
 

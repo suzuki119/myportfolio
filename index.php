@@ -7,10 +7,8 @@ $stmt = $pdo->prepare(
     'SELECT * FROM posts WHERE status = :status ORDER BY created_at DESC'
 );
 $stmt->execute([':status' => 'published']);
-$posts = $stmt->fetchAll();// [PDO組み込み] 全行を配列で取得
+$posts = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -24,7 +22,7 @@ $posts = $stmt->fetchAll();// [PDO組み込み] 全行を配列で取得
   <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body>
+<body id="index">
 
   <div id="progressBar"></div>
 
@@ -43,8 +41,6 @@ $posts = $stmt->fetchAll();// [PDO組み込み] 全行を配列で取得
     <a href="#contact">Contact</a>
   </nav>
 
-
-
   <div id="canvas-container">
     <canvas id="backcanvas"></canvas>
   </div>
@@ -61,29 +57,35 @@ $posts = $stmt->fetchAll();// [PDO組み込み] 全行を配列で取得
       <div class="sec__head">
         <h2 class="sec__title">About</h2>
       </div>
+
       <div class="about__grid">
         <div class="about__card">
+
           <h3 class="about__name">鈴木 優太郎</h3>
           <div class="about__name-en">Suzuki Yutaro</div>
+
           <div class="about__icons">
-            <!-- GitHub -->
             <a href="https://github.com/suzuki119/" target="_blank" rel="noopener" class="about__icon-link"
               title="GitHub">
               <img src="./img/github_logo_icon.webp" alt="GitHub" class="about__icon-link__img">
             </a>
           </div>
+
           <div class="about__meta">
-            トライデントコンピュータ専門学校<br>
-            Webデザイン学科 1年（19歳）<br><br>
-            出身：<span class="hl">愛知県（日間賀島）</span><br>
-            志望：<span class="hl">フロントエンドエンジニア</span>
-          </div>
+            <div class="about__info">
+              トライデントコンピュータ専門学校<br>
+              Webデザイン学科 1年（19歳）<br><br>
+              出身：<span class="hl">愛知県（日間賀島）</span><br>
+              志望：<span class="hl">フロントエンドエンジニア</span>
+            </div>
+
+            <div class="about__photo">
+              <img src="./img/about.jpg" alt="鈴木 優太郎">
+            </div>
+
           <p class="about__body">
             JavaScript・CSSアニメーション実装に興味を持ち、日々制作に取り組んでいます。UIの見やすさと実装の再現性を両立できるエンジニアを目指し、思いついたものはすぐ手を動かして形にするようにしています。
-
-
           </p>
-
 
           <h4 class="about__mypr">自己PR</h4>
           <p class="about__body">
@@ -96,9 +98,7 @@ $posts = $stmt->fetchAll();// [PDO組み込み] 全行を配列で取得
 **今後：** 今後はReact/Three.jsなどにも挑戦したりチーム開発経験を増やせるイベントに参加する予定で、それをまた自分の成長に繋げられればと感じています。
           </p>
         </div>
-        <div class="about__photo">
-          <img src="./img/about.jpg" alt="鈴木 優太郎">
-        </div>
+
       </div>
     </section>
 

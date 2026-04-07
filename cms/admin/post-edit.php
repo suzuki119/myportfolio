@@ -160,6 +160,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>記事編集 | 管理画面</title>
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.css">
+    <script type="importmap">
+    {
+        "imports": {
+            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.js",
+            "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.3.1/"
+        }
+    }
+    </script>
     <style>
         body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
         h1 { font-size: 1.4rem; margin-bottom: 24px; }
@@ -256,7 +265,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <input type="text" name="section_title[]" value="<?= h($sec['title']) ?>">
                     </label>
                     <label>本文
-                        <textarea name="section_body[]"><?= h($sec['body']) ?></textarea>
+                        <textarea name="section_body[]" class="wysiwyg"><?= $sec['body'] ?></textarea>
                     </label>
                 </div>
             <?php endforeach; ?>
@@ -270,24 +279,89 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </form>
 
-    <script>
-    function addSection() {
-        const wrap = document.getElementById('sections-wrap'); // 親要素（セクション一覧のラッパー）を取得
-        const block = document.createElement('div');           // 新しい div 要素を生成（まだDOMには追加されていない）
+    <script type="module">
+    import {
+        ClassicEditor,
+        Essentials,
+        Bold, Italic, Underline, Strikethrough,
+        Heading,
+        Paragraph,
+        List,
+        Link,
+        BlockQuote,
+        Indent, IndentBlock,
+    } from 'ckeditor5';
+    import 'ckeditor5/translations/ja.js';
+
+    const editorConfig = {
+        plugins: [
+            Essentials,
+            Bold, Italic, Underline, Strikethrough,
+            Heading,
+            Paragraph,
+            List,
+            Link,
+            BlockQuote,
+            Indent, IndentBlock,
+        ],
+        toolbar: {
+            items: [
+                'heading', '|',
+                'bold', 'italic', 'underline', 'strikethrough', '|',
+                'bulletedList', 'numberedList', 'indent', 'outdent', '|',
+                'link', 'blockQuote', '|',
+                'undo', 'redo',
+            ]
+        },
+        language: 'ja',
+    };
+
+    // textarea要素 → エディタインスタンス の対応を管理
+    const editorInstances = new Map();
+
+    function initEditor(textarea) {
+        ClassicEditor.create(textarea, editorConfig)
+            .then(editor => { editorInstances.set(textarea, editor); })
+            .catch(err => console.error(err));
+    }
+
+    // 既存セクションのエディタを初期化
+    document.querySelectorAll('.wysiwyg').forEach(initEditor);
+
+    // フォーム送信前に CKEditor 5 の内容を textarea へ同期
+    document.querySelector('form').addEventListener('submit', function() {
+        editorInstances.forEach((editor, textarea) => {
+            textarea.value = editor.getData();
+        });
+    });
+
+    // type="module" はスコープが独立するため、onclick属性から呼べるようグローバルに公開
+    window.addSection = function() {
+        const wrap = document.getElementById('sections-wrap');
+        const block = document.createElement('div');
         block.className = 'section-block';
         block.innerHTML = `
             <button type="button" class="section-delete-btn" onclick="deleteSection(this)">削除</button>
-            <label>見出し<input type="text" name="section_title[]" style="width:100%;padding:8px;box-sizing:border-box;margin-top:6px;border:1px solid #ccc;font-size:1rem;"></label>
-            <label style="margin-top:10px;">本文<textarea name="section_body[]" style="width:100%;padding:8px;box-sizing:border-box;margin-top:6px;border:1px solid #ccc;font-size:1rem;height:120px;resize:vertical;font-family:monospace;"></textarea></label>
+            <label>見出し
+                <input type="text" name="section_title[]" style="width:100%;padding:8px;box-sizing:border-box;margin-top:6px;border:1px solid #ccc;font-size:1rem;">
+            </label>
+            <label style="margin-top:10px;">本文
+                <textarea name="section_body[]" class="wysiwyg" style="width:100%;height:200px;"></textarea>
+            </label>
         `;
-        wrap.appendChild(block); // 生成した要素を親要素の末尾に追加
-    }
+        wrap.appendChild(block);
+        initEditor(block.querySelector('.wysiwyg'));
+    };
 
-    function deleteSection(btn) {
-        // closest() = 自身から上に向かって祖先を探し、最初に .section-block に一致する要素を返す
-        // remove()  = その要素をDOMから削除する
-        btn.closest('.section-block').remove();
-    }
+    window.deleteSection = function(btn) {
+        const block = btn.closest('.section-block');
+        const textarea = block.querySelector('textarea');
+        if (textarea && editorInstances.has(textarea)) {
+            editorInstances.get(textarea).destroy();
+            editorInstances.delete(textarea);
+        }
+        block.remove();
+    };
     </script>
 </body>
 </html>
