@@ -14,11 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['delete_id'])) {//ブ
     $delete_id = $_POST['delete_id'];
 
     // 外部キー制約があるため、子テーブルを先に削除してから posts を削除する
-    $pdo->prepare('DELETE FROM post_categories WHERE post_id = :id') // 関連するカテゴリの紐付けを削除
+    // （逆順にすると「1451 Cannot delete or update a parent row」エラーになる）
+    $pdo->prepare('DELETE FROM post_categories WHERE post_id = :id') // ① 関連するカテゴリの紐付けを削除
         ->execute([':id' => $delete_id]);
-    $pdo->prepare('DELETE FROM post_sections WHERE post_id = :id')   // 関連するセクションを削除
+    $pdo->prepare('DELETE FROM post_sections WHERE post_id = :id')   // ② 関連するセクションを削除
         ->execute([':id' => $delete_id]);
-    $pdo->prepare('DELETE FROM posts WHERE id = :id')                // 最後に記事本体を削除
+    $pdo->prepare('DELETE FROM posts WHERE id = :id')                // ③ 最後に記事本体を削除
         ->execute([':id' => $delete_id]);
 
     header('Location: ' . SITE_URL . '/cms/admin/index.php'); // 削除後にリロード

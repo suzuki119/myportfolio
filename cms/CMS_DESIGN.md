@@ -206,9 +206,10 @@ myportfolio/
 | テーブル名 | 役割 |
 |-----------|------|
 | users | 管理者のログイン情報 |
-| posts | 記事のタイトル・本文など |
+| posts | 記事のタイトル・サムネイル・メタ情報など |
 | categories | カテゴリの一覧 |
 | post_categories | 記事とカテゴリの紐付け（中間テーブル） |
+| post_sections | 記事の本文セクション（見出し＋本文の繰り返し） |
 
 ---
 
@@ -238,16 +239,19 @@ CREATE TABLE users (
 
 ### posts テーブル
 
-記事の内容を管理する。`author_id` で users テーブルと紐付く。
+記事のメタ情報・サムネイルを管理する。本文は `post_sections` テーブルで別管理。`author_id` で users テーブルと紐付く。
 
 | カラム名 | 型 | 説明 |
 |---------|-----|------|
 | id | INT / PK / AUTO_INCREMENT | 記事ID |
 | title | VARCHAR(255) | タイトル |
-| content | LONGTEXT | 本文（HTML） |
 | thumbnail | VARCHAR(255) | サムネイル画像のファイル名 |
 | status | ENUM('draft','published') | 下書き or 公開 |
 | author_id | INT / FK → users.id | 投稿者 |
+| period | VARCHAR(100) | 制作期間（例：2025.06 – 08） |
+| type | VARCHAR(100) | 種別（例：個人制作 / ブログサイト） |
+| external_url | VARCHAR(2083) | 外部リンクURL（作品へのリンクなど） |
+| tags | TEXT | 使用技術タグ（カンマ区切り 例：WordPress,SCSS） |
 | created_at | TIMESTAMP | 作成日時 |
 | updated_at | TIMESTAMP | 更新日時（自動更新） |
 
@@ -255,20 +259,27 @@ CREATE TABLE users (
 CREATE TABLE posts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    content LONGTEXT,
     thumbnail VARCHAR(255),
     status ENUM('draft', 'published') DEFAULT 'draft',
     author_id INT,
+    period VARCHAR(100),
+    type VARCHAR(100),
+    external_url VARCHAR(2083),
+    tags TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (author_id) REFERENCES users(id)
 );
 ```
 
-> **2026-04-06 追加済み：** 以下のSQLでカラムを追加した。
+> **2026-04-07 追加済み：** 以下のSQLで新カラムを追加・`content` を削除した。
 
 ```sql
-ALTER TABLE posts ADD COLUMN thumbnail VARCHAR(255) DEFAULT NULL AFTER content;
+ALTER TABLE posts ADD COLUMN period VARCHAR(100) DEFAULT NULL;
+ALTER TABLE posts ADD COLUMN type VARCHAR(100) DEFAULT NULL;
+ALTER TABLE posts ADD COLUMN external_url VARCHAR(2083) DEFAULT NULL;
+ALTER TABLE posts ADD COLUMN tags TEXT DEFAULT NULL;
+ALTER TABLE posts DROP COLUMN content;
 ```
 
 ---
@@ -319,6 +330,54 @@ posts          post_categories     categories
 -----          ---------------     ----------
 id      ←───  post_id
                category_id  ───→  id
+```
+
+---
+
+### post_sections テーブル
+
+記事の本文セクションを管理する。1つの記事が複数のセクションを持てる（1対多）。
+セクションは「見出し＋本文」の繰り返しで構成され、`sort_order` で表示順を制御する。
+
+| カラム名 | 型 | 説明 |
+|---------|-----|------|
+| id | INT / PK / AUTO_INCREMENT | セクションID |
+| post_id | INT / FK → posts.id | 紐付く記事のID |
+| sort_order | INT | 表示順（0から始まる整数） |
+| title | VARCHAR(255) | セクションの見出し |
+| body | LONGTEXT | セクションの本文 |
+
+```sql
+CREATE TABLE post_sections (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    post_id INT NOT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
+    title VARCHAR(255) NOT NULL,
+    body LONGTEXT,
+    FOREIGN KEY (post_id) REFERENCES posts(id)
+);
+```
+
+**テーブルの関係図：**
+```
+posts (1) ─────── (多) post_sections
+  id         ←─── post_id
+```
+
+**外部キー制約と削除順序：**
+
+`post_sections.post_id` は `posts.id` を参照している（外部キー制約）。
+このため、`posts` を削除する前に `post_sections` を先に削除しないと制約違反エラーになる。
+`post_categories` も同様。
+
+```php
+// ❌ 間違った順序（posts を先に消そうとするとエラー）
+// DELETE FROM posts WHERE id = :id → 1451 エラー
+
+// ✅ 正しい順序（子テーブルから先に削除する）
+DELETE FROM post_categories WHERE post_id = :id  // ① 中間テーブル
+DELETE FROM post_sections  WHERE post_id = :id  // ② セクション
+DELETE FROM posts          WHERE id = :id        // ③ 最後に記事本体
 ```
 
 ---
@@ -827,10 +886,70 @@ $date = date('Y年n月j日', strtotime($post['created_at']));
 | キーワード | 意味 |
 |-----------|------|
 | `array_column($配列, 'キー名')` | 配列から特定のキーの値だけ取り出してフラットな配列を作る |
+| `explode('区切り文字', $str)` | 文字列を区切り文字で分割して配列にする。JSの `split()` に相当 |
 
 ```php
 $rows = [['category_id' => 2], ['category_id' => 5]];
 array_column($rows, 'category_id'); // → [2, 5]
+
+// explode() の使い方
+$tags = explode(',', 'WordPress,SCSS,JavaScript');
+// → ['WordPress', 'SCSS', 'JavaScript']
+
+// single.php / index.php でのタグ表示
+$tags = !empty($post['tags']) ? explode(',', $post['tags']) : [];
+foreach ($tags as $tag) {
+    echo '<span class="tag">' . h(trim($tag)) . '</span>';
+}
+```
+
+---
+
+**文字列 → HTML変換**
+
+| キーワード | 意味 |
+|-----------|------|
+| `nl2br($str)` | 文字列中の改行（`\n`）を `<br>` タグに変換する。テキストエリアの入力を改行ありで表示するときに使う |
+
+```php
+// 使い方（必ずh()でエスケープしてからnl2br()を適用する）
+echo nl2br(h($section['body']));
+// ↑ ① h() でXSS対策（特殊文字を無害化）
+// ② nl2br() で改行を <br> に変換（h()の後に呼ばないと <br> も文字列になってしまう）
+```
+
+**注意：順序が重要**
+```php
+// ❌ 間違い：nl2br を先にかけると <br> タグが h() でエスケープされてしまう
+echo h(nl2br($text)); // → &lt;br&gt; と表示されてしまう
+
+// ✅ 正しい順序
+echo nl2br(h($text)); // → <br> タグとして機能する
+```
+
+---
+
+**フォームの配列送信（セクション管理で使用）**
+
+`name="field[]"` のように `[]` をつけると、複数のinput/textareaの値をPHPで配列として受け取れる。
+
+```html
+<!-- HTMLフォーム -->
+<input type="text" name="section_title[]" value="概要">
+<input type="text" name="section_title[]" value="工夫した点">
+<textarea name="section_body[]">説明1</textarea>
+<textarea name="section_body[]">説明2</textarea>
+```
+
+```php
+// PHP側での受け取り
+$_POST['section_title'] // → ['概要', '工夫した点']
+$_POST['section_body']  // → ['説明1', '説明2']
+
+// インデックスが対応しているのでループして紐付けられる
+foreach ($_POST['section_title'] as $i => $title) {
+    $body = $_POST['section_body'][$i] ?? '';
+}
 ```
 
 ---
@@ -1240,6 +1359,60 @@ echo SITE_URL; // 定数：$なし
 | Python | `name = 'suzuki'` |
 | Java | `String name = "suzuki";` |
 
+### JavaScript DOM操作（セクション管理画面）
+
+`post-edit.php` のセクション追加・削除ボタンで使っているDOM操作のまとめ。
+
+**セクション追加（`addSection()`）**
+
+```javascript
+function addSection() {
+    const wrap = document.getElementById('sections-wrap'); // 親要素を取得
+    const block = document.createElement('div');           // 新しい div 要素を作成
+    block.className = 'section-block';                     // クラスを設定
+    block.innerHTML = `
+        <button type="button" onclick="deleteSection(this)">削除</button>
+        <input type="text" name="section_title[]">
+        <textarea name="section_body[]"></textarea>
+    `;
+    wrap.appendChild(block); // 親要素の末尾に追加
+}
+```
+
+| メソッド | 意味 |
+|---------|------|
+| `document.getElementById('id')` | IDで要素を取得する |
+| `document.createElement('タグ名')` | 新しいHTML要素を生成する（まだDOMには追加されない） |
+| `element.className = '...'` | 要素にクラスを設定する |
+| `element.innerHTML = '...'` | 要素の中身をHTMLで設定する |
+| `親.appendChild(子)` | 親要素の末尾に子要素を追加する |
+
+**セクション削除（`deleteSection()`）**
+
+```javascript
+function deleteSection(btn) {
+    btn.closest('.section-block').remove();
+    // btn      = クリックされた削除ボタン自身（this で渡される）
+    // closest() = 自身または祖先の中で最初に条件に一致する要素を返す
+    // remove()  = 要素をDOMから削除する
+}
+```
+
+| メソッド | 意味 |
+|---------|------|
+| `element.closest('セレクタ')` | 自身と祖先要素を上に向かって探し、最初に一致する要素を返す。JSの `querySelector` の逆方向版 |
+| `element.remove()` | 要素をDOMから削除する。PHPの `unlink()` のDOM版 |
+
+**`this` でボタン自身を渡す**
+
+```html
+<button onclick="deleteSection(this)">削除</button>
+```
+
+`onclick="deleteSection(this)"` の `this` はクリックされたボタン要素自身を指す。関数内で `btn` として受け取り、そこから `closest()` で親の `.section-block` を探す。
+
+---
+
 ### セキュリティ対策まとめ
 
 | 脅威 | 対策 | 実装 |
@@ -1413,6 +1586,51 @@ $category['id'] == $currentCategoryId ? 'selected' : ''
 - `ORDER BY created_at DESC` で新しい順に並べる
 - 削除はGETではなくPOSTで行う（URLに直接アクセスされて消えるのを防ぐ）
 - `confirm()` でJavaScriptの確認ダイアログを出す
+
+---
+
+---
+
+### 2026-04-07 single.php のデザイン刷新・セクション機能実装
+
+**single.php のデザイン刷新：**
+- `single.html` のレイアウトに合わせて `single.php` を全面書き直し
+- 構成：canvas背景 → `header--work` → `work-hero` → `hero-divider` → `work-meta-bar` → `article` → footer
+- `$post['period']` / `$post['type']` / `$post['tags']` をメタバーに表示
+- `$post['external_url']` がある場合のみ「作品へ」CTAボタンを表示
+- セクションを `sort_order` 順に取得してループ表示
+- タグは `explode(',', $post['tags'])` でカンマ区切りを配列に変換してから `<span>` で表示
+- 本文は `nl2br(h($section['body']))` で改行を `<br>` に変換しつつXSS対策
+
+**post_sections テーブルの追加：**
+- phpMyAdmin で `post_sections` テーブルを新規作成
+- カラム：`id`（PK）/ `post_id`（FK）/ `sort_order` / `title` / `body`
+
+**posts テーブルの変更：**
+- `period` / `type` / `external_url` / `tags` カラムを `ALTER TABLE` で追加
+- `content` カラムを `DROP COLUMN` で削除（セクションで代替するため不要に）
+
+**admin/index.php の削除処理修正：**
+- 外部キー制約により、`posts` 削除前に子テーブルを先に削除する必要があった
+- 削除順を「post_categories → post_sections → posts」に修正
+
+**post-edit.php のセクション管理実装：**
+- セクションフォームを動的に追加・削除するJS（`addSection()` / `deleteSection()`）
+- `name="section_title[]"` / `name="section_body[]"` でPHPが配列として受け取る
+- 保存処理は「全削除 → 入れ直し」パターン（差分計算より単純で確実）
+- タイトルが空のセクションはスキップ（`if (trim($t) === '') continue;`）
+
+**index.php の更新：**
+- 記事カードの期間表示を `$post['created_at']` から `$post['period']` に変更
+- タグを `explode(',', $post['tags'])` で `<span class="tag">` として表示
+
+**学んだこと：**
+- `explode('区切り文字', $str)` で文字列を配列に変換できる（JSの `split()` に相当）
+- `nl2br()` は必ず `h()` の後に適用する（順序を逆にすると `<br>` がエスケープされてしまう）
+- `name="field[]"` でHTMLの複数フォーム値をPHPで配列として受け取れる
+- 外部キー制約があるときは子テーブルを先に削除しないと `1451` エラーになる
+- `closest('セレクタ')` で祖先要素を上に向かって検索できる
+- `element.remove()` でDOM要素を削除できる
 
 ---
 

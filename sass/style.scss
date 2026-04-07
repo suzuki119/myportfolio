@@ -7,7 +7,7 @@
 
 // --- Colors ---
 $color-white:  #d8d8d8;
-$color-gray:   #7a7a72;
+$color-gray:   #e5e5e5;
 $color-accent: #b8a88a;
 $color-bg:     #090909;
 
@@ -48,7 +48,7 @@ $breakpoints: (
     border: 1px solid var(--glass-border);
 }
 
-@mixin label-text($color: $color-accent, $size: 9px, $spacing: 0.45em) {
+@mixin label-text($color: $color-accent, $size: 14px, $spacing: 0.45em) {
     font-size: $size;
     letter-spacing: $spacing;
     text-transform: uppercase;
@@ -167,7 +167,7 @@ img {
         transition: color 0.3s;
 
         @include mq(desktop) {
-            font-size: 13px;
+            font-size: 14px;
             letter-spacing: 0.25em;
         }
     }
@@ -242,7 +242,7 @@ img {
             &.open { display: flex; }
 
             a {
-                font-size: 13px;
+                font-size: 14px;
                 letter-spacing: 0.3em;
                 color: var(--text);
             }
@@ -347,7 +347,7 @@ main {
     }
 
     &__name-en {
-        font-size: 10px;
+        font-size: 14px;
         letter-spacing: 0.28em;
         color: $color-accent;
         margin-bottom: 24px;
@@ -390,7 +390,7 @@ main {
     }
 
     &__meta {
-        font-size: 11px;
+        font-size: 14px;
         line-height: 2.1;
         margin-bottom: 28px;
 
@@ -398,7 +398,7 @@ main {
     }
 
     &__body {
-        font-size: 11px;
+        font-size: 14px;
         line-height: 2;
     }
 
@@ -411,7 +411,7 @@ main {
         justify-content: center;
         overflow: hidden;
         color: $color-gray;
-        font-size: 10px;
+        font-size: 14px;
         letter-spacing: 0.2em;
 
         @include mq(desktop) {
@@ -507,13 +507,13 @@ main {
 
     &__card-title {
         font-family: $font-serif;
-        font-size: 26px;
+        font-size: 32px;
         font-weight: 300;
         margin-bottom: 5px;
     }
 
     &__card-period {
-        font-size: 9px;
+        font-size: 14px;
         letter-spacing: 0.15em;
         color: $color-gray;
     }
@@ -701,7 +701,7 @@ main {
     }
 
     &__desc {
-        font-size: 10px;
+        font-size: 14px;
         line-height: 1.85;
         color: $color-gray;
     }
@@ -775,7 +775,7 @@ main {
 footer {
     text-align: center;
     padding: 28px;
-    font-size: 8px;
+    font-size: 14px;
     letter-spacing: 0.25em;
     color: rgba($color-gray, 0.35);
     border-top: 1px solid rgba(255, 255, 255, 0.04);
@@ -873,7 +873,7 @@ header.header--work {
 }
 
 .work-meta-value {
-    font-size: 11px;
+    font-size: 14px;
     line-height: 1.9;
     color: rgba($color-white, 0.7);
 }
@@ -972,7 +972,7 @@ header.header--work {
 }
 
 .block-body {
-    font-size: 11px;
+    font-size: 14px;
     line-height: 2.2;
     color: $color-white;
 
@@ -1011,7 +1011,7 @@ header.header--work {
     border-left: 2px solid $color-accent;
     padding: 20px 24px;
     margin: 28px 0;
-    font-size: 11px;
+    font-size: 14px;
     line-height: 2;
     color: rgba($color-white, 0.7);
 }
@@ -1035,7 +1035,7 @@ header.header--work {
     border: 1px solid rgba($color-accent, 0.5);
     color: $color-accent;
     font-family: $font-mono;
-    font-size: 9px;
+    font-size: 14px;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     text-decoration: none;
@@ -1049,8 +1049,8 @@ header.header--work {
     }
 
     svg {
-        width: 12px;
-        height: 12px;
+        width: 14px;
+        height: 14px;
         fill: none;
         stroke: currentColor;
         stroke-width: 1.5;

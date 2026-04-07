@@ -123,11 +123,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->prepare('DELETE FROM post_sections WHERE post_id = :post_id')
                 ->execute([':post_id' => $id]);
 
+            // name="section_title[]" / name="section_body[]" でフォームから配列として受け取る
             $sec_titles = $_POST['section_title'] ?? []; // [組み込み] ??=nullなら空配列
             $sec_bodies = $_POST['section_body']  ?? [];
 
             foreach ($sec_titles as $i => $t) {
-                if (trim($t) === '') continue; // タイトルが空のセクションはスキップ
+                if (trim($t) === '') continue; // タイトルが空のセクションはスキップ（削除ボタンを押さず空にしたものも対応）
                 $s_stmt = $pdo->prepare(
                     'INSERT INTO post_sections (post_id, sort_order, title, body)
                      VALUES (:post_id, :sort_order, :title, :body)'
@@ -271,19 +272,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <script>
     function addSection() {
-        const wrap = document.getElementById('sections-wrap');
-        const block = document.createElement('div');
+        const wrap = document.getElementById('sections-wrap'); // 親要素（セクション一覧のラッパー）を取得
+        const block = document.createElement('div');           // 新しい div 要素を生成（まだDOMには追加されていない）
         block.className = 'section-block';
         block.innerHTML = `
             <button type="button" class="section-delete-btn" onclick="deleteSection(this)">削除</button>
             <label>見出し<input type="text" name="section_title[]" style="width:100%;padding:8px;box-sizing:border-box;margin-top:6px;border:1px solid #ccc;font-size:1rem;"></label>
             <label style="margin-top:10px;">本文<textarea name="section_body[]" style="width:100%;padding:8px;box-sizing:border-box;margin-top:6px;border:1px solid #ccc;font-size:1rem;height:120px;resize:vertical;font-family:monospace;"></textarea></label>
         `;
-        wrap.appendChild(block);
+        wrap.appendChild(block); // 生成した要素を親要素の末尾に追加
     }
 
     function deleteSection(btn) {
-        // ボタンの親要素（.section-block）をDOMから削除する
+        // closest() = 自身から上に向かって祖先を探し、最初に .section-block に一致する要素を返す
+        // remove()  = その要素をDOMから削除する
         btn.closest('.section-block').remove();
     }
     </script>

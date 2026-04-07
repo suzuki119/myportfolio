@@ -23,16 +23,16 @@ if (!$post) {
     exit;
 }
 
-// セクションを sort_order 順に取得
+// セクションを sort_order 順に取得（post_sections テーブル：見出し＋本文の繰り返し）
 $s_stmt = $pdo->prepare(
     'SELECT * FROM post_sections WHERE post_id = :post_id ORDER BY sort_order ASC'
 );
 $s_stmt->execute([':post_id' => $id]);
 $sections = $s_stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
 
-// tags をカンマ区切りから配列に変換
+// tags をカンマ区切りから配列に変換（例：'WordPress,SCSS' → ['WordPress', 'SCSS']）
 $tags = !empty($post['tags']) ? explode(',', $post['tags']) : [];
-// [組み込み] explode('区切り文字', 文字列) = 文字列を分割して配列にする
+// [組み込み] explode('区切り文字', 文字列) = 文字列を分割して配列にする。JSのsplit()に相当
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -108,11 +108,13 @@ $tags = !empty($post['tags']) ? explode(',', $post['tags']) : [];
                 </div>
             <?php endif; ?>
 
-            <?php foreach ($sections as $section): ?>
+            <?php foreach ($sections as $section): // post_sections テーブルのセクションをループ ?>
                 <div class="article-block">
                     <h2 class="block-title"><?= h($section['title']) ?></h2>
                     <div class="block-body">
                         <?= nl2br(h($section['body'])) ?>
+                        <?php // [組み込み] ① h()でXSS対策（特殊文字を無害化）→ ② nl2br()で改行を<br>に変換
+                              // 順序が重要：h()を先にかけないとnl2br()が生成した<br>もエスケープされてしまう ?>
                     </div>
                 </div>
             <?php endforeach; ?>

@@ -113,6 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <h1>記事新規作成</h1>
     <p class="note">※ セクションは作成後、編集画面から追加できます。</p>
+    <?php // セクション（post_sections）は記事IDが必要なため、新規作成後に編集画面から追加する設計 ?>
 
     <?php if ($error !== ''): ?>
         <div class="error"><?= h($error) ?></div>

@@ -123,13 +123,13 @@ $posts = $stmt->fetchAll();// [PDO組み込み] 全行を配列で取得
           <div class="works__card-body">
             <?php if (!empty($post['tags'])): ?>
               <div class="works__card-tags">
-                <?php foreach (explode(',', $post['tags']) as $tag): ?>
+                <?php foreach (explode(',', $post['tags']) as $tag): // [組み込み] explode()=カンマ区切り文字列を配列に変換。JSのsplit()に相当 ?>
                   <span class="tag"><?= h(trim($tag)) ?></span>
                 <?php endforeach; ?>
               </div>
             <?php endif; ?>
             <div class="works__card-title"><?= h($post['title']) ?></div>
-            <div class="works__card-period"><?= h($post['period']) ?></div>
+            <div class="works__card-period"><?= h($post['period']) ?></div><?php // postsテーブルのperiodカラム（例：2025.06 – 08） ?>
           </div>
         </a>
         <?php endforeach; ?>
@@ -440,9 +440,7 @@ $posts = $stmt->fetchAll();// [PDO組み込み] 全行を配列で取得
       </div>
       <a href="mailto:suzukiyutaro119@gmail.com" class="contact__email">suzukiyutaro119@gmail.com</a>
       <div class="contact__links">
-        <a href="https://github.com/suzuki119/" target="_blank" rel="noopener" class="contact__link">GitHub</a>
-        <a href="mailto:suzukiyutaro119@gmail.com" class="contact__link">Mail</a>
-
+        <a href="https://github.com/suzuki119/" class="contact__link">GitHub</a>
       </div>
     </section>
 
