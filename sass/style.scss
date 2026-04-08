@@ -560,6 +560,18 @@ main {
         display: flex;
         flex-wrap: wrap;
         gap: $space-l;
+        @include mq(desktop) {
+            display: grid;
+        }
+    }
+
+    &__category {
+        font-family: $font-primary;
+        font-size: rem(24);
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: $color-accent;
+        margin: $space-xl 0;
     }
 
     &__card {
@@ -569,9 +581,10 @@ main {
         grid-template-columns: 1fr 1fr 4fr;
         align-items: center;
         gap: $space-l;
+        width: 100%;
 
         @include mq(desktop) {
-            grid-template-columns: 40px 1fr;
+            grid-template-columns: 1fr 3fr;
             grid-template-rows: auto auto;
         }
     }
@@ -581,6 +594,9 @@ main {
         aspect-ratio: 1;
         background-color: #fff;
         padding: $space-m;
+        @include mq(desktop) {
+            padding: $space-s;
+        }
 
         img {
             width: 100%;

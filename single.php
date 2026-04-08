@@ -33,14 +33,30 @@ $sections = $s_stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
 // tags をカンマ区切りから配列に変換（例：'WordPress,SCSS' → ['WordPress', 'SCSS']）
 $tags = !empty($post['tags']) ? explode(',', $post['tags']) : [];
 // [組み込み] explode('区切り文字', 文字列) = 文字列を分割して配列にする。JSのsplit()に相当
+
+// OGP用：説明文（最初のセクション本文の先頭100文字。なければ種別を使う）
+$ogp_description = '';
+if (!empty($sections)) {
+    $ogp_description = mb_substr(strip_tags($sections[0]['body']), 0, 100);
+    // [組み込み] mb_substr()=マルチバイト対応の文字列切り出し / strip_tags()=HTMLタグを除去
+}
+if ($ogp_description === '' && !empty($post['type'])) {
+    $ogp_description = $post['type'];
+}
+
+// OGP用：画像（サムネイルがあればそれを、なければデフォルト画像）
+$ogp_image = !empty($post['thumbnail'])
+    ? UPLOAD_URL . $post['thumbnail']
+    : SITE_URL . '/images/ogp.png';
 ?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= h($post['title']) ?> — Suzuki Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/the-new-css-reset/css/reset.min.css">
 </head>
 <body id="single">
 

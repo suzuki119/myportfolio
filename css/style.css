@@ -428,6 +428,19 @@ main {
   flex-wrap: wrap;
   gap: 1.5rem;
 }
+@media (max-width: 800px) {
+  .skill__grid {
+    display: grid;
+  }
+}
+.skill__category {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.7142857143rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #b8a88a;
+  margin: 2rem 0;
+}
 .skill__card {
   background: #000000;
   border: 1px solid rgba(255, 255, 255, 0.2470588235);
@@ -436,10 +449,11 @@ main {
   grid-template-columns: 1fr 1fr 4fr;
   align-items: center;
   gap: 1.5rem;
+  width: 100%;
 }
 @media (max-width: 800px) {
   .skill__card {
-    grid-template-columns: 40px 1fr;
+    grid-template-columns: 1fr 3fr;
     grid-template-rows: auto auto;
   }
 }
@@ -448,6 +462,11 @@ main {
   aspect-ratio: 1;
   background-color: #fff;
   padding: 1rem;
+}
+@media (max-width: 800px) {
+  .skill__card-icon {
+    padding: 0.5rem;
+  }
 }
 .skill__card-icon img {
   width: 100%;

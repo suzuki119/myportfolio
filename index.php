@@ -20,13 +20,18 @@ $skills = $sk_stmt->fetchAll();
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Suzuki Yutaro — Portfolio</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap"
-    rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/the-new-css-reset/css/reset.min.css">
+  <meta name="description" content="鈴木優太郎のポートフォリオ。フロントエンドエンジニア志望。WordPress・JavaScript・SCSSによるWeb制作実績を掲載しています。">
+  <meta property="og:type"        content="website">
+  <meta property="og:title"       content="Suzuki Yutaro — Portfolio">
+  <meta property="og:description" content="鈴木優太郎のポートフォリオ。フロントエンドエンジニア志望。Web制作実績を掲載しています。">
+  <meta property="og:url"         content="https://susuki-island.heavy.jp/myportfolio/">
+  <meta property="og:image"       content="https://susuki-island.heavy.jp/myportfolio/ogp.png">
+  <meta property="og:site_name"   content="Suzuki Yutaro Portfolio">
+  <meta name="twitter:card"       content="summary_large_image">
   <link rel="stylesheet" href="css/style.css">
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/the-new-css-reset/css/reset.min.css">
 </head>
 
 <body id="index">
@@ -185,7 +190,7 @@ $skills = $sk_stmt->fetchAll();
     <?php if (!empty($grouped[$cat])): ?>
 
       <h3 class="skill__category"><?= h($cat) ?></h3>
-      
+
       <div class="skill__grid">
         <?php foreach ($grouped[$cat] as $skill): ?>
           <div class="skill__card">
