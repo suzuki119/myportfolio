@@ -7,7 +7,12 @@ $stmt = $pdo->prepare(
     'SELECT * FROM posts WHERE status = :status ORDER BY created_at DESC'
 );
 $stmt->execute([':status' => 'published']);
-$posts = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
+$posts = $stmt->fetchAll();
+
+// スキル一覧を取得
+$sk_stmt = $pdo->prepare('SELECT * FROM skill ORDER BY id ASC');
+$sk_stmt->execute();
+$skills = $sk_stmt->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -160,188 +165,54 @@ $posts = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
         <h2 class="sec__title">Skills</h2>
       </div>
 
-      <!-- コーディング -->
-      <div class="skill__block">
-        <div class="skill__block-title">コーディング</div>
-        <div class="skill__layout">
-          <div class="skill__table-box">
-            <table class="skill__table">
-              <thead>
-                <tr>
-                  <th>名称</th>
-                  <th>詳細</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="skill__name">HTML</div>
-                    <div class="skill__years">2年間</div>
-                  </td>
-                  <td>
-                    <div class="skill__detail">今年1月に<br>Webクリエイター能力認定試験HTML5 エキスパートを合格しました</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="skill__name">CSS / SCSS</div>
-                    <div class="skill__years">2年間</div>
-                  </td>
-                  <td>
-                    <div class="skill__detail">現在、CSSは、SCSSで記述しています</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="skill__name">JavaScript</div>
-                    <div class="skill__years">1年間</div>
-                  </td>
-                  <td>
-                    <div class="skill__detail">Three.js・アニメーション実装。<br>JSON/API連携は勉強中</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="skill__name">C言語</div>
-                    <div class="skill__years">2年間</div>
-                  </td>
-                  <td>
-                    <div class="skill__detail">個人で宝探しゲームを制作した経験あり</div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
 
-      <!-- デザイン -->
-      <div class="skill__block">
-        <div class="skill__block-title">デザイン</div>
-        <div class="skill__layout">
-          <div class="skill__table-box">
-            <table class="skill__table">
-              <thead>
-                <tr>
-                  <th>名称</th>
-                  <th>詳細</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="skill__name">Illustrator</div>
-                    <div class="skill__years">2年間</div>
-                  </td>
-                  <td>
-                    <div class="skill__detail">アイコン・イラストの制作に使用</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="skill__name">Photoshop</div>
-                    <div class="skill__years">1年間</div>
-                  </td>
-                  <td>
-                    <div class="skill__detail">写真の調整・補正に使用</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="skill__name">Figma</div>
-                    <div class="skill__years">半年間</div>
-                  </td>
-                  <td>
-                    <div class="skill__detail">ワイヤーフレーム・プロトタイプ制作</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="skill__name">Canva</div>
-                    <div class="skill__years">半年間</div>
-                  </td>
-                  <td>
-                    <div class="skill__detail">プレゼン・名刺制作に使用</div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
 
-      <!-- その他 -->
-      <div class="skill__block">
-        <div class="skill__block-title">その他</div>
-        <div class="skill__layout">
-          <div class="skill__table-box">
-            <table class="skill__table">
-              <thead>
-                <tr>
-                  <th>名称</th>
-                  <th>詳細</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="skill__name">Blender</div>
-                    <div class="skill__years">1年間</div>
-                  </td>
-                  <td>
-                    <div class="skill__detail">高校時代に3DCG制作を経験</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="skill__name">Premiere Pro</div>
-                    <div class="skill__years">2年間</div>
-                  </td>
-                  <td>
-                    <div class="skill__detail">新校舎紹介動画の編集・完成</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="skill__name">WordPress</div>
-                    <div class="skill__years">半年</div>
-                  </td>
-                  <td>
-                    <div class="skill__detail">テーマ開発・カスタマイズで複数サイト制作</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="skill__name">Git / GitHub</div>
-                    <div class="skill__years">半年</div>
-                  </td>
-                  <td>
-                    <div class="skill__detail">バージョン管理・チーム開発の基礎</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="skill__name">Office</div>
-                    <div class="skill__years">2年間</div>
-                  </td>
-                  <td>
-                    <div class="skill__detail">Word・Excel・PowerPointを日常的に使用</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="skill__name">After Effects</div>
-                    <div class="skill__years">1年間</div>
-                  </td>
-                  <td>
-                    <div class="skill__detail">モーショングラフィックスの基礎</div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+<?php if (!empty($skills)): ?>
+
+  <?php
+  // 表示順を固定（DBの値と一致させる）
+  $categoryOrder = ['プログラミング', 'デザイン', 'その他'];
+
+  // カテゴリごとにグループ化
+  $grouped = [];
+  foreach ($skills as $s) {
+      $cat = $s['category'] ?? 'その他';
+      $grouped[$cat][] = $s;
+  }
+  ?>
+
+  <?php foreach ($categoryOrder as $cat): ?>
+    <?php if (!empty($grouped[$cat])): ?>
+
+      <h3 class="skill__category"><?= h($cat) ?></h3>
+      
+      <div class="skill__grid">
+        <?php foreach ($grouped[$cat] as $skill): ?>
+          <div class="skill__card">
+            <div class="skill__card-icon">
+              <?php if (!empty($skill['image_url'])): ?>
+                <img src="<?= h($skill['image_url']) ?>" alt="<?= h($skill['title']) ?>">
+              <?php endif; ?>
+            </div>
+            <div class="skill__card-meta">
+              <div class="skill__name"><?= h($skill['title']) ?></div>
+              <?php if (!empty($skill['period'])): ?>
+                <div class="skill__years"><?= h($skill['period']) ?></div>
+              <?php endif; ?>
+            </div>
+            <?php if (!empty($skill['body'])): ?>
+              <div class="skill__detail"><?= h($skill['body']) ?></div>
+            <?php endif; ?>
           </div>
-        </div>
+        <?php endforeach; ?>
       </div>
+    <?php endif; ?>
+  <?php endforeach; ?>
+
+<?php else: ?>
+  <p style="color:#999; text-align:center;">スキルはまだ登録されていません。</p>
+<?php endif; ?>
+
 
     </section>
 

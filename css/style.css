@@ -423,75 +423,64 @@ main {
   color: #e3e3e3;
 }
 
-.skill__block {
-  margin-bottom: 5.1428571429rem;
-}
-.skill__block:last-of-type {
-  margin-bottom: 0;
-}
-.skill__block-title {
-  font-size: 1.1428571429rem;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: #e3e3e3;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.0588235294);
-}
-.skill__layout {
+.skill__grid {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
 }
-.skill__table-box {
+.skill__card {
   background: #000000;
   border: 1px solid rgba(255, 255, 255, 0.2470588235);
-  padding: 2rem;
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 4fr;
+  align-items: center;
+  gap: 1.5rem;
 }
 @media (max-width: 800px) {
-  .skill__table-box {
-    padding: 1.5rem 1rem;
+  .skill__card {
+    grid-template-columns: 40px 1fr;
+    grid-template-rows: auto auto;
   }
 }
-.skill__table {
+.skill__card-icon {
   width: 100%;
-  border-collapse: collapse;
-  font-size: 1.1428571429rem;
+  aspect-ratio: 1;
+  background-color: #fff;
+  padding: 1rem;
 }
-.skill__table th {
-  font-size: 1.1428571429rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: #b8a88a;
-  text-align: left;
-  padding: 0 1rem 1rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.0588235294);
+.skill__card-icon img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
 }
-.skill__table td {
-  padding: 1rem 1rem 1rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.0392156863);
-  vertical-align: top;
-}
-.skill__table tr:last-child td {
-  border-bottom: none;
+.skill__card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 .skill__name {
-  font-size: 1.4285714286rem;
+  font-size: 2.1428571429rem;
   color: #ffffff;
-  white-space: nowrap;
-  min-width: 110px;
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+  letter-spacing: 0.05em;
 }
 .skill__years {
   font-size: 0.9285714286rem;
   color: #a0a0a0;
-  margin-top: 0.25rem;
   letter-spacing: 0.05em;
 }
 .skill__detail {
-  font-size: 1.1428571429rem;
-  color: #ffffff;
-  line-height: 1.6;
-  margin-top: 0.25rem;
+  font-size: 1rem;
+  color: #e3e3e3;
+  line-height: 1.7;
+}
+@media (max-width: 800px) {
+  .skill__detail {
+    grid-column: 1/-1;
+  }
 }
 
 #timeline {

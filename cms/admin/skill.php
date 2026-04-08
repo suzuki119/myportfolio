@@ -1,45 +1,22 @@
 <?php
-
+// ===================================================
+//  スキル一覧・削除
+// ===================================================
 require_once '../config.php';
 require_login();
 
-$pdo   = db();
-$error = '';
+$pdo = db();
 
-// ===================================================
-//  追加処理
-// ===================================================
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['action'])) {
-
-    // スキル追加
-    if ($_POST['action'] === 'add') {
-        $name = trim($_POST['name'] ?? '');
-
-        if ($name === '') {
-            $error = 'スキル名を入力してください。';
-        } else {
-            $stmt = $pdo->prepare('INSERT INTO skills (name) VALUES (:name)');
-            $stmt->execute([':name' => $name]);
-
-            header('Location: ' . SITE_URL . '/cms/admin/skills.php');
-            exit;
-        }
-    }
-
-    // スキル削除
-    if ($_POST['action'] === 'delete' && !empty($_POST['delete_id'])) {
-        $stmt = $pdo->prepare('DELETE FROM skills WHERE id = :id');
-        $stmt->execute([':id' => $_POST['delete_id']]);
-
-        header('Location: ' . SITE_URL . '/cms/admin/skills.php');
-        exit;
-    }
+// 削除処理
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['delete_id'])) {
+    $stmt = $pdo->prepare('DELETE FROM skill WHERE id = :id');
+    $stmt->execute([':id' => (int)$_POST['delete_id']]);
+    header('Location: ' . SITE_URL . '/cms/admin/skill.php');
+    exit;
 }
 
-// ===================================================
-//  SKILL一覧を取得
-// ===================================================
-$stmt = $pdo->prepare('SELECT * FROM skills ORDER BY id ASC');
+// 一覧取得
+$stmt = $pdo->prepare('SELECT * FROM skill ORDER BY id ASC');
 $stmt->execute();
 $skills = $stmt->fetchAll();
 ?>
@@ -54,39 +31,63 @@ $skills = $stmt->fetchAll();
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         a.button { padding: 8px 16px; background: #222; color: #fff; text-decoration: none; font-size: .9rem; }
         table { width: 100%; border-collapse: collapse; font-size: .9rem; }
-        table th, table td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        .actions { display: flex; gap: 8px; }
+        th, td { padding: 10px 12px; border-bottom: 1px solid #ddd; text-align: left; vertical-align: middle; }
+        th { background: #f5f5f5; }
+        .thumb { width: 60px; height: 40px; object-fit: cover; }
         .actions form { display: inline; }
+        .actions a { margin-right: 8px; color: #333; font-size: .85rem; }
+        .actions button { background: none; border: none; color: #c0392b; cursor: pointer; font-size: .85rem; }
+        .empty { padding: 40px; text-align: center; color: #999; }
     </style>
 </head>
-
 <body>
-  <h1>スキル管理</h1>
-  <div class="header">
-    <a href="skill_add.php" class="button">スキルを追加</a>
-  </div>
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>スキル名</th>
-        <th>操作</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php foreach ($skills as $skill): ?>
-      <tr>
-        <td><?= htmlspecialchars($skill['id']) ?></td>
-        <td><?= htmlspecialchars($skill['name']) ?></td>
-        <td class="actions">
-          <form method="post" action="">
-            <input type="hidden" name="action" value="delete">
-            <input type="hidden" name="delete_id" value="<?= $skill['id'] ?>">
-            <button type="submit" onclick="return confirm('本当に削除しますか？');">削除</button>
-          </form>
-        </td>
-      </tr>
-      <?php endforeach; ?>
-    </tbody>
-  </table>
+    <div class="header">
+        <h1>スキル管理</h1>
+        <div>
+            <a class="button" href="<?= SITE_URL ?>/cms/admin/skill-edit.php">+ 新規追加</a>
+            <a class="button" href="<?= SITE_URL ?>/cms/admin/index.php" style="margin-left:8px; background:#666;">← 戻る</a>
+        </div>
+    </div>
+
+    <?php if (empty($skills)): ?>
+        <p class="empty">スキルがまだありません。</p>
+    <?php else: ?>
+        <table>
+            <thead>
+                <tr>
+                    <th>画像</th>
+                    <th>タイトル</th>
+                    <th>期間</th>
+                    <th>説明</th>
+                    <th>操作</th>
+                    <th>カテゴリー</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($skills as $skill): ?>
+                <tr>
+                    <td>
+                        <?php if ($skill['image_url']): ?>
+                            <img src="<?= h($skill['image_url']) ?>" class="thumb" alt="">
+                        <?php else: ?>
+                            —
+                        <?php endif; ?>
+                    </td>
+                    <td><?= h($skill['title']) ?></td>
+                    <td><?= h($skill['period'] ?? '') ?></td>
+                    <td><?= h(mb_strimwidth($skill['body'] ?? '', 0, 40, '…')) ?></td>
+                    <td class="actions">
+                        <a href="<?= SITE_URL ?>/cms/admin/skill-edit.php?id=<?= h($skill['id']) ?>">編集</a>
+                        <form method="post" onsubmit="return confirm('削除しますか？');">
+                            <input type="hidden" name="delete_id" value="<?= h($skill['id']) ?>">
+                            <button type="submit">削除</button>
+                        </form>
+                    </td>
+                    <td><?= h($skill['category'] ?? '') ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
 </body>
+</html>
