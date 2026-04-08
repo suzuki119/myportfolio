@@ -11,7 +11,7 @@ $color-gray:   #e3e3e3;
 $color-accent: #b8a88a;
 $color-bg:     #000000;
 $color-text:   #d8d8d8;
-$gray:         #7a7a72;
+$gray:         #a0a0a0;
 
 // --- レイアウト / エフェクト ---
 $nav-bg:    rgb(46 46 46 / 0.6);
@@ -202,8 +202,7 @@ img {
             display: block;
             width: 100%;
             bottom: rem(-20);
-            left: 50%;
-            right: 50%;
+            left: 0;
             font-size: rem(16);
             color: $gray;
         }

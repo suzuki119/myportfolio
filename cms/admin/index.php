@@ -73,9 +73,10 @@ $currentCategoryId = $post_category_id ? $post_category_id[0]['category_id'] : n
         <h1>記事一覧</h1>
         <a class="button" href="<?= SITE_URL ?>/cms/admin/post-new.php">+ 新規作成</a>
         <a class="button" href="<?= SITE_URL ?>/cms/admin/categories.php">+ カテゴリー</a>
+        <a class="button" href="<?= SITE_URL ?>/cms/admin/skill.php">+ スキル</a>
         <a href="<?= SITE_URL ?>/index.php" class="back-link">
-        Back to Portfolio
-    </a>
+            Back to Portfolio
+        </a>
     </div>
 
     <?php if (empty($posts)): // [組み込み] 配列が空かどうか調べる ?>

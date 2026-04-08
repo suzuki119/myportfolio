@@ -97,16 +97,15 @@ img {
   display: block;
   width: 100%;
   bottom: -1.4285714286rem;
-  left: 50%;
-  right: 50%;
+  left: 0;
   font-size: 1.1428571429rem;
-  color: #7a7a72;
+  color: #a0a0a0;
 }
 .header__toggle span {
   display: block;
   width: 30px;
   height: 2px;
-  background: #7a7a72;
+  background: #a0a0a0;
   transition: transform 0.3s, opacity 0.3s, background 0.3s;
 }
 .header__toggle.open span {
@@ -484,7 +483,7 @@ main {
 }
 .skill__years {
   font-size: 0.9285714286rem;
-  color: #7a7a72;
+  color: #a0a0a0;
   margin-top: 0.25rem;
   letter-spacing: 0.05em;
 }
