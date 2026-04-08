@@ -19,7 +19,9 @@ $posts = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap"
     rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/the-new-css-reset/css/reset.min.css">
   <link rel="stylesheet" href="css/style.css">
+
 </head>
 
 <body id="index">
@@ -58,30 +60,30 @@ $posts = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
         <h2 class="sec__title">About</h2>
       </div>
 
-      <div class="about__grid">
-        <div class="about__card">
+        <div class="about__grid">
 
-          <h3 class="about__name">鈴木 優太郎</h3>
-          <div class="about__name-en">Suzuki Yutaro</div>
-
-          <div class="about__icons">
-            <a href="https://github.com/suzuki119/" target="_blank" rel="noopener" class="about__icon-link"
-              title="GitHub">
-              <img src="./img/github_logo_icon.webp" alt="GitHub" class="about__icon-link__img">
-            </a>
-          </div>
-
-          <div class="about__meta">
+          <div class="about__card">
+            <h3 class="about__name">鈴木 優太郎</h3>
+            <div class="about__name-en">Suzuki Yutaro</div>
+            <div class="about__icons">
+              <a href="https://github.com/suzuki119/" target="_blank" rel="noopener" class="about__icon-link"
+                title="GitHub">
+                <img src="./img/github_logo_icon.webp" alt="GitHub" class="about__icon-link__img">
+              </a>
+            </div>
             <div class="about__info">
               トライデントコンピュータ専門学校<br>
               Webデザイン学科 1年（19歳）<br><br>
               出身：<span class="hl">愛知県（日間賀島）</span><br>
               志望：<span class="hl">フロントエンドエンジニア</span>
             </div>
+          </div>
 
-            <div class="about__photo">
-              <img src="./img/about.jpg" alt="鈴木 優太郎">
-            </div>
+          <div class="about__photo">
+            <img src="./img/about.jpg" alt="鈴木 優太郎">
+          </div>
+
+        </div>
 
           <p class="about__body">
             JavaScript・CSSアニメーション実装に興味を持ち、日々制作に取り組んでいます。UIの見やすさと実装の再現性を両立できるエンジニアを目指し、思いついたものはすぐ手を動かして形にするようにしています。
@@ -91,15 +93,14 @@ $posts = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
           <p class="about__body">
             私の強みは、好奇心と継続力です。
 
-自己紹介で挙げたアニメーション実装や、blenderのように、私は様々なものに興味を示し、そして一度興味を持った物事については、途中で辞めることなく、区切りがつくまでは継続することができるからです。
+            自己紹介で挙げたアニメーション実装や、blenderのように、私は様々なものに興味を示し、そして一度興味を持った物事については、途中で辞めることなく、区切りがつくまでは継続することができるからです。
 
-この特性を活かして、進級展のWebサイト制作では、こだわり抜いたアニメーションを実装し、完成度の高い作品に仕上げることができました。
+            この特性を活かして、進級展のWebサイト制作では、こだわり抜いたアニメーションを実装し、完成度の高い作品に仕上げることができました。
 
-**今後：** 今後はReact/Three.jsなどにも挑戦したりチーム開発経験を増やせるイベントに参加する予定で、それをまた自分の成長に繋げられればと感じています。
+            **今後：** 今後はReact/Three.jsなどにも挑戦したりチーム開発経験を増やせるイベントに参加する予定で、それをまた自分の成長に繋げられればと感じています。
           </p>
-        </div>
 
-      </div>
+
     </section>
 
     <!-- ③ WORKS ────────────────────────── -->

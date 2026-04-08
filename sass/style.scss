@@ -1,8 +1,10 @@
 @use "sass:math";
 @use "sass:map";
 
-//--------変数--------
 
+/* ========================================
+   変数定義
+======================================== */
 // --- カラー ---
 $color-white:  #ffffff;
 $color-gray:   #e3e3e3;
@@ -18,8 +20,8 @@ $border-sub:     rgba(255, 255, 255, 0.405);
 $canvas-opacity: 0.55;
 
 // --- タイポグラフィ ---
-$font-serif: 'Cormorant Garamond', serif;
-$font-mono:  'Space Mono', monospace;
+$font-primary: 'Cormorant Garamond', serif;
+$font-text:  'Space Mono', monospace;
 
 // --- 重なり順 ---
 $z-canvas:   0;
@@ -33,11 +35,26 @@ $z-progress: 300;
 $breakpoints: (
     mobile: 375px,
     tablet: 768px,
-    desktop: 1100px
+    desktop: 800px
 );
 
+// --- スペーシング ---
+$space-xs: 0.25rem; // 4px
+$space-s: 0.5rem; // 8px
+$space-m: 1rem; // 16px
+$space-l: 1.5rem; // 24px
+$space-xl: 2rem; // 32px
+$space-xxl: 2.5rem; // 40px
+$space-xxxl: 3rem; // 48px
 
-//--------ミックスイン--------
+
+/* ========================================
+   関数・ミックスイン
+======================================== */
+
+@function rem($px-value) {
+    @return #{math.div($px-value, 14)}rem;
+}
 
 @mixin mq($breakpoint: desktop) {
     @media (max-width: map.get($breakpoints, $breakpoint)) {
@@ -52,6 +69,24 @@ $breakpoints: (
     border: 1px solid $glass-border;
 }
 
+// インナー幅の設定
+@mixin inner($mw: 1300px, $w: 95%) {
+    width: $w;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+// セクションタイトル
+@mixin title() {
+    font-family: $font-primary;
+    margin-bottom: rem(80);
+    font-weight: bold;
+    font-size: rem(45);
+    text-align: center;
+}
+
+
+
 @mixin label-text($color: $color-accent, $size: 16, $spacing: 0.45em) {
     font-size: rem($size);
     letter-spacing: $spacing;
@@ -59,22 +94,22 @@ $breakpoints: (
     color: $color;
 }
 
-//--------関数--------
-
 @function rem($px-value) {
-    @return #{math.div($px-value, 16)}rem;
+    @return #{math.div($px-value, 14)}rem;
 }
 
 
-// ═══════════════════════════════════════════════════════
-//  リセット & ベース
-// ═══════════════════════════════════════════════════════
-*,
-*::before,
-*::after {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* ========================================
+    ベーススタイル
+======================================== */
+
+
+
+img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
 }
 
 html {
@@ -84,7 +119,7 @@ html {
 body {
     background: $color-bg;
     color: $color-text;
-    font-family: $font-mono;
+    font-family: $font-text;
     overflow-x: hidden;
 }
 
@@ -125,6 +160,10 @@ img {
 }
 
 
+
+/* ========================================
+    スタイル
+======================================== */
 // ─── ヘッダー ─────────────────────────────────────────
 
 
@@ -133,7 +172,7 @@ img {
     top: 0;
     left: 0;
     right: 0;
-    padding: 20px 48px;
+    padding: $space-l $space-xxxl;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -144,7 +183,7 @@ img {
     border-bottom: 1px solid $border-sub;
 
     &__logo {
-        font-family: $font-serif;
+        font-family: $font-primary;
         font-size: rem(17);
         letter-spacing: 0.45em;
         color: $color-text;
@@ -157,13 +196,12 @@ img {
         position: relative;
         flex-direction: column;
         justify-content: center;
-        gap: 5px;
+        gap: $space-xs;
         background: none;
         border: none;
         cursor: pointer;
-        padding: 4px;
+        padding: $space-xs;
         z-index: $z-toggle;
-
 
         &::after {
             content: 'menu';
@@ -171,7 +209,7 @@ img {
             text-align: center;
             display: block;
             width: 100%;
-            bottom: -20px;
+            bottom: rem(-20);
             left: 50%;
             right: 50%;
             font-size: rem(16);
@@ -196,17 +234,15 @@ img {
         @include mq(desktop) {
             display: flex;
         }
-
-
     }
 
     &__nav {
         display: flex;
         position: fixed;
         top: 0;
-        right: 48px;
-        padding: 20px 0;
-        gap: 28px;
+        right: rem(48);
+        padding: $space-l 0;
+        gap: $space-xl;
         align-items: center;
         z-index: $z-header;
 
@@ -228,12 +264,10 @@ img {
             bottom: 0;
             padding: 0;
             background: $nav-overlay;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 36px;
+            gap: $space-xxl;
             z-index: $z-menu;
 
             &.open { display: flex; }
@@ -257,27 +291,26 @@ main {
 
 // ─── セクション共通スタイル ─────────────────────────────
 .sec {
-    padding: 130px 9vw 100px;
+    padding: rem(130) 9vw rem(100);
 
     &__head {
         text-align: center;
-        margin-bottom: 72px;
+        margin-bottom: rem(72);
 
         @include mq(desktop) {
-            margin-bottom: 48px;
+            margin-bottom: $space-xxxl;
         }
     }
 
     &__title {
-        font-family: $font-serif;
+        font-family: $font-primary;
         font-size: clamp(rem(42), 5.5vw, rem(84));
-        font-weight: 300;
         line-height: 1;
         color: $color-white;
     }
 
     @include mq(desktop) {
-        padding: 80px 6vw 60px;
+        padding: rem(80) 6vw $space-xxxl;
     }
 }
 
@@ -290,12 +323,12 @@ main {
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding-top: 80px;
+    padding-top: rem(80);
 }
 
 .hero {
     &__title {
-        font-family: $font-serif;
+        font-family: $font-primary;
         font-size: clamp(rem(60), 10vw, rem(140));
         font-weight: 300;
         line-height: 0.95;
@@ -319,7 +352,7 @@ main {
     &__grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 40px;
+        gap: $space-xxl;
         align-items: center;
 
         @include mq(desktop) {
@@ -329,31 +362,31 @@ main {
 
     &__card {
         @include glass-card(0.62, 24px);
-        padding: 48px 44px;
+        padding: $space-xxxl $space-xxxl;
 
         @include mq(desktop) {
-            padding: 32px 20px;
+            padding: $space-xl $space-l;
         }
     }
 
     &__name {
-        font-family: $font-serif;
+        font-family: $font-primary;
         font-size: rem(34);
-        font-weight: 300;
-        margin-bottom: 4px;
+        font-weight: lighter;
+        margin-bottom: $space-xs;
     }
 
     &__name-en {
         font-size: rem(16);
         letter-spacing: 0.28em;
         color: $color-accent;
-        margin-bottom: 24px;
+        margin-bottom: $space-l;
     }
 
     &__icons {
         display: flex;
-        gap: 10px;
-        margin-bottom: 28px;
+        gap: $space-s;
+        margin-bottom: $space-xl;
     }
 
     &__icon-link {
@@ -377,28 +410,20 @@ main {
         }
     }
 
-    &__meta {
-        font-size: rem(16);
-        line-height: 2.1;
-        margin-bottom: 28px;
-
-        .hl { color: $color-accent; }
-    }
-
     &__info {
         font-size: rem(16);
         line-height: 2.1;
-        margin-bottom: 24px;
+        margin-bottom: $space-l;
     }
 
     &__mypr {
-        font-family: $font-serif;
+        font-family: $font-primary;
         font-size: rem(17);
-        font-weight: 300;
+        font-weight: lighter;
         letter-spacing: 0.3em;
         text-transform: uppercase;
         color: $color-accent;
-        margin: 24px 0 8px;
+        margin: $space-l 0 $space-s;
     }
 
     &__body {
@@ -417,6 +442,7 @@ main {
         color: $color-gray;
         font-size: rem(16);
         letter-spacing: 0.2em;
+        margin-bottom: $space-xl;
 
         @include mq(desktop) {
             aspect-ratio: 4/3;
@@ -440,11 +466,11 @@ main {
     &__grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 20px;
+        gap: $space-l;
 
         @include mq(desktop) {
             grid-template-columns: 1fr;
-            gap: 16px;
+            gap: $space-m;
         }
     }
 
@@ -459,7 +485,6 @@ main {
         &:hover {
             border-color: rgba($color-accent, 0.35);
         }
-
     }
 
     &__card-img {
@@ -489,27 +514,27 @@ main {
     }
 
     &__card-body {
-        padding: 18px 22px 22px;
+        padding: $space-m $space-l $space-l;
     }
 
     &__card-tags {
         display: flex;
-        gap: 7px;
+        gap: $space-s;
         flex-wrap: wrap;
-        margin-bottom: 10px;
+        margin-bottom: $space-s;
     }
 
     &__card-tag {
         @include label-text($size: 16, $spacing: 0.18em);
         border: 1px solid rgba($color-accent, 0.28);
-        padding: 3px 8px;
+        padding: $space-xs $space-s;
     }
 
     &__card-title {
-        font-family: $font-serif;
-        font-size: 32px;
-        font-weight: 300;
-        margin-bottom: 5px;
+        font-family: $font-primary;
+        font-size: rem(32);
+        font-weight: lighter;
+        margin-bottom: $space-xs;
     }
 
     &__card-period {
@@ -524,14 +549,14 @@ main {
 // ─── スキル ───────────────────────────────────────────
 .skill {
     &__block {
-        margin-bottom: 72px;
+        margin-bottom: rem(72);
 
         &:last-of-type { margin-bottom: 0; }
 
         &-title {
             @include label-text($color: $color-gray, $size: 16, $spacing: 0.35em);
-            margin-bottom: 28px;
-            padding-bottom: 14px;
+            margin-bottom: $space-xl;
+            padding-bottom: $space-m;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
     }
@@ -539,19 +564,19 @@ main {
     &__layout {
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: $space-m;
     }
 
     &__radar-box {
         @include glass-card;
-        padding: 48px;
+        padding: $space-xxxl;
         display: flex;
         align-items: center;
         justify-content: center;
         max-width: 600px;
 
         @include mq(desktop) {
-            padding: 24px;
+            padding: $space-l;
             max-width: 100%;
         }
     }
@@ -563,10 +588,10 @@ main {
 
     &__table-box {
         @include glass-card;
-        padding: 32px;
+        padding: $space-xl;
 
         @include mq(desktop) {
-            padding: 20px 16px;
+            padding: $space-l $space-m;
         }
     }
 
@@ -578,12 +603,12 @@ main {
         th {
             @include label-text($size: 16, $spacing: 0.25em);
             text-align: left;
-            padding: 0 12px 12px 0;
+            padding: 0 $space-m $space-m 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         td {
-            padding: 13px 12px 13px 0;
+            padding: $space-m $space-m $space-m 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             vertical-align: top;
         }
@@ -601,7 +626,7 @@ main {
     &__years {
         font-size: rem(13);
         color: $gray;
-        margin-top: 2px;
+        margin-top: $space-xs;
         letter-spacing: 0.05em;
     }
 
@@ -609,7 +634,7 @@ main {
         font-size: rem(16);
         color: $color-white;
         line-height: 1.6;
-        margin-top: 3px;
+        margin-top: $space-xs;
     }
 
 }
@@ -617,13 +642,13 @@ main {
 
 // ─── タイムライン ──────────────────────────────────────
 #timeline {
-    padding-top: 40px;
+    padding-top: $space-xxl;
 }
 
 .tl {
     &__wrap {
         position: relative;
-        padding-bottom: 20px;
+        padding-bottom: $space-l;
 
         &::before {
             content: '';
@@ -636,7 +661,7 @@ main {
             background: #8b8b8b;
 
             @include mq(desktop) {
-                left: 16px;
+                left: $space-m;
                 transform: none;
             }
         }
@@ -645,20 +670,20 @@ main {
     &__entry {
         display: grid;
         grid-template-columns: 1fr 48px 1fr;
-        margin-bottom: 56px;
+        margin-bottom: $space-xxxl;
         position: relative;
 
         &:last-child { margin-bottom: 0; }
 
         @include mq(desktop) {
-            grid-template-columns: 32px 1fr;
+            grid-template-columns: $space-xl 1fr;
         }
     }
 
     &__center {
         display: flex;
         justify-content: center;
-        padding-top: 14px;
+        padding-top: $space-m;
         position: relative;
         z-index: 2;
 
@@ -678,33 +703,33 @@ main {
     }
 
     &__side {
-        padding: 0 24px;
+        padding: 0 $space-l;
 
         &--right { text-align: right; }
 
         @include mq(desktop) {
             grid-column: 2;
             grid-row: 1;
-            padding: 0 0 0 16px;
+            padding: 0 0 0 $space-m;
             text-align: left !important;
         }
     }
 
     &__card {
         @include glass-card;
-        padding: 22px 26px;
+        padding: $space-l $space-l;
     }
 
     &__date {
         @include label-text($spacing: 0.25em);
-        margin-bottom: 8px;
+        margin-bottom: $space-s;
     }
 
     &__role {
-        font-family: $font-serif;
+        font-family: $font-primary;
         font-size: rem(22);
-        font-weight: 300;
-        margin-bottom: 6px;
+        font-weight: lighter;
+        margin-bottom: $space-s;
     }
 
     &__desc {
@@ -715,6 +740,7 @@ main {
 }
 
 
+
 // ─── コンタクト ────────────────────────────────────────
 #contact {
     min-height: 60vh;
@@ -723,22 +749,22 @@ main {
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 120px 9vw 100px;
+    padding: rem(120) 9vw rem(100);
 
-    .sec__head { margin-bottom: 20px; }
-    .sec__title { margin-bottom: 16px; }
+    .sec__head { margin-bottom: rem(20); }
+    .sec__title { margin-bottom: $space-m; }
 
     @include mq(desktop) {
-        padding: 80px 6vw 60px;
+        padding: rem(80) 6vw $space-xxxl;
     }
 }
 
 .contact {
     &__email {
-        font-family: $font-serif;
+        font-family: $font-primary;
         font-size: clamp(rem(18), 2.5vw, rem(32));
         color: $color-accent;
-        margin: 20px 0 44px;
+        margin: $space-l 0 $space-xxxl;
         text-decoration: none;
         letter-spacing: 0.04em;
         transition: opacity 0.3s;
@@ -754,11 +780,11 @@ main {
     &__links {
         display: flex;
         justify-content: center;
-        gap: 36px;
+        gap: $space-xxl;
 
         @include mq(desktop) {
             flex-direction: column;
-            gap: 16px;
+            gap: $space-m;
             align-items: center;
         }
     }
@@ -766,7 +792,7 @@ main {
     &__link {
         @include label-text($color: $color-gray, $size: 16, $spacing: 0.3em);
         text-decoration: none;
-        padding-bottom: 4px;
+        padding-bottom: $space-xs;
         border-bottom: 1px solid transparent;
         transition: color 0.3s, border-color 0.3s;
 
@@ -781,7 +807,7 @@ main {
 // ─── フッター ─────────────────────────────────────────
 footer {
     text-align: center;
-    padding: 28px;
+    padding: $space-xl;
     font-size: rem(16);
     letter-spacing: 0.25em;
     color: rgba($color-gray, 0.35);
@@ -793,7 +819,7 @@ footer {
 
 // ─── 作品詳細 — ヘッダー ───────────────────────────────
 header.header--work {
-    padding: 22px 52px;
+    padding: $space-l $space-xxxl;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -802,7 +828,7 @@ header.header--work {
 .back-link {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: $space-s;
     @include label-text($color: $color-gray, $spacing: 0.3em);
     text-decoration: none;
     transition: color 0.3s;
@@ -819,7 +845,7 @@ header.header--work {
 }
 
 .header-logo {
-    font-family: $font-serif;
+    font-family: $font-primary;
     font-size: rem(16);
     letter-spacing: 0.4em;
     color: rgba($color-white, 0.4);
@@ -833,17 +859,17 @@ header.header--work {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 0 9vw 80px;
+    padding: 0 9vw rem(80);
 
     &-eyebrow {
         @include label-text;
-        margin-bottom: 20px;
+        margin-bottom: $space-l;
     }
 
     &-title {
-        font-family: $font-serif;
+        font-family: $font-primary;
         font-size: clamp(rem(64), 11vw, rem(160));
-        font-weight: 300;
+        font-weight: lighter;
         line-height: 0.92;
         color: $color-white;
     }
@@ -859,24 +885,24 @@ header.header--work {
 
 // ─── 作品詳細 — メタバー ───────────────────────────────
 .work-meta-bar {
-    padding: 40px 9vw;
+    padding: $space-xxl 9vw;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .work-meta-item {
-    padding: 0 32px 0 0;
+    padding: 0 $space-xl 0 0;
 
     &:not(:first-child) {
         border-left: 1px solid rgba(255, 255, 255, 0.06);
-        padding-left: 32px;
+        padding-left: $space-xl;
     }
 }
 
 .work-meta-label {
     @include label-text($size: 16, $spacing: 0.35em);
-    margin-bottom: 10px;
+    margin-bottom: $space-s;
 }
 
 .work-meta-value {
@@ -888,45 +914,49 @@ header.header--work {
 .tag-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 4px;
+    gap: $space-s;
+    margin-top: $space-xs;
 }
 
 .tag {
     @include label-text($size: 16, $spacing: 0.18em);
     border: 1px solid rgba($color-accent, 0.28);
-    padding: 3px 8px;
+    padding: $space-xs $space-s;
 }
 
 
 // ─── 作品詳細 — コンテンツ ─────────────────────────────
 .work-content {
-    padding: 80px 9vw 120px;
+    padding: rem(80) 9vw rem(120);
 }
 
 .content-grid {
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 80px;
+    grid-template-columns: 1fr 3fr;
+    gap: rem(80);
     align-items: start;
+    @include mq(desktop) {
+        grid-template-columns: 1fr;
+        gap: $space-xxl;
+    }
 }
 
 .sidebar {
     position: sticky;
-    top: 120px;
+    top: rem(120);
 
     &-nav {
         list-style: none;
 
-        li { margin-bottom: 4px; }
+        li { margin-bottom: $space-xs; }
 
         a {
             @include label-text($color: $color-gray, $size: 16, $spacing: 0.25em);
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 8px 0;
+            gap: $space-s;
+            padding: $space-s 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             transition: color 0.3s;
 
@@ -939,7 +969,8 @@ header.header--work {
                 transition: opacity 0.3s;
             }
 
-            &:hover {
+            &:hover,
+            &.is-active {
                 color: $color-accent;
 
                 &::before { opacity: 1; }
@@ -949,17 +980,17 @@ header.header--work {
 }
 
 .article-block {
-    margin-bottom: 72px;
+    margin: $space-xxxl 0;
 
     &:last-child { margin-bottom: 0; }
 }
 
 .block-label {
     @include label-text($size: 16, $spacing: 0.4em);
-    margin-bottom: 20px;
+    margin-bottom: $space-l;
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: $space-m;
 
     &::after {
         content: '';
@@ -970,12 +1001,12 @@ header.header--work {
 }
 
 .block-title {
-    font-family: $font-serif;
+    font-family: $font-primary;
     font-size: clamp(rem(26), 3vw, rem(40));
-    font-weight: 300;
+    font-weight: lighter;
     line-height: 1.2;
     color: $color-white;
-    margin-bottom: 24px;
+    margin-bottom: $space-l;
 }
 
 .block-body {
@@ -983,7 +1014,7 @@ header.header--work {
     line-height: 2.2;
     color: $color-white;
 
-    p + p { margin-top: 16px; }
+    p + p { margin-top: $space-m; }
 }
 
 
@@ -996,7 +1027,7 @@ header.header--work {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 40px;
+    margin-bottom: $space-xxl;
     overflow: hidden;
     position: relative;
 
@@ -1016,19 +1047,39 @@ header.header--work {
 .highlight-box {
     background: rgba($color-accent, 0.06);
     border-left: 2px solid $color-accent;
-    padding: 20px 24px;
-    margin: 28px 0;
+    padding: $space-l $space-l;
+    margin: $space-xl 0;
     font-size: rem(16);
     line-height: 2;
     color: rgba($color-white, 0.7);
 }
 
+td {
+    padding: $space-s;
+}
+
+.is-grid {
+    table {
+        width: 100%;
+    }
+    td {
+        width: 50%;
+        display: inline-block;
+        border: none;
+        padding: $space-s;
+        @include mq(desktop) {
+            display: block;
+            width: 100%;
+        }
+    }
+}
+
 
 // ─── 作品詳細 — CTA ────────────────────────────────────
 .work-cta {
-    margin-top: 40px;
+    margin-top: $space-xxl;
     display: flex;
-    gap: 16px;
+    gap: $space-m;
     flex-wrap: wrap;
     align-items: center;
 }
@@ -1036,12 +1087,12 @@ header.header--work {
 .btn-primary {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 14px 28px;
+    gap: $space-s;
+    padding: $space-m $space-xl;
     background: transparent;
     border: 1px solid rgba($color-accent, 0.5);
     color: $color-accent;
-    font-family: $font-mono;
+    font-family: $font-text;
     font-size: rem(16);
     letter-spacing: 0.3em;
     text-transform: uppercase;

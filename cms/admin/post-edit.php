@@ -173,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 
     <style>
-        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        body { font-family: sans-serif; max-width: 1000px; margin: 40px auto; padding: 0 20px; }
         h1 { font-size: 1.4rem; margin-bottom: 24px; }
         label { display: block; margin-top: 20px; font-size: .9rem; font-weight: bold; }
         input[type="text"], input[type="url"], textarea, select { width: 100%; padding: 8px; box-sizing: border-box; margin-top: 6px; border: 1px solid #ccc; font-size: 1rem; }
@@ -185,12 +185,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .meta { margin-top: 8px; font-size: .8rem; color: #999; }
         .thumbnail-preview img { max-width: 200px; margin-top: 8px; display: block; }
         .thumbnail-preview label { font-weight: normal; font-size: .85rem; color: #c0392b; margin-top: 6px; }
-        .section-block { border: 1px solid #ddd; padding: 16px; margin-top: 16px; position: relative; }
-        .section-block label { margin-top: 10px; }
-        .section-block textarea { height: 120px; }
-        .section-delete-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; color: #c0392b; cursor: pointer; font-size: .85rem; }
-        .add-section-btn { margin-top: 12px; padding: 8px 16px; background: #555; color: #fff; border: none; cursor: pointer; font-size: .9rem; }
+
+        /* セクションブロック */
+        .section-block { border: 1px solid #ccc; border-radius: 6px; margin-top: 20px; background: #fafafa; overflow: hidden; }
+        .section-block-header { display: flex; align-items: center; justify-content: space-between; background: #f0f0f0; border-bottom: 1px solid #ccc; padding: 8px 14px; }
+        .section-block-number { font-size: .85rem; font-weight: bold; color: #444; }
+        .section-block-body { padding: 16px; }
+        .section-block label { margin-top: 12px; }
+        .section-block label:first-child { margin-top: 0; }
+        .section-delete-btn { background: none; border: none; color: #c0392b; cursor: pointer; font-size: .85rem; padding: 2px 6px; }
+        .section-delete-btn:hover { background: #fdecea; border-radius: 4px; }
+        .add-section-btn { margin-top: 16px; padding: 9px 20px; background: #555; color: #fff; border: none; cursor: pointer; font-size: .9rem; border-radius: 4px; }
+        .add-section-btn:hover { background: #333; }
         .section-heading { font-size: 1rem; font-weight: bold; margin-top: 32px; margin-bottom: 8px; }
+
+        /* CKEditor 編集エリアの最小高さ */
+        .ck-editor__editable { min-height: 300px; }
+
+        /* エディタ内テーブル */
+        .ck-editor__editable table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 8px 0;
+        }
+        .ck-editor__editable table th,
+        .ck-editor__editable table td {
+            border: 1px solid #bbb;
+            padding: 8px 12px;
+            font-size: .92rem;
+        }
+        .ck-editor__editable table th {
+            background: #f0f0f0;
+            font-weight: bold;
+            text-align: left;
+        }
+        .ck-editor__editable table tr:nth-child(even) td {
+            background: #fafafa;
+        }
+
+        /* エディタ内グリッドレイアウト */
+        .ck-editor__editable .is-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            outline: 2px dashed #aaa;
+            outline-offset: 4px;
+            padding: 8px;
+            position: relative;
+        }
+        .ck-editor__editable .is-grid::before {
+            content: 'グリッド';
+            position: absolute;
+            top: -18px;
+            left: 0;
+            font-size: .7rem;
+            background: #aaa;
+            color: #fff;
+            padding: 1px 6px;
+            border-radius: 2px;
+            pointer-events: none;
+        }
+
+        .is-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
     </style>
 </head>
 <body>
@@ -263,15 +319,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div id="sections-wrap">
             <?php foreach ($sections as $i => $sec): ?>
                 <div class="section-block">
-                    <button type="button" class="section-delete-btn" onclick="deleteSection(this)">削除</button>
-                    <label>見出し
-                        <input type="text" name="section_title[]" value="<?= h($sec['title']) ?>">
-                    </label>
-                    <label>本文
-                        <textarea name="section_body[]" class="wysiwyg"><?= $sec['body'] ?></textarea>
-
-                        <!-- [重要] WYSIWYGエディタの内容はHTMLのまま保存するため、h()でエスケープせずそのまま出力する。 --- IGNORE --- -->
-                    </label>
+                    <div class="section-block-header">
+                        <span class="section-block-number">セクション <?= $i + 1 ?></span>
+                        <button type="button" class="section-delete-btn" onclick="deleteSection(this)">削除</button>
+                    </div>
+                    <div class="section-block-body">
+                        <label>見出し
+                            <input type="text" name="section_title[]" value="<?= h($sec['title']) ?>">
+                        </label>
+                        <label>本文
+                            <!-- [重要] WYSIWYGエディタの内容はHTMLのまま保存するため、h()でエスケープせずそのまま出力する。 -->
+                            <textarea name="section_body[]" class="wysiwyg"><?= $sec['body'] ?></textarea>
+                        </label>
+                    </div>
                 </div>
             <?php endforeach; ?>
         </div>
@@ -297,9 +357,11 @@ import {
     Indent, IndentBlock,
     SimpleUploadAdapter,
     Image, ImageCaption, ImageStyle, ImageToolbar, ImageResize, ImageUpload,
-    Table, TableToolbar // ←ここに含める
+    Table, TableToolbar,
+    Style,
+    GeneralHtmlSupport
 } from 'ckeditor5';
-    import 'ckeditor5/translations/ja.js';
+import 'ckeditor5/translations/ja.js';
 
 
     const editorConfig = {
@@ -314,6 +376,8 @@ import {
             Indent, IndentBlock,
             SimpleUploadAdapter,
             Table, TableToolbar,
+            Style,
+            GeneralHtmlSupport,
             Image, ImageCaption, ImageStyle, ImageToolbar, ImageResize, ImageUpload,
         ],
         toolbar: {
@@ -321,9 +385,11 @@ import {
                 'heading', '|',
                 'bold', 'italic', 'underline', 'strikethrough', '|',
                 'bulletedList', 'numberedList', 'indent', 'outdent', '|',
-                'link', 'blockQuote', 'uploadImage', '|',
-                'undo', 'redo','table',
-            ]
+                'link', 'blockQuote', 'uploadImage', 'insertTable', '|',
+                'style', '|',
+                'undo', 'redo',
+            ],
+            shouldNotGroupWhenFull: true,
         },
         simpleUpload: {
             uploadUrl: '<?= SITE_URL ?>/cms/admin/upload-image.php',
@@ -336,9 +402,39 @@ import {
                 'resizeImage',
             ]
         },
-        language: 'ja',
+        style: {
+            definitions: [
+                {
+                    name: 'グリッドレイアウト',
+                    element: 'figure',
+                    classes: [ 'is-grid' ]
+                },
+                {
+                    name: 'テーブル',
+                    element: 'figure',
+                    classes: [ 'table' ]
+                }
+            ]
+        },
+        htmlSupport: {
+            allow: [
+                {
+                    name: /.*/,
+                    attributes: true,
+                    classes: true,
+                    styles: true
+                }
+            ]
+        },
+        table: {
+            contentToolbar: [
+            'tableColumn',
+            'tableRow',
+            'mergeTableCells'
+        ]
+        },
+        language: 'ja'
     };
-
 
 
     // textarea要素 → エディタインスタンス の対応を管理
@@ -366,14 +462,20 @@ import {
         const block = document.createElement('div');
         block.className = 'section-block';
 
+        const sectionCount = document.querySelectorAll('.section-block').length;
         block.innerHTML = `
-            <button type="button" class="section-delete-btn" onclick="deleteSection(this)">削除</button>
-            <label>見出し
-                <input type="text" name="section_title[]" style="width:100%;padding:8px;box-sizing:border-box;margin-top:6px;border:1px solid #ccc;font-size:1rem;">
-            </label>
-            <label style="margin-top:10px;">本文
-                <textarea name="section_body[]" class="wysiwyg" style="width:100%;height:200px;"></textarea>
-            </label>
+            <div class="section-block-header">
+                <span class="section-block-number">セクション ${sectionCount}</span>
+                <button type="button" class="section-delete-btn" onclick="deleteSection(this)">削除</button>
+            </div>
+            <div class="section-block-body">
+                <label>見出し
+                    <input type="text" name="section_title[]">
+                </label>
+                <label>本文
+                    <textarea name="section_body[]" class="wysiwyg"></textarea>
+                </label>
+            </div>
         `;
 
         wrap.appendChild(block);

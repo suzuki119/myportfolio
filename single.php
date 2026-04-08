@@ -91,33 +91,54 @@ $tags = !empty($post['tags']) ? explode(',', $post['tags']) : [];
 
     <!-- Content -->
     <div class="work-content">
-        <article>
+        <div class="content-grid">
 
-            <?php if ($post['thumbnail']): ?>
-                <div class="mock-img">
-                    <img src="<?= UPLOAD_URL . h($post['thumbnail']) ?>" alt="<?= h($post['title']) ?>">
-                </div>
+            <!-- 目次サイドバー -->
+            <?php if (!empty($sections)): ?>
+            <aside class="sidebar">
+                <p class="block-label">目次</p>
+                <ul class="sidebar-nav" id="toc-nav">
+                    <?php foreach ($sections as $i => $section): ?>
+                        <li>
+                            <a href="#section-<?= $i ?>">
+                                <?= h($section['title']) ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </aside>
+            <?php else: ?>
+            <aside class="sidebar"></aside>
             <?php endif; ?>
 
-            <?php if (!empty($post['external_url'])): ?>
-                <div class="work-cta">
-                    <a href="<?= h($post['external_url']) ?>" target="_blank" rel="noopener" class="btn-primary">
-                        作品へ
-                        <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                    </a>
-                </div>
-            <?php endif; ?>
+            <article>
 
-            <?php foreach ($sections as $section): // post_sections テーブルのセクションをループ ?>
-                <div class="article-block">
-                    <h2 class="block-title"><?= h($section['title']) ?></h2>
-                    <div class="block-body">
-                        <?= $section['body'] ?>
+                <?php if ($post['thumbnail']): ?>
+                    <div class="mock-img">
+                        <img src="<?= UPLOAD_URL . h($post['thumbnail']) ?>" alt="<?= h($post['title']) ?>">
                     </div>
-                </div>
-            <?php endforeach; ?>
+                <?php endif; ?>
 
-        </article>
+                <?php if (!empty($post['external_url'])): ?>
+                    <div class="work-cta">
+                        <a href="<?= h($post['external_url']) ?>" target="_blank" rel="noopener" class="btn-primary">
+                            作品へ
+                            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                        </a>
+                    </div>
+                <?php endif; ?>
+
+                <?php foreach ($sections as $i => $section): ?>
+                    <div class="article-block" id="section-<?= $i ?>">
+                        <h2 class="block-title"><?= h($section['title']) ?></h2>
+                        <div class="block-body">
+                            <?= $section['body'] ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+
+            </article>
+        </div>
     </div>
 
 </main>
@@ -125,5 +146,27 @@ $tags = !empty($post['tags']) ? explode(',', $post['tags']) : [];
 <footer>2026 Suzuki Yutaro — All Rights Reserved</footer>
 
 <script src="script.js"></script>
+<script>
+(function () {
+    const tocLinks = document.querySelectorAll('#toc-nav a');
+    if (!tocLinks.length) return;
+
+    const sections = Array.from(tocLinks).map(a => document.querySelector(a.getAttribute('href')));
+
+    const activate = (index) => {
+        tocLinks.forEach((a, i) => a.classList.toggle('is-active', i === index));
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                activate(sections.indexOf(entry.target));
+            }
+        });
+    }, { rootMargin: '-20% 0px -60% 0px' });
+
+    sections.forEach(sec => { if (sec) observer.observe(sec); });
+})();
+</script>
 </body>
 </html>
