@@ -2,6 +2,7 @@
    THREE.JS — 装飾的な背景クリスタル（スクロール連動なし）
 ============================================================ */
 if (document.body.id === 'index') {
+
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 2000);
   const renderer = new THREE.WebGLRenderer({
@@ -21,10 +22,10 @@ if (document.body.id === 'index') {
     geo.computeVertexNormals();
     return geo;
   };
-  const crystalGeo = createDiamond();
 
+  const crystalGeo = createDiamond();
   const crystalMat = new THREE.MeshStandardMaterial({
-    color: 0x1a1a1a, metalness: 0.1, roughness: 0.7,
+    color: "#a25c00" , metalness: 0.1, roughness: 0.7,
     transparent: true, opacity: 0.28, flatShading: true
   });
 
@@ -38,17 +39,19 @@ if (document.body.id === 'index') {
 
   // ── ガラスパネル ──
   const glassMat = new THREE.MeshPhysicalMaterial({
-    color: 0x289399, metalness: 0, roughness: 0,
-    transparent: true, opacity: 0.14,
-    transmission: 0.5, thickness: 0.1,
+    color: "#6f6f6f", metalness: 0, roughness: 0,
+    transparent: true, opacity: 0.3,
+    transmission: 0.5,
     reflectivity: 0.9, side: THREE.DoubleSide
   });
   const edgeMat = new THREE.LineBasicMaterial({ color: 0xcccccc, transparent: true, opacity: 0.55 });
   const panelGroup = new THREE.Group();
   const PANEL_COUNT = 16, BASE_RADIUS = 4.55;
   const PANEL_W = 1.8, PANEL_H = 1.8, V_LAYERS = 5, V_SPACING = 1.8;
+
   for (let layer = 0; layer < V_LAYERS; layer++) {
     const offsetY = (layer - (V_LAYERS - 1) / 2) * V_SPACING;
+
     for (let i = layer % 2; i < PANEL_COUNT; i += 2) {
       const angle = (i / PANEL_COUNT) * Math.PI * 2;
       const pGeo = new THREE.PlaneGeometry(PANEL_W, PANEL_H);
@@ -77,7 +80,6 @@ if (document.body.id === 'index') {
     requestAnimationFrame(animate);
     ticker += 0.003;
     crystal.rotation.y = ticker;
-    crystal.rotation.x = Math.sin(ticker * 0.3) * 0.15;
     panelGroup.rotation.y = ticker * 0.4;
     renderer.render(scene, camera);
   }
@@ -88,63 +90,6 @@ if (document.body.id === 'index') {
     renderer.setSize(innerWidth, innerHeight);
   }, { passive: true });
 
-
-  /* ============================================================
-     CHART.JS — レーダーチャート
-  ============================================================ */
-  const radarOpts = (labels, data) => ({
-    type: 'radar',
-    data: {
-      labels,
-      datasets: [{
-        data,
-        backgroundColor: 'rgba(184,168,138,0.15)',
-        borderColor: 'rgba(110, 110, 110, 0.9)',
-        borderWidth: 2,
-        pointBackgroundColor: 'rgba(184,168,138,1)',
-        pointRadius: 4,
-        pointHoverRadius: 6,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      aspectRatio: 1,
-      plugins: { legend: { display: false } },
-      scales: {
-        r: {
-          min: 0, max: 5,
-          ticks: { stepSize: 1, display: false },
-          grid: { color: 'rgb(145, 145, 145)' },
-          angleLines: { color: 'rgb(145, 145, 145)' },
-          pointLabels: {
-            color: 'rgb(145, 145, 145)',
-            font: { family: "'Space Mono', monospace", size: 20 }
-          }
-        }
-      },
-      animation: { duration: 800, easing: 'easeInOutQuart' }
-    }
-  });
-
-  // レーダーチャート：スクロールで視野に入ったときに描画
-  const radarQueue = [
-    { id: 'radarCoding', labels: ['HTML', 'CSS/SCSS', 'JavaScript', 'C言語'], data: [5, 4, 5, 3] },
-    { id: 'radarDesign', labels: ['Illustrator', 'Photoshop', 'Figma', 'Canva'], data: [4, 2, 4, 3] },
-    { id: 'radarOther', labels: ['Blender', 'Premiere Pro', 'WordPress', 'Git', 'Office', 'After Effects'], data: [3, 3, 4, 3, 4, 2] },
-  ];
-  const radarObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      const cfg = radarQueue.find(q => q.id === entry.target.id);
-      if (cfg) new Chart(entry.target, radarOpts(cfg.labels, cfg.data));
-      radarObserver.unobserve(entry.target);
-    });
-  }, { threshold: 0.3 });
-  radarQueue.forEach(q => {
-    const el = document.getElementById(q.id);
-    if (el) radarObserver.observe(el);
-  });
 
   /* ============================================================
      SCROLL ANIMATIONS — タイムライン線（スクロール連動）
@@ -168,12 +113,14 @@ if (document.body.id === 'index') {
   ============================================================ */
   const navToggle = document.getElementById('nav-toggle');
   const mainNav = document.getElementById('main-nav');
+
   navToggle.addEventListener('click', () => {
     const isOpen = mainNav.classList.toggle('open');
     navToggle.classList.toggle('open', isOpen);
     navToggle.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
     document.body.style.overflow = isOpen ? 'hidden' : '';
   });
+
   mainNav.querySelectorAll('a').forEach(a => {
     a.addEventListener('click', () => {
       mainNav.classList.remove('open');
@@ -182,4 +129,5 @@ if (document.body.id === 'index') {
       document.body.style.overflow = '';
     });
   });
+
 }

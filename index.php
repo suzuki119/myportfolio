@@ -26,22 +26,21 @@ $posts = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
 
 <body id="index">
 
-  <div id="progressBar"></div>
-
   <header class="header">
     <div class="header__logo">SuzukiPortfolio</div>
     <button class="header__toggle" id="nav-toggle" aria-label="メニューを開く">
       <span></span><span></span><span></span>
     </button>
-  </header>
-
-  <nav id="main-nav" class="header__nav">
+      <nav id="main-nav" class="header__nav">
     <a href="#about">About</a>
     <a href="#works">Works</a>
     <a href="#skill">Skill</a>
     <a href="#timeline">Timeline</a>
     <a href="#contact">Contact</a>
   </nav>
+  </header>
+
+
 
   <div id="canvas-container">
     <canvas id="backcanvas"></canvas>
@@ -65,12 +64,18 @@ $posts = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
           <div class="about__card">
             <h3 class="about__name">鈴木 優太郎</h3>
             <div class="about__name-en">Suzuki Yutaro</div>
+
             <div class="about__icons">
-              <a href="https://github.com/suzuki119/" target="_blank" rel="noopener" class="about__icon-link"
+              <a href="https://github.com/suzuki119/" target="_blank" rel="noopener" class="about__git-link"
                 title="GitHub">
                 <img src="./img/github_logo_icon.webp" alt="GitHub" class="about__icon-link__img">
               </a>
+              <a href="https://susuki-island.heavy.jp/blog/" target="_blank" rel="noopener" class="about__blog-link"
+                title="ブログ">
+                <img src="./img/icon-1.png" alt="ブログ" class="about__icon-link__img">
+              </a>
             </div>
+
             <div class="about__info">
               トライデントコンピュータ専門学校<br>
               Webデザイン学科 1年（19歳）<br><br>
@@ -97,21 +102,23 @@ $posts = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
 
             この特性を活かして、進級展のWebサイト制作では、こだわり抜いたアニメーションを実装し、完成度の高い作品に仕上げることができました。
 
-            **今後：** 今後はReact/Three.jsなどにも挑戦したりチーム開発経験を増やせるイベントに参加する予定で、それをまた自分の成長に繋げられればと感じています。
+            <br>今後はReact/Three.jsなどにも挑戦したりチーム開発経験を増やせるイベントに参加する予定で、それをまた自分の成長に繋げられればと感じています。
           </p>
-
-
     </section>
 
     <!-- ③ WORKS ────────────────────────── -->
     <section id="works" class="sec">
+
       <div class="sec__head">
         <h2 class="sec__title">Works</h2>
       </div>
+
       <div class="works__grid">
 
         <?php foreach ($posts as $post): // [組み込み] 配列をループして1件ずつ処理する ?>
+
         <a class="works__card" href="single.php?id=<?= h($post['id']) ?>">
+
           <div class="works__card-img">
             <?php if ($post['thumbnail']): // サムネイルがあれば画像を表示 ?>
               <img src="<?= UPLOAD_URL . h($post['thumbnail']) ?>"
@@ -121,17 +128,21 @@ $posts = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
               <div class="works__card-img-bg"></div>
             <?php endif; ?>
           </div>
+
           <div class="works__card-body">
             <?php if (!empty($post['tags'])): ?>
+
               <div class="works__card-tags">
                 <?php foreach (explode(',', $post['tags']) as $tag): // [組み込み] explode()=カンマ区切り文字列を配列に変換。JSのsplit()に相当 ?>
                   <span class="tag"><?= h(trim($tag)) ?></span>
                 <?php endforeach; ?>
               </div>
+
             <?php endif; ?>
             <div class="works__card-title"><?= h($post['title']) ?></div>
             <div class="works__card-period"><?= h($post['period']) ?></div><?php // postsテーブルのperiodカラム（例：2025.06 – 08） ?>
           </div>
+
         </a>
         <?php endforeach; ?>
 
@@ -153,11 +164,6 @@ $posts = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
       <div class="skill__block">
         <div class="skill__block-title">コーディング</div>
         <div class="skill__layout">
-          <div class="skill__radar-box">
-            <div class="skill__radar-canvas">
-              <canvas id="radarCoding"></canvas>
-            </div>
-          </div>
           <div class="skill__table-box">
             <table class="skill__table">
               <thead>
@@ -213,11 +219,6 @@ $posts = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
       <div class="skill__block">
         <div class="skill__block-title">デザイン</div>
         <div class="skill__layout">
-          <div class="skill__radar-box">
-            <div class="skill__radar-canvas">
-              <canvas id="radarDesign"></canvas>
-            </div>
-          </div>
           <div class="skill__table-box">
             <table class="skill__table">
               <thead>
@@ -273,11 +274,6 @@ $posts = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
       <div class="skill__block">
         <div class="skill__block-title">その他</div>
         <div class="skill__layout">
-          <div class="skill__radar-box">
-            <div class="skill__radar-canvas">
-              <canvas id="radarOther"></canvas>
-            </div>
-          </div>
           <div class="skill__table-box">
             <table class="skill__table">
               <thead>
