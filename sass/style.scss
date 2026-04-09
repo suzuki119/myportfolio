@@ -14,7 +14,7 @@ $color-text:   #d8d8d8;
 $gray:         #a0a0a0;
 
 // --- レイアウト / エフェクト ---
-$nav-bg:    rgb(46 46 46 / 0.6);
+$nav-bg:    rgba(0, 0, 0, 0.8);
 $glass-border:   #ffffff3f;
 $border-sub:     #ffffff67;
 $canvas-opacity: 0.85;
@@ -242,7 +242,6 @@ img {
             text-decoration: none;
             cursor: pointer;
             transition: color 0.3s;
-
             &:hover { color: $color-text; }
         }
 
@@ -468,6 +467,100 @@ main {
 // ─── ワークス ─────────────────────────────────────────
 #works {
     min-height: 100vh;
+}
+
+// ─── ワークス一覧ページ ────────────────────────────────
+
+// index.php のWorksセクション「すべての作品を見る」ボタン
+.btn {
+    @include label-text($color: $color-accent, $size: 16, $spacing: 0.25em);
+    display: inline-block;
+    margin: $space-xxl 0;
+    text-decoration: none;
+    padding-bottom: 2px;
+    border-bottom: 1px solid rgba($color-accent, 0.4);
+    transition: color 0.3s, border-color 0.3s;
+
+    &:hover {
+        color: $color-white;
+        border-bottom-color: $color-white;
+    }
+}
+
+.works__more {
+    margin-top: $space-xxl;
+    text-align: center;
+}
+
+// works.php ヒーロー（高さ短め）
+.work-hero--list {
+    min-height: 36vh;
+    justify-content: flex-end;
+}
+
+.works-hero-count {
+    @include label-text($color: $gray, $size: 16, $spacing: 0.3em);
+    margin-top: $space-l;
+}
+
+// フィルターバー（ボタン + 件数を横並び）
+.works-filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $space-xxl 9vw 0;
+    flex-wrap: wrap;
+    gap: $space-m;
+
+    @include mq(desktop) {
+        padding: $space-xl 6vw 0;
+    }
+}
+
+.works-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-s;
+
+    &__btn {
+        @include label-text($color: $gray, $size: 16, $spacing: 0.25em);
+        background: none;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 6px 20px;
+        cursor: pointer;
+        transition: color 0.25s, border-color 0.25s;
+
+        &:hover {
+            color: $color-text;
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        &.is-active {
+            color: $color-accent;
+            border-color: rgba($color-accent, 0.45);
+        }
+    }
+}
+
+// 件数カウンター
+.works-count {
+    @include label-text($color: $gray, $size: 16, $spacing: 0.2em);
+    white-space: nowrap;
+}
+
+
+.works-list {
+    padding: $space-xxl 9vw 120px;
+
+    @include mq(desktop) {
+        padding: $space-xl 6vw 80px;
+    }
+
+    &__empty {
+        color: $gray;
+        font-size: rem(16);
+        padding: $space-xxl 0;
+    }
 }
 
 .works {
@@ -807,7 +900,7 @@ footer {
     padding: $space-xl;
     font-size: rem(16);
     letter-spacing: 0.25em;
-    color: #e3e3e359;
+    color: $color-gray;
     border-top: 1px solid #ffffff0a;
     position: relative;
     z-index: $z-main;
@@ -841,22 +934,12 @@ header.header--work {
     }
 }
 
-.header-logo {
-    font-family: $font-primary;
-    font-size: rem(16);
-    letter-spacing: 0.4em;
-    color: #ffffff66;
-    text-transform: uppercase;
-}
-
 
 // ─── 作品詳細 — ヒーロー ───────────────────────────────
 .work-hero {
-    min-height: 70vh;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    padding: 0 9vw rem(80);
+    padding: rem(80) 9vw rem(80);
 
     &-eyebrow {
         @include label-text;
@@ -886,6 +969,10 @@ header.header--work {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     border-bottom: 1px solid #ffffff0f;
+    @include mq(desktop) {
+        grid-template-columns: 1fr;
+        gap: $space-m;
+    }
 }
 
 .work-meta-item {
@@ -894,6 +981,16 @@ header.header--work {
     &:not(:first-child) {
         border-left: 1px solid #ffffff0f;
         padding-left: $space-xl;
+    }
+    @include mq(desktop) {
+        padding: 0;
+
+        &:not(:first-child) {
+            border-left: none;
+            padding-left: 0;
+            border-top: 1px solid #ffffff0f;
+            padding-top: $space-m;
+        }
     }
 }
 

@@ -69,7 +69,6 @@ $ogp_image = !empty($post['thumbnail'])
         <svg viewBox="0 0 24 24"><path d="M19 12H5M5 12l7 7M5 12l7-7"/></svg>
         Back to Portfolio
     </a>
-    <div class="header-logo">Suzuki Portfolio</div>
 </header>
 
 <main>

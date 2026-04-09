@@ -37,7 +37,7 @@ $skills = $sk_stmt->fetchAll();
 <body id="index">
 
   <header class="header">
-    <div class="header__logo">SuzukiPortfolio</div>
+    <div class="header__logo">Portfolio</div>
     <button class="header__toggle" id="nav-toggle" aria-label="メニューを開く">
       <span></span><span></span><span></span>
     </button>
@@ -161,6 +161,7 @@ $skills = $sk_stmt->fetchAll();
         <?php endif; ?>
 
       </div>
+      <a href="works.php" class="btn">すべての作品を見る</a>
 
     </section>
 
@@ -319,7 +320,7 @@ $skills = $sk_stmt->fetchAll();
 
   </main>
 
-  <footer>&copy; 2026 Suzuki Yutaro — All Rights Reserved</footer>
+  <footer>&copy;Suzuki Yutaro Portfolio</footer>
 
   <!-- Three.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>

@@ -95,7 +95,6 @@ $categories = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>カテゴリ名</th>
                     <th>操作</th>
                 </tr>
@@ -103,7 +102,6 @@ $categories = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
             <tbody>
                 <?php foreach ($categories as $category): ?>
                 <tr>
-                    <td><?= h($category['id']) ?></td>
                     <td><?= h($category['name']) ?></td>
                     <td>
                         <form method="post" onsubmit="return confirm('削除しますか？');">
