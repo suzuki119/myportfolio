@@ -62,9 +62,10 @@ $space-xxxl: 3rem; // 48px
     }
 }
 
-@mixin glass-card($bg: #000000, $blur: 16px) {
-    background: $bg;
-    border: 1px solid $glass-border;
+@mixin glass-card() {
+    background-color: $color-bg;
+    border: $gray 2px solid;
+    border-radius: 8px;
 }
 
 // インナー幅の設定
@@ -125,19 +126,6 @@ img {
     width: 100%;
     height: auto;
     vertical-align: middle;
-}
-
-
-// ─── プログレスバー ────────────────────────────────────
-#progressBar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 1px;
-    width: 0;
-    background: $color-accent;
-    z-index: $z-progress;
-    transition: width 0.05s linear;
 }
 
 
@@ -336,8 +324,8 @@ main {
 // ─── アバウト ─────────────────────────────────────────
 #about {
     min-height: 100vh;
-    margin: 0 rem(40);
-    @include glass-card(#0909099e, 24px);
+    margin: rem(100) rem(40) 0 rem(40);
+    @include glass-card();
 
 }
 
@@ -566,25 +554,26 @@ main {
 .works {
     &__grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
         gap: $space-l;
 
         @include mq(desktop) {
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 1fr;
+
             gap: $space-m;
         }
     }
 
     &__card {
-        @include glass-card(#0909098c, 16px);
+        @include glass-card();
         overflow: hidden;
         text-decoration: none;
         color: inherit;
         display: block;
-        transition: border-color 0.35s, transform 0.35s;
+        transition: all 0.35s, transform 0.35s;
 
         &:hover {
-            border-color: #b8a88a59;
+            border-color: $color-white;
         }
     }
 
@@ -626,7 +615,7 @@ main {
     }
 
     &__card-tag {
-        @include label-text($size: 16, $spacing: 0.18em);
+        @include label-text($size: 14, $spacing: 0.18em);
         border: 1px solid #b8a88a47;
         padding: $space-xs $space-s;
     }
@@ -668,7 +657,7 @@ main {
     }
 
     &__card {
-        @include glass-card;
+        @include glass-card();
         padding: $space-l;
         display: grid;
         grid-template-columns: 1fr 1fr 4fr;
@@ -765,8 +754,44 @@ main {
 
         &:last-child { margin-bottom: 0; }
 
+        // 奇数エントリ：カードを左側に配置
+        &:nth-child(odd) {
+            .tl__side {
+                grid-column: 1;
+                grid-row: 1;
+            }
+            .tl__center {
+                grid-column: 2;
+                grid-row: 1;
+            }
+        }
+
+        // 偶数エントリ：カードを右側に配置
+        &:nth-child(even) {
+            .tl__center {
+                grid-column: 2;
+                grid-row: 1;
+            }
+            .tl__side {
+                grid-column: 3;
+                grid-row: 1;
+            }
+        }
+
         @include mq(desktop) {
             grid-template-columns: $space-xl 1fr;
+
+            &:nth-child(odd),
+            &:nth-child(even) {
+                .tl__center {
+                    grid-column: 1;
+                    grid-row: 1;
+                }
+                .tl__side {
+                    grid-column: 2;
+                    grid-row: 1;
+                }
+            }
         }
     }
 
@@ -776,11 +801,6 @@ main {
         padding-top: $space-m;
         position: relative;
         z-index: 2;
-
-        @include mq(desktop) {
-            grid-column: 1;
-            grid-row: 1;
-        }
     }
 
     &__dot {
@@ -795,18 +815,13 @@ main {
     &__side {
         padding: 0 $space-l;
 
-        &--right { text-align: right; }
-
         @include mq(desktop) {
-            grid-column: 2;
-            grid-row: 1;
             padding: 0 0 0 $space-m;
-            text-align: left !important;
         }
     }
 
     &__card {
-        @include glass-card;
+        @include glass-card();
         padding: $space-l $space-l;
     }
 
@@ -895,7 +910,7 @@ main {
 
 
 // ─── フッター ─────────────────────────────────────────
-footer {
+.copyright{
     text-align: center;
     padding: $space-xl;
     font-size: rem(16);
@@ -1013,7 +1028,7 @@ header.header--work {
 }
 
 .tag {
-    @include label-text($size: 16, $spacing: 0.18em);
+    @include label-text($size: 14, $spacing: 0.18em);
     border: 1px solid #b8a88a47;
     padding: $space-xs $space-s;
 }
@@ -1037,6 +1052,10 @@ header.header--work {
 
 .sidebar {
     top: rem(120);
+    position: sticky;
+    @include mq(desktop) {
+        position: unset;
+    }
 
     &-nav {
         list-style: none;

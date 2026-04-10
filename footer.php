@@ -1,0 +1,29 @@
+    <footer class="site-footer">
+
+    <!-- ⑥ CONTACT ──────────────────────── -->
+    <section id="contact" class="sec">
+      <div class="sec__head">
+        <h2 class="sec__title">Contact</h2>
+      </div>
+      <a href="mailto:suzukiyutaro119@gmail.com" class="contact__email">suzukiyutaro119@gmail.com</a>
+      <div class="contact__links">
+        <a href="https://github.com/suzuki119/" class="contact__link">GitHub</a>
+      </div>
+        <div class="copyright">
+  <small>&copy;Suzuki Yutaro Portfolio</small>
+</div>
+    </section>
+
+  </main>
+
+
+
+
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

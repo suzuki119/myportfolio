@@ -48,17 +48,13 @@ if ($ogp_description === '' && !empty($post['type'])) {
 $ogp_image = !empty($post['thumbnail'])
     ? UPLOAD_URL . $post['thumbnail']
     : SITE_URL . '/images/ogp.png';
+$page_title       = $post['title'] . ' — Suzuki Portfolio';
+$page_description = $ogp_description;
+$og_url           = SITE_URL . '/single.php?id=' . $post['id'];
+$og_image         = $ogp_image;
+$body_id          = 'single';
+require 'header.php';
 ?>
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= h($post['title']) ?> — Suzuki Portfolio</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/the-new-css-reset/css/reset.min.css">
-</head>
-<body id="single">
 
 <div id="canvas-container">
     <canvas id="bg-canvas"></canvas>
@@ -75,7 +71,6 @@ $ogp_image = !empty($post['thumbnail'])
 
     <!-- Hero -->
     <div class="work-hero">
-        <div class="work-hero-eyebrow">Works</div>
         <h1 class="work-hero-title"><?= h($post['title']) ?></h1>
     </div>
 
@@ -158,9 +153,6 @@ $ogp_image = !empty($post['thumbnail'])
 
 </main>
 
-<footer>2026 Suzuki Yutaro — All Rights Reserved</footer>
-
-<script src="script.js"></script>
 <script>
 (function () {
     const tocLinks = document.querySelectorAll('#toc-nav a');
@@ -183,5 +175,5 @@ $ogp_image = !empty($post['thumbnail'])
     sections.forEach(sec => { if (sec) observer.observe(sec); });
 })();
 </script>
-</body>
-</html>
+
+<?php require 'footer.php'; ?>

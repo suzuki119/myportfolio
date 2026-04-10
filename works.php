@@ -27,29 +27,14 @@ $c_stmt->execute([':status' => 'published']);
 $categories = $c_stmt->fetchAll();
 
 $total = count($posts); // 記事の総数
+
+$page_title       = 'Works — Suzuki Portfolio';
+$page_description = '鈴木優太郎のWeb制作実績一覧。WordPress・JavaScript・SCSSによるWebサイト制作を掲載しています。';
+$og_url           = SITE_URL . '/works.php';
+$body_id          = 'works-page';
+$extra_head       = '<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">';
+require 'header.php';
 ?>
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Works — Suzuki Portfolio</title>
-    <meta name="description" content="鈴木優太郎のWeb制作実績一覧。WordPress・JavaScript・SCSSによるWebサイト制作を掲載しています。">
-
-    <!-- OGP -->
-    <meta property="og:title"       content="Works — Suzuki Portfolio">
-    <meta property="og:type"        content="website">
-    <meta property="og:url"         content="<?= SITE_URL ?>/works.php">
-    <meta property="og:description" content="鈴木優太郎のWeb制作実績一覧。">
-    <meta property="og:image"       content="<?= SITE_URL ?>/ogp.png">
-    <meta property="og:site_name"   content="Suzuki Yutaro Portfolio">
-    <meta name="twitter:card"       content="summary_large_image">
-
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/the-new-css-reset/css/reset.min.css">
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body id="works-page">
 
 <div id="canvas-container">
     <canvas id="bg-canvas"></canvas>
@@ -60,16 +45,13 @@ $total = count($posts); // 記事の総数
         <svg viewBox="0 0 24 24"><path d="M19 12H5M5 12l7 7M5 12l7-7"/></svg>
         Back to Portfolio
     </a>
-    <div class="header-logo">Suzuki Portfolio</div>
 </header>
 
 <main>
 
     <!-- ヒーロー -->
     <div class="work-hero work-hero--list">
-        <div class="work-hero-eyebrow">Works</div>
-        <h1 class="work-hero-title">All Works</h1>
-        <p class="works-hero-count"><?= $total ?> Projects</p>
+        <h1 class="work-hero-title">Works</h1>
     </div>
 
     <div class="hero-divider"></div>
@@ -133,9 +115,6 @@ $total = count($posts); // 記事の総数
 
 </main>
 
-<footer>&copy; 2026 Suzuki Yutaro — All Rights Reserved</footer>
-
-<script src="script.js"></script>
 <script>
 const FADE_MS = 220; // フィルターアニメーションの時間（ms）
 
@@ -179,5 +158,4 @@ filterBtns.forEach(btn => {
 });
 </script>
 
-</body>
-</html>
+<?php require 'footer.php'; ?>

@@ -13,44 +13,15 @@ $posts = $stmt->fetchAll();
 $sk_stmt = $pdo->prepare('SELECT * FROM skill ORDER BY id ASC');
 $sk_stmt->execute();
 $skills = $sk_stmt->fetchAll();
+
+$page_title       = 'Suzuki Yutaro — Portfolio';
+$page_description = '鈴木優太郎のポートフォリオ。フロントエンドエンジニア志望。WordPress・JavaScript・SCSSによるWeb制作実績を掲載しています。';
+$og_url           = 'https://susuki-island.heavy.jp/myportfolio/';
+$og_image         = 'https://susuki-island.heavy.jp/myportfolio/ogp.png';
+$body_id          = 'index';
+
+require 'header.php';
 ?>
-
-<!DOCTYPE html>
-<html lang="ja">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Suzuki Yutaro — Portfolio</title>
-  <meta name="description" content="鈴木優太郎のポートフォリオ。フロントエンドエンジニア志望。WordPress・JavaScript・SCSSによるWeb制作実績を掲載しています。">
-  <meta property="og:type"        content="website">
-  <meta property="og:title"       content="Suzuki Yutaro — Portfolio">
-  <meta property="og:description" content="鈴木優太郎のポートフォリオ。フロントエンドエンジニア志望。Web制作実績を掲載しています。">
-  <meta property="og:url"         content="https://susuki-island.heavy.jp/myportfolio/">
-  <meta property="og:image"       content="https://susuki-island.heavy.jp/myportfolio/ogp.png">
-  <meta property="og:site_name"   content="Suzuki Yutaro Portfolio">
-  <meta name="twitter:card"       content="summary_large_image">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/the-new-css-reset/css/reset.min.css">
-</head>
-
-<body id="index">
-
-  <header class="header">
-    <div class="header__logo">Portfolio</div>
-    <button class="header__toggle" id="nav-toggle" aria-label="メニューを開く">
-      <span></span><span></span><span></span>
-    </button>
-      <nav id="main-nav" class="header__nav">
-    <a href="#about">About</a>
-    <a href="#works">Works</a>
-    <a href="#skill">Skill</a>
-    <a href="#timeline">Timeline</a>
-    <a href="#contact">Contact</a>
-  </nav>
-  </header>
-
-
 
   <div id="canvas-container">
     <canvas id="backcanvas"></canvas>
@@ -229,24 +200,33 @@ $skills = $sk_stmt->fetchAll();
       </div>
       <div class="tl__wrap">
 
-        <!-- 左 -->
         <div class="tl__entry">
-          <div class="tl__side tl__side--right">
+          <div class="tl__center">
+            <div class="tl__dot"></div>
+          </div>
+          <div class="tl__side">
+            <div class="tl__card">
+              <div class="tl__date">2006.11-2022</div>
+              <div class="tl__role">日間賀島に産まれる。</div>
+              <div class="tl__desc">小中学校は日間賀島で過ごす。中学校卒業後</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl__entry">
+          <div class="tl__center">
+            <div class="tl__dot"></div>
+          </div>
+          <div class="tl__side">
             <div class="tl__card">
               <div class="tl__date">2025.03</div>
               <div class="tl__role">名古屋市立工芸高等学校 卒業</div>
               <div class="tl__desc">Blenderでの3DCG制作・Officeスキルを習得。高校生活を締めくくる。</div>
             </div>
           </div>
-          <div class="tl__center">
-            <div class="tl__dot"></div>
-          </div>
-          <div class="tl__side"></div>
         </div>
 
-        <!-- 右 -->
         <div class="tl__entry">
-          <div class="tl__side"></div>
           <div class="tl__center">
             <div class="tl__dot"></div>
           </div>
@@ -259,24 +239,20 @@ $skills = $sk_stmt->fetchAll();
           </div>
         </div>
 
-        <!-- 左 -->
         <div class="tl__entry">
-          <div class="tl__side tl__side--right">
+          <div class="tl__center">
+            <div class="tl__dot"></div>
+          </div>
+          <div class="tl__side">
             <div class="tl__card">
               <div class="tl__date">2025.06 – 08</div>
               <div class="tl__role">MYBLOG 制作</div>
               <div class="tl__desc">WordPressとローカルサーバーを初めて使用し、宇宙テーマのオリジナルブログを制作・公開。</div>
             </div>
           </div>
-          <div class="tl__center">
-            <div class="tl__dot"></div>
-          </div>
-          <div class="tl__side"></div>
         </div>
 
-        <!-- 右 -->
         <div class="tl__entry">
-          <div class="tl__side"></div>
           <div class="tl__center">
             <div class="tl__dot"></div>
           </div>
@@ -289,46 +265,22 @@ $skills = $sk_stmt->fetchAll();
           </div>
         </div>
 
-        <!-- 左 -->
         <div class="tl__entry">
-          <div class="tl__side tl__side--right">
+          <div class="tl__center">
+            <div class="tl__dot"></div>
+          </div>
+          <div class="tl__side">
             <div class="tl__card">
               <div class="tl__date">2025.12 – 2026.03</div>
               <div class="tl__role">新校舎紹介動画 制作</div>
               <div class="tl__desc">校長・設計者へのインタビューを含む新校舎紹介動画をPremiere Proで編集・完成。</div>
             </div>
           </div>
-          <div class="tl__center">
-            <div class="tl__dot"></div>
-          </div>
-          <div class="tl__side"></div>
         </div>
 
       </div>
     </section>
 
-    <!-- ⑥ CONTACT ──────────────────────── -->
-    <section id="contact" class="sec">
-      <div class="sec__head">
-        <h2 class="sec__title">Contact</h2>
-      </div>
-      <a href="mailto:suzukiyutaro119@gmail.com" class="contact__email">suzukiyutaro119@gmail.com</a>
-      <div class="contact__links">
-        <a href="https://github.com/suzuki119/" class="contact__link">GitHub</a>
-      </div>
-    </section>
 
-  </main>
 
-  <footer>&copy;Suzuki Yutaro Portfolio</footer>
-
-  <!-- Three.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
-  <script src="script.js"></script>
-
-</body>
-
-</html>
+<?php require 'footer.php'; ?>
