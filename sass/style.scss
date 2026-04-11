@@ -164,13 +164,12 @@ img {
     background: $color-bg;
     border-bottom: 1px solid $border-sub;
 
+
     &__logo {
-        font-family: $font-primary;
-        font-size: rem(17);
-        letter-spacing: 0.45em;
-        color: $color-text;
-        text-transform: uppercase;
-        white-space: nowrap;
+        & img {
+            width: 200px;
+            height: auto;
+        }
     }
 
     &__toggle {
@@ -218,7 +217,6 @@ img {
     &__nav {
         display: flex;
         position: fixed;
-        top: 0;
         right: rem(48);
         padding: $space-l 0;
         gap: $space-xl;
@@ -312,11 +310,18 @@ main {
         line-height: 0.95;
         letter-spacing: -0.01em;
         color: $color-white;
+        & img{
+            width: 80%;
+            max-width: rem(800);
+            height: auto;
+            margin-top: $space-l;
+        }
 
         em {
             font-style: italic;
             color: $color-accent;
         }
+
     }
 }
 
@@ -455,6 +460,7 @@ main {
 // ─── ワークス ─────────────────────────────────────────
 #works {
     min-height: 100vh;
+    text-align: center;
 }
 
 // ─── ワークス一覧ページ ────────────────────────────────
@@ -463,7 +469,8 @@ main {
 .btn {
     @include label-text($color: $color-accent, $size: 16, $spacing: 0.25em);
     display: inline-block;
-    margin: $space-xxl 0;
+    text-align: center;
+    margin: $space-xxl auto;
     text-decoration: none;
     padding-bottom: 2px;
     border-bottom: 1px solid rgba($color-accent, 0.4);
@@ -571,6 +578,7 @@ main {
         color: inherit;
         display: block;
         transition: all 0.35s, transform 0.35s;
+        text-align: left;
 
         &:hover {
             border-color: $color-white;
@@ -910,6 +918,22 @@ main {
 
 
 // ─── フッター ─────────────────────────────────────────
+.footer {
+    position: relative;
+    &__octopus {
+        position: absolute;
+        width: 120px;
+        left: rem(-100);
+        bottom: rem(20);
+
+        @include mq(desktop) {
+            position: relative;
+            left: 0;
+            bottom: 0;
+            margin: $space-xl auto;
+        }
+    }
+}
 .copyright{
     text-align: center;
     padding: $space-xl;
@@ -928,10 +952,14 @@ header.header--work {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-top: rem(150);
+
 }
+
 
 .back-link {
     display: flex;
+
     align-items: center;
     gap: $space-s;
     @include label-text($color: $color-gray, $spacing: 0.3em);
@@ -963,7 +991,7 @@ header.header--work {
 
     &-title {
         font-family: $font-primary;
-        font-size: clamp(rem(64), 11vw, rem(160));
+        font-size: clamp(rem(32), 8vw, rem(160));
         font-weight: lighter;
         line-height: 0.92;
         color: $color-white;

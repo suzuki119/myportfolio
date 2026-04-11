@@ -31,7 +31,7 @@ require 'header.php';
 
     <!-- ① HERO ────────────────────────── -->
     <section id="hero">
-      <h1 class="hero__title">Suzuki<br><em>Portfolio</em></h1>
+      <h1 class="hero__title"><img src="./img/portfolio-text.webp" alt="Portfolio"></h1>
     </section>
 
     <!-- ② ABOUT ───────────────────────── -->
@@ -132,7 +132,7 @@ require 'header.php';
         <?php endif; ?>
 
       </div>
-      <a href="works.php" class="btn">すべての作品を見る</a>
+      <a href="works.php" class="btn">作品一覧へ</a>
 
     </section>
 

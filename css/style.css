@@ -61,13 +61,9 @@ img {
   background: #000000;
   border-bottom: 1px solid rgba(255, 255, 255, 0.4039215686);
 }
-.header__logo {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 1.2142857143rem;
-  letter-spacing: 0.45em;
-  color: #d8d8d8;
-  text-transform: uppercase;
-  white-space: nowrap;
+.header__logo img {
+  width: 200px;
+  height: auto;
 }
 .header__toggle {
   display: none;
@@ -117,7 +113,6 @@ img {
 .header__nav {
   display: flex;
   position: fixed;
-  top: 0;
   right: 3.4285714286rem;
   padding: 1.5rem 0;
   gap: 2rem;
@@ -208,6 +203,12 @@ main {
   line-height: 0.95;
   letter-spacing: -0.01em;
   color: #ffffff;
+}
+.hero__title img {
+  width: 80%;
+  max-width: 57.1428571429rem;
+  height: auto;
+  margin-top: 1.5rem;
 }
 .hero__title em {
   font-style: italic;
@@ -335,6 +336,7 @@ main {
 
 #works {
   min-height: 100vh;
+  text-align: center;
 }
 
 .btn {
@@ -343,7 +345,8 @@ main {
   text-transform: uppercase;
   color: #b8a88a;
   display: inline-block;
-  margin: 2.5rem 0;
+  text-align: center;
+  margin: 2.5rem auto;
   text-decoration: none;
   padding-bottom: 2px;
   border-bottom: 1px solid rgba(184, 168, 138, 0.4);
@@ -453,6 +456,7 @@ main {
   color: inherit;
   display: block;
   transition: all 0.35s, transform 0.35s;
+  text-align: left;
 }
 .works__card:hover {
   border-color: #ffffff;
@@ -766,6 +770,24 @@ main {
   border-bottom-color: #b8a88a;
 }
 
+.footer {
+  position: relative;
+}
+.footer__octopus {
+  position: absolute;
+  width: 120px;
+  left: -7.1428571429rem;
+  bottom: 1.4285714286rem;
+}
+@media (max-width: 800px) {
+  .footer__octopus {
+    position: relative;
+    left: 0;
+    bottom: 0;
+    margin: 2rem auto;
+  }
+}
+
 .copyright {
   text-align: center;
   padding: 2rem;
@@ -782,6 +804,7 @@ header.header--work {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-top: 10.7142857143rem;
 }
 
 .back-link {
@@ -820,7 +843,7 @@ header.header--work {
 }
 .work-hero-title {
   font-family: "Cormorant Garamond", serif;
-  font-size: clamp(4.5714285714rem, 11vw, 11.4285714286rem);
+  font-size: clamp(2.2857142857rem, 8vw, 11.4285714286rem);
   font-weight: lighter;
   line-height: 0.92;
   color: #ffffff;

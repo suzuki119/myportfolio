@@ -86,8 +86,7 @@ $currentCategoryId = $post_category_id ? $post_category_id[0]['category_id'] : n
             <thead>
                 <tr>
                     <th>タイトル</th>
-                    <th>ステータス</th>
-                    <th>作成日</th>
+                    <th>公開状態</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -102,7 +101,6 @@ $currentCategoryId = $post_category_id ? $post_category_id[0]['category_id'] : n
                             <span class="status-draft">下書き</span>
                         <?php endif; ?>
                     </td>
-                    <td><?= h($post['created_at']) ?></td>
                     <td class="actions">
                         <a href="<?= SITE_URL ?>/cms/admin/post-edit.php?id=<?= h($post['id']) ?>">編集</a>
                         <form method="post" onsubmit="return confirm('削除しますか？');">

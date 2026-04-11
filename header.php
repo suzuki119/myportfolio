@@ -23,13 +23,18 @@
   <meta property="og:image"       content="<?= SITE_URL.'img/ogp.webp' ?>">
   <meta property="og:site_name"   content="Suzuki Yutaro Portfolio">
   <meta name="twitter:card"       content="summary_large_image">
+  <link rel="icon" href="./img/logo.webp" type="image/x-icon">
   <?php if (!empty($extra_head)) echo $extra_head; ?>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/the-new-css-reset/css/reset.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body<?= !empty($body_id) ? ' id="' . h($body_id) . '"' : '' ?>>
     <header class="header">
-    <div class="header__logo">Portfolio</div>
+        <a href="index.php" class="back-link">
+        <div class="header__logo">
+          <img src="./img/portfolio.webp" alt="logo">
+        </div>
+      </a>
     <button class="header__toggle" id="nav-toggle" aria-label="メニューを開く">
       <span></span><span></span><span></span>
     </button>
