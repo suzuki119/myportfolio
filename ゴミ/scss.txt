@@ -2,106 +2,75 @@
 @use "sass:map";
 
 
-/* ========================================
-   変数定義
-======================================== */
-// --- カラー ---
-$color-white:  #ffffff;
-$color-gray:   #e3e3e3;
+// 色の変数
+// アクセントカラーは日間賀島の砂浜っぽい色にした（#b8a88a）
+$white:        #ffffff;
+$color-gray:   #c2c2c2;
 $color-accent: #b8a88a;
-$color-bg:     #000000;
+$black:        #000000;
 $color-text:   #d8d8d8;
-$gray:         #a0a0a0;
 
-// --- レイアウト / エフェクト ---
-$nav-bg:    rgba(0, 0, 0, 0.8);
-$glass-border:   #ffffff3f;
-$border-sub:     #ffffff67;
+// ナビ背景・ボーダー
+$nav-bg:      rgba(0, 0, 0, 0.8);
+$border-sub:  #ffffff67;
 $canvas-opacity: 0.85;
 
-// --- タイポグラフィ ---
+// フォント
+// Cormorant Garamondはgoogle fontsで見つけた。高級感があってポートフォリオに合いそうだった
 $font-primary: 'Cormorant Garamond', serif;
-$font-text:  'Space Mono', monospace;
+$font-text:    'Space Mono', monospace;
 
-// --- 重なり順 ---
+// z-index
+// ヘッダーとハンバーガーが被ったので数字を調整した
 $z-canvas:   0;
 $z-main:     10;
 $z-header:   50;
-$z-toggle:   210;
 $z-menu:     20;
+$z-toggle:   210; // メニューより上にしないとタップできなかった
 $z-progress: 300;
 
-// --- ブレークポイント ---
+// ブレークポイント（800px以下をスマホ扱いにした）
 $breakpoints: (
     mobile: 375px,
-    tablet: 768px,
     desktop: 800px
 );
 
-// --- スペーシング ---
-$space-xs: 0.25rem; // 4px
-$space-s: 0.5rem; // 8px
-$space-m: 1rem; // 16px
-$space-l: 1.5rem; // 24px
-$space-xl: 2rem; // 32px
-$space-xxl: 2.5rem; // 40px
-$space-xxxl: 3rem; // 48px
+// スペース用変数
+$space-xs:   0.25rem;
+$space-s:    0.5rem;
+$space-m:    1rem;
+$space-l:    1.5rem;
+$space-xl:   2rem;
+$space-xxl:  2.5rem;
+$space-xxxl: 3rem;
 
 
-/* ========================================
-   関数・ミックスイン
-======================================== */
-
-@function rem($px-value) {
-    @return #{math.div($px-value, 14)}rem;
+// ベース14pxでrem計算する関数
+@function rem($value) {
+    @return #{math.div($value, 14)}rem;
 }
 
+// メディアクエリ（デフォルトはdesktop=800px）
 @mixin mq($breakpoint: desktop) {
     @media (max-width: map.get($breakpoints, $breakpoint)) {
         @content;
     }
 }
 
+// タイムラインとスキルカードで使うガラス風スタイル
 @mixin glass-card() {
-    background-color: $color-bg;
-    border: $gray 2px solid;
+    background-color: $black;
+    border: $color-gray 2px solid;
     border-radius: 8px;
 }
 
-// インナー幅の設定
-@mixin inner($mw: 1300px, $w: 95%) {
-    width: $w;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-// セクションタイトル
-@mixin title() {
-    font-family: $font-primary;
-    margin-bottom: rem(80);
-    font-weight: bold;
-    font-size: rem(45);
-    text-align: center;
-}
-
-
-
-@mixin label-text($color: $color-accent, $size: 16, $spacing: 0.45em) {
-    font-size: rem($size);
-    letter-spacing: $spacing;
+// タグや日付などの小さいラベル用（大文字・アクセントカラー）
+@mixin label-text() {
+    font-size: rem(16);
+    letter-spacing: 0.45em;
     text-transform: uppercase;
-    color: $color;
+    color: $color-accent;
 }
-
-@function rem($px-value) {
-    @return #{math.div($px-value, 14)}rem;
-}
-
-
-/* ========================================
-    ベーススタイル
-======================================== */
-
 
 
 img {
@@ -116,7 +85,7 @@ html {
 }
 
 body {
-    background: $color-bg;
+    background: $black;
     color: $color-text;
     font-family: $font-text;
     overflow-x: hidden;
@@ -129,7 +98,8 @@ img {
 }
 
 
-// ─── Three.js キャンバス ───────────────────────────────
+// Three.js用のキャンバス
+// pointer-events: none にしないとスクロールやクリックが全部取られる
 #canvas-container {
     position: fixed;
     inset: 0;
@@ -147,12 +117,7 @@ img {
 
 
 
-/* ========================================
-    スタイル
-======================================== */
-// ─── ヘッダー ─────────────────────────────────────────
-
-
+// ヘッダー
 .header {
     position: fixed;
     width: 100%;
@@ -161,7 +126,7 @@ img {
     align-items: center;
     justify-content: space-between;
     z-index: $z-header;
-    background: $color-bg;
+    background: $black;
     border-bottom: 1px solid $border-sub;
 
 
@@ -182,6 +147,7 @@ img {
         padding: $space-xs;
         z-index: $z-toggle;
 
+        // スマホ時に「menu」と表示させてる
         &::after {
             content: 'menu';
             position: absolute;
@@ -191,17 +157,18 @@ img {
             bottom: rem(-20);
             left: 0;
             font-size: rem(16);
-            color: $gray;
+            color: $color-gray;
         }
 
         span {
             display: block;
             width: 30px;
             height: 2px;
-            background: $gray;
+            background: $color-gray;
             transition: transform 0.3s, opacity 0.3s, background 0.3s;
         }
 
+        // 開いたときに×に変形
         &.open {
             span                { background: $color-text; }
             span:nth-child(1)   { transform: translateY(6px) rotate(45deg); }
@@ -224,20 +191,18 @@ img {
         z-index: $z-header;
 
         a {
-            @include label-text($color: $color-gray, $spacing: 0.22em);
+            @include label-text;
             text-decoration: none;
             cursor: pointer;
             transition: color 0.3s;
             &:hover { color: $color-text; }
         }
 
+        // スマホでは全画面メニューに切り替える
         @include mq(desktop) {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             padding: 0;
             background: $nav-bg;
             flex-direction: column;
@@ -258,14 +223,13 @@ img {
 }
 
 
-// ─── メインラッパー ────────────────────────────────────
 main {
     position: relative;
     z-index: $z-main;
 }
 
 
-// ─── セクション共通スタイル ─────────────────────────────
+// セクション共通
 .sec {
     padding: rem(130) 9vw rem(100);
 
@@ -282,7 +246,7 @@ main {
         font-family: $font-primary;
         font-size: clamp(rem(42), 5.5vw, rem(84));
         line-height: 1;
-        color: $color-white;
+        color: $white;
     }
 
     @include mq(desktop) {
@@ -291,7 +255,7 @@ main {
 }
 
 
-// ─── ヒーロー ─────────────────────────────────────────
+// ヒーロー
 #hero {
     min-height: 100vh;
     display: flex;
@@ -309,8 +273,8 @@ main {
         font-weight: 300;
         line-height: 0.95;
         letter-spacing: -0.01em;
-        color: $color-white;
-        & img{
+        color: $white;
+        & img {
             width: 80%;
             max-width: rem(800);
             height: auto;
@@ -321,22 +285,19 @@ main {
             font-style: italic;
             color: $color-accent;
         }
-
     }
 }
 
 
-// ─── アバウト ─────────────────────────────────────────
+// About
+// カードにglass-cardを使ったらいい感じになった
 #about {
     min-height: 100vh;
     margin: rem(100) rem(40) 0 rem(40);
     @include glass-card();
-
 }
 
 .about {
-
-
 
     &__grid {
         display: grid;
@@ -350,7 +311,6 @@ main {
     }
 
     &__card {
-
         @include mq(desktop) {
             padding: $space-xl $space-l;
         }
@@ -372,7 +332,7 @@ main {
 
     &__icons {
         display: flex;
-        gap: rem(75);
+        gap: rem(75); // GitHubとブログのアイコン間隔
         margin-bottom: $space-xl;
     }
 
@@ -396,7 +356,8 @@ main {
             object-fit: contain;
         }
 
-        &::after{
+        // アイコンの右にラベルを::afterで出す
+        &::after {
             content: "";
             position: absolute;
             display: inline-block;
@@ -407,7 +368,7 @@ main {
             color: $color-gray;
         }
     }
-    &__git-link::after { content: "GitHub"; }
+    &__git-link::after  { content: "GitHub"; }
     &__blog-link::after { content: "Blog"; }
 
     &__info {
@@ -457,17 +418,15 @@ main {
 }
 
 
-// ─── ワークス ─────────────────────────────────────────
+// Works
 #works {
     min-height: 100vh;
     text-align: center;
 }
 
-// ─── ワークス一覧ページ ────────────────────────────────
-
-// index.php のWorksセクション「すべての作品を見る」ボタン
+// 「作品一覧へ」ボタン（index.phpのWorksセクション下）
 .btn {
-    @include label-text($color: $color-accent, $size: 16, $spacing: 0.25em);
+    @include label-text;
     display: inline-block;
     text-align: center;
     margin: $space-xxl auto;
@@ -477,8 +436,8 @@ main {
     transition: color 0.3s, border-color 0.3s;
 
     &:hover {
-        color: $color-white;
-        border-bottom-color: $color-white;
+        color: $white;
+        border-bottom-color: $white;
     }
 }
 
@@ -487,18 +446,18 @@ main {
     text-align: center;
 }
 
-// works.php ヒーロー（高さ短め）
+// works.phpのヒーロー（高さ短くした）
 .work-hero--list {
     min-height: 36vh;
     justify-content: flex-end;
 }
 
 .works-hero-count {
-    @include label-text($color: $gray, $size: 16, $spacing: 0.3em);
+    @include label-text;
     margin-top: $space-l;
 }
 
-// フィルターバー（ボタン + 件数を横並び）
+// フィルターバー
 .works-filter-bar {
     display: flex;
     align-items: center;
@@ -518,7 +477,7 @@ main {
     gap: $space-s;
 
     &__btn {
-        @include label-text($color: $gray, $size: 16, $spacing: 0.25em);
+        @include label-text;
         background: none;
         border: 1px solid rgba(255, 255, 255, 0.1);
         padding: 6px 20px;
@@ -539,7 +498,7 @@ main {
 
 // 件数カウンター
 .works-count {
-    @include label-text($color: $gray, $size: 16, $spacing: 0.2em);
+    @include label-text;
     white-space: nowrap;
 }
 
@@ -552,7 +511,7 @@ main {
     }
 
     &__empty {
-        color: $gray;
+        color: $color-gray;
         font-size: rem(16);
         padding: $space-xxl 0;
     }
@@ -566,7 +525,6 @@ main {
 
         @include mq(desktop) {
             grid-template-columns: 1fr 1fr;
-
             gap: $space-m;
         }
     }
@@ -581,7 +539,7 @@ main {
         text-align: left;
 
         &:hover {
-            border-color: $color-white;
+            border-color: $white;
         }
     }
 
@@ -623,7 +581,7 @@ main {
     }
 
     &__card-tag {
-        @include label-text($size: 14, $spacing: 0.18em);
+        @include label-text;
         border: 1px solid #b8a88a47;
         padding: $space-xs $space-s;
     }
@@ -640,11 +598,10 @@ main {
         letter-spacing: 0.15em;
         color: $color-gray;
     }
-
 }
 
 
-// ─── スキル ───────────────────────────────────────────
+// Skills
 .skill {
     &__grid {
         display: flex;
@@ -664,6 +621,7 @@ main {
         margin: $space-xl 0;
     }
 
+    // アイコン・名前・説明の3列グリッド
     &__card {
         @include glass-card();
         padding: $space-l;
@@ -703,7 +661,7 @@ main {
 
     &__name {
         font-size: rem(30);
-        color: $color-white;
+        color: $white;
         font-family: $font-primary;
         font-weight: 300;
         letter-spacing: 0.05em;
@@ -711,7 +669,7 @@ main {
 
     &__years {
         font-size: rem(13);
-        color: $gray;
+        color: $color-gray;
         letter-spacing: 0.05em;
     }
 
@@ -727,7 +685,7 @@ main {
 }
 
 
-// ─── タイムライン ──────────────────────────────────────
+// Timeline
 #timeline {
     padding-top: $space-xxl;
 }
@@ -737,6 +695,7 @@ main {
         position: relative;
         padding-bottom: $space-l;
 
+        // スクロールで伸びる縦線（JSからCSSカスタムプロパティで制御）
         &::before {
             content: '';
             position: absolute;
@@ -762,7 +721,7 @@ main {
 
         &:last-child { margin-bottom: 0; }
 
-        // 奇数エントリ：カードを左側に配置
+        // 奇数は左、偶数は右に配置（空のdivなしでCSSだけで実現）
         &:nth-child(odd) {
             .tl__side {
                 grid-column: 1;
@@ -774,7 +733,6 @@ main {
             }
         }
 
-        // 偶数エントリ：カードを右側に配置
         &:nth-child(even) {
             .tl__center {
                 grid-column: 2;
@@ -786,6 +744,7 @@ main {
             }
         }
 
+        // スマホでは縦一列
         @include mq(desktop) {
             grid-template-columns: $space-xl 1fr;
 
@@ -816,7 +775,7 @@ main {
         height: 10px;
         border-radius: 50%;
         background: $color-accent;
-        box-shadow: 0 0 18px #b8a88ab3;
+        box-shadow: 0 0 18px #b8a88ab3; // アクセントカラーと同じ色でグロー
         flex-shrink: 0;
     }
 
@@ -834,7 +793,7 @@ main {
     }
 
     &__date {
-        @include label-text($spacing: 0.25em);
+        @include label-text;
         margin-bottom: $space-s;
     }
 
@@ -854,7 +813,7 @@ main {
 
 
 
-// ─── コンタクト ────────────────────────────────────────
+// Contact
 #contact {
     min-height: 60vh;
     display: flex;
@@ -901,19 +860,20 @@ main {
         }
     }
 
-    &__copy {
+    // コピーボタン（アイコン画像）
+    &__copy-btn {
         background: transparent;
         border: none;
         padding: $space-xs;
         cursor: pointer;
         flex-shrink: 0;
-        opacity: 0.5;
+        opacity: 0.6;
         transition: opacity 0.25s;
 
         img { display: block; width: 24px; height: 24px; }
 
         &:hover { opacity: 1; }
-        &.copied { opacity: 0.3; }
+        &.copied { opacity: 0.4; }
     }
 
     &__links {
@@ -929,21 +889,21 @@ main {
     }
 
     &__link {
-        @include label-text($color: $color-gray, $size: 16, $spacing: 0.3em);
+        @include label-text;
         text-decoration: none;
         padding-bottom: $space-xs;
         border-bottom: 1px solid transparent;
         transition: color 0.3s, border-color 0.3s;
 
         &:hover {
-            color: $color-white;
+            color: $white;
             border-bottom-color: $color-accent;
         }
     }
 }
 
 
-// ─── フッター ─────────────────────────────────────────
+// フッター（タコの画像は日間賀島名物なので入れた）
 .footer {
     position: relative;
     &__octopus {
@@ -960,35 +920,34 @@ main {
         }
     }
 }
-.copyright{
+
+.copyright {
     text-align: center;
     padding: $space-xl;
     font-size: rem(16);
     letter-spacing: 0.25em;
     color: $color-gray;
-    border-top: 1px solid #ffffff0a;
     position: relative;
     z-index: $z-main;
 }
 
 
-// ─── 作品詳細 — ヘッダー ───────────────────────────────
+// 作品詳細のヘッダー
+// padding-topはヘッダー分ずらすために大きめにしてる
 header.header--work {
     padding: $space-l $space-xxxl;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding-top: rem(150);
-
 }
 
 
 .back-link {
     display: flex;
-
     align-items: center;
     gap: $space-s;
-    @include label-text($color: $color-gray, $spacing: 0.3em);
+    @include label-text;
     text-decoration: none;
     transition: color 0.3s;
 
@@ -1004,7 +963,7 @@ header.header--work {
 }
 
 
-// ─── 作品詳細 — ヒーロー ───────────────────────────────
+// 作品詳細 ヒーロー
 .work-hero {
     display: flex;
     flex-direction: column;
@@ -1020,9 +979,8 @@ header.header--work {
         font-size: clamp(rem(32), 8vw, rem(160));
         font-weight: lighter;
         line-height: 0.92;
-        color: $color-white;
+        color: $white;
     }
-
 }
 
 .hero-divider {
@@ -1032,7 +990,7 @@ header.header--work {
 }
 
 
-// ─── 作品詳細 — メタバー ───────────────────────────────
+// 作品詳細 メタバー（制作期間・タグなどの情報欄）
 .work-meta-bar {
     padding: $space-xxl 9vw;
     display: grid;
@@ -1064,7 +1022,7 @@ header.header--work {
 }
 
 .work-meta-label {
-    @include label-text($size: 16, $spacing: 0.35em);
+    @include label-text;
     margin-bottom: $space-s;
 }
 
@@ -1082,13 +1040,13 @@ header.header--work {
 }
 
 .tag {
-    @include label-text($size: 14, $spacing: 0.18em);
+    @include label-text;
     border: 1px solid #b8a88a47;
     padding: $space-xs $space-s;
 }
 
 
-// ─── 作品詳細 — コンテンツ ─────────────────────────────
+// 作品詳細 コンテンツエリア
 .work-content {
     padding: rem(80) 9vw rem(120);
 }
@@ -1117,7 +1075,7 @@ header.header--work {
         li { margin-bottom: $space-xs; }
 
         a {
-            @include label-text($color: $color-gray, $size: 16, $spacing: 0.25em);
+            @include label-text;
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -1126,6 +1084,7 @@ header.header--work {
             border-bottom: 1px solid #ffffff0a;
             transition: color 0.3s;
 
+            // ホバー時に左に線が出る演出
             &::before {
                 content: '';
                 width: 20px;
@@ -1138,7 +1097,6 @@ header.header--work {
             &:hover,
             &.is-active {
                 color: $color-accent;
-
                 &::before { opacity: 1; }
             }
         }
@@ -1147,12 +1105,11 @@ header.header--work {
 
 .article-block {
     margin: $space-xxxl 0;
-
     &:last-child { margin-bottom: 0; }
 }
 
 .block-label {
-    @include label-text($size: 16, $spacing: 0.4em);
+    @include label-text;
     margin-bottom: $space-l;
     display: flex;
     align-items: center;
@@ -1171,20 +1128,20 @@ header.header--work {
     font-size: clamp(rem(26), 3vw, rem(40));
     font-weight: lighter;
     line-height: 1.2;
-    color: $color-white;
+    color: $white;
     margin-bottom: $space-l;
 }
 
 .block-body {
     font-size: rem(16);
     line-height: 2.2;
-    color: $color-white;
+    color: $white;
 
     p + p { margin-top: $space-m; }
 }
 
 
-// ─── 作品詳細 — サムネイル ─────────────────────────────
+// サムネイル画像エリア
 .mock-img {
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -1237,7 +1194,7 @@ td {
 }
 
 
-// ─── 作品詳細 — CTA ────────────────────────────────────
+// 作品詳細 CTAボタン
 .work-cta {
     margin-top: $space-xxl;
     display: flex;
@@ -1265,7 +1222,7 @@ td {
     &:hover {
         background: #b8a88a1a;
         border-color: $color-accent;
-        color: $color-white;
+        color: $white;
     }
 
     svg {

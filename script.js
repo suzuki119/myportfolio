@@ -1,3 +1,14 @@
+// メールコピーボタン
+const copyBtn = document.querySelector('.contact__copy');
+if (copyBtn) {
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(copyBtn.dataset.email).then(() => {
+      copyBtn.classList.add('copied');
+      setTimeout(() => copyBtn.classList.remove('copied'), 2000);
+    });
+  });
+}
+
 /* ============================================================
    THREE.JS — 装飾的な背景クリスタル（スクロール連動なし）
 ============================================================ */

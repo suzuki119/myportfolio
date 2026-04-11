@@ -272,8 +272,7 @@ main {
 .about__git-link__img, .about__blog-link__img {
   width: 20px;
   height: 20px;
-  -o-object-fit: contain;
-     object-fit: contain;
+  object-fit: contain;
 }
 .about__git-link::after, .about__blog-link::after {
   content: "";
@@ -330,8 +329,7 @@ main {
 .about__photo img {
   width: 100%;
   height: 100%;
-  -o-object-fit: contain;
-     object-fit: contain;
+  object-fit: contain;
 }
 
 #works {
@@ -476,8 +474,7 @@ main {
   inset: 0;
   width: 100%;
   height: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
   transition: transform 0.5s;
 }
 .works__card-img-bg {
@@ -563,8 +560,7 @@ main {
 .skill__card-icon img {
   width: 100%;
   height: 100%;
-  -o-object-fit: contain;
-     object-fit: contain;
+  object-fit: contain;
 }
 .skill__card-meta {
   display: flex;
@@ -725,11 +721,22 @@ main {
   }
 }
 
+.contact__email-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0 3rem;
+}
+@media (max-width: 800px) {
+  .contact__email-wrap {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
 .contact__email {
   font-family: "Cormorant Garamond", serif;
   font-size: clamp(1.2857142857rem, 2.5vw, 2.2857142857rem);
   color: #b8a88a;
-  margin: 1.5rem 0 3rem;
   text-decoration: none;
   letter-spacing: 0.04em;
   transition: opacity 0.3s;
@@ -742,6 +749,26 @@ main {
     word-break: break-all;
     font-size: clamp(1.1428571429rem, 4vw, 1.5714285714rem);
   }
+}
+.contact__copy {
+  background: transparent;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: opacity 0.25s;
+}
+.contact__copy img {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+.contact__copy:hover {
+  opacity: 1;
+}
+.contact__copy.copied {
+  opacity: 0.3;
 }
 .contact__links {
   display: flex;
@@ -936,7 +963,6 @@ header.header--work {
 
 .sidebar {
   top: 8.5714285714rem;
-  position: -webkit-sticky;
   position: sticky;
 }
 @media (max-width: 800px) {
@@ -1037,8 +1063,7 @@ header.header--work {
   inset: 0;
   width: 100%;
   height: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
 }
 
 .highlight-box {
@@ -1107,4 +1132,5 @@ td {
   stroke: currentColor;
   stroke-width: 1.5;
 }
+
 /*# sourceMappingURL=style.css.map */

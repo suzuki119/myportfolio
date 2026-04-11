@@ -5,7 +5,13 @@
       <div class="sec__head">
         <h2 class="sec__title">Contact</h2>
       </div>
-      <a href="mailto:suzukiyutaro119@gmail.com" class="contact__email">suzukiyutaro119@gmail.com</a>
+      <div class="contact__email-wrap">
+        <a href="mailto:suzukiyutaro119@gmail.com" class="contact__email">suzukiyutaro119@gmail.com</a>
+        <button class="contact__copy" data-email="suzukiyutaro119@gmail.com" aria-label="メールアドレスをコピー">
+          <img src="./img/copy.webp" alt="copy">
+        </button>
+      </div>
+
       <div class="contact__links">
         <a href="https://github.com/suzuki119/" class="contact__link">GitHub</a>
       </div>
