@@ -32,7 +32,6 @@ $page_title       = 'Works — Suzuki Portfolio';
 $page_description = '鈴木優太郎のWeb制作実績一覧。WordPress・JavaScript・SCSSによるWebサイト制作を掲載しています。';
 $og_url           = SITE_URL . '/works.php';
 $body_id          = 'works-page';
-$extra_head       = '<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">';
 require 'header.php';
 ?>
 

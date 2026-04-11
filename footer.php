@@ -1,10 +1,8 @@
-    <footer class="site-footer">
+    <footer class="footer">
 
     <!-- ⑥ CONTACT ──────────────────────── -->
-    <section id="contact" class="sec">
-      <div class="sec__head">
-        <h2 class="sec__title">Contact</h2>
-      </div>
+    <section id="contact">
+      <h2>Contact</h2>
       <div class="contact__email-wrap">
         <a href="mailto:suzukiyutaro119@gmail.com" class="contact__email">suzukiyutaro119@gmail.com</a>
         <button class="contact__copy" data-email="suzukiyutaro119@gmail.com" aria-label="メールアドレスをコピー">
@@ -22,10 +20,6 @@
     </section>
 
   </main>
-
-
-
-
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>

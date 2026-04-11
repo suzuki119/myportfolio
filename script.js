@@ -105,7 +105,7 @@ if (document.body.id === 'index') {
   /* ============================================================
      SCROLL ANIMATIONS — タイムライン線（スクロール連動）
   ============================================================ */
-  const tlWrap = document.querySelector('.tl__wrap');
+  const tlWrap = document.querySelector('.timeline__wrap');
   if (tlWrap) {
     const updateTlLine = () => {
       const rect = tlWrap.getBoundingClientRect();

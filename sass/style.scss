@@ -68,20 +68,25 @@ $space-xxxl: 3rem; // 48px
     border-radius: 8px;
 }
 
-// インナー幅の設定
-@mixin inner($mw: 1300px, $w: 95%) {
-    width: $w;
-    margin-left: auto;
-    margin-right: auto;
+// セクションの余白
+@mixin inner() {
+    padding: rem(130) 9vw rem(100);
+    @include mq(desktop) {
+        padding: rem(80) 6vw $space-xxxl;
+    }
 }
 
-// セクションタイトル
+// セクションタイトル（h2）
 @mixin title() {
     font-family: $font-primary;
-    margin-bottom: rem(80);
-    font-weight: bold;
-    font-size: rem(45);
+    font-size: clamp(rem(42), 5.5vw, rem(84));
+    line-height: 1;
+    color: $color-white;
     text-align: center;
+    margin-bottom: rem(72);
+    @include mq(desktop) {
+        margin-bottom: $space-xxxl;
+    }
 }
 
 
@@ -163,8 +168,6 @@ img {
     z-index: $z-header;
     background: $color-bg;
     border-bottom: 1px solid $border-sub;
-
-
     &__logo {
         & img {
             width: 200px;
@@ -265,31 +268,6 @@ main {
 }
 
 
-// ─── セクション共通スタイル ─────────────────────────────
-.sec {
-    padding: rem(130) 9vw rem(100);
-
-    &__head {
-        text-align: center;
-        margin-bottom: rem(72);
-
-        @include mq(desktop) {
-            margin-bottom: $space-xxxl;
-        }
-    }
-
-    &__title {
-        font-family: $font-primary;
-        font-size: clamp(rem(42), 5.5vw, rem(84));
-        line-height: 1;
-        color: $color-white;
-    }
-
-    @include mq(desktop) {
-        padding: rem(80) 6vw $space-xxxl;
-    }
-}
-
 
 // ─── ヒーロー ─────────────────────────────────────────
 #hero {
@@ -328,10 +306,12 @@ main {
 
 // ─── アバウト ─────────────────────────────────────────
 #about {
+    @include inner();
     min-height: 100vh;
     margin: rem(100) rem(40) 0 rem(40);
     @include glass-card();
 
+    h2 { @include title(); }
 }
 
 .about {
@@ -459,8 +439,11 @@ main {
 
 // ─── ワークス ─────────────────────────────────────────
 #works {
+    @include inner();
     min-height: 100vh;
     text-align: center;
+
+    h2 { @include title(); }
 }
 
 // ─── ワークス一覧ページ ────────────────────────────────
@@ -645,6 +628,11 @@ main {
 
 
 // ─── スキル ───────────────────────────────────────────
+#skill {
+    @include inner();
+    h2 { @include title(); }
+}
+
 .skill {
     &__grid {
         display: flex;
@@ -729,10 +717,11 @@ main {
 
 // ─── タイムライン ──────────────────────────────────────
 #timeline {
-    padding-top: $space-xxl;
+    @include inner();
+    h2 { @include title(); }
 }
 
-.tl {
+.timeline {
     &__wrap {
         position: relative;
         padding-bottom: $space-l;
@@ -764,11 +753,11 @@ main {
 
         // 奇数エントリ：カードを左側に配置
         &:nth-child(odd) {
-            .tl__side {
+            .timeline__side {
                 grid-column: 1;
                 grid-row: 1;
             }
-            .tl__center {
+            .timeline__center {
                 grid-column: 2;
                 grid-row: 1;
             }
@@ -776,11 +765,11 @@ main {
 
         // 偶数エントリ：カードを右側に配置
         &:nth-child(even) {
-            .tl__center {
+            .timeline__center {
                 grid-column: 2;
                 grid-row: 1;
             }
-            .tl__side {
+            .timeline__side {
                 grid-column: 3;
                 grid-row: 1;
             }
@@ -791,11 +780,11 @@ main {
 
             &:nth-child(odd),
             &:nth-child(even) {
-                .tl__center {
+                .timeline__center {
                     grid-column: 1;
                     grid-row: 1;
                 }
-                .tl__side {
+                .timeline__side {
                     grid-column: 2;
                     grid-row: 1;
                 }
@@ -856,16 +845,19 @@ main {
 
 // ─── コンタクト ────────────────────────────────────────
 #contact {
+    @include inner();
     min-height: 60vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: rem(120) 9vw rem(100);
+    padding: rem(120) 9vw rem(100); // innerより狭めに上書き
 
-    .sec__head { margin-bottom: rem(20); }
-    .sec__title { margin-bottom: $space-m; }
+    h2 {
+        @include title();
+        margin-bottom: $space-m; // contactは余白少なめ
+    }
 
     @include mq(desktop) {
         padding: rem(80) 6vw $space-xxxl;
