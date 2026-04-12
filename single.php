@@ -69,21 +69,21 @@ require 'header.php';
 <main class="single">
 
     <!-- Hero -->
-    <div class="work-hero">
-        <h1 class="work-hero-title"><?= h($post['title']) ?></h1>
+    <div class="single__hero">
+        <h1 class="single__hero-title"><?= h($post['title']) ?></h1>
     </div>
 
     <div class="hero-divider"></div>
 
     <!-- Meta bar -->
-    <div class="work-meta-bar">
-        <div class="work-meta-item">
-            <div class="work-meta-label">制作期間</div>
-            <div class="work-meta-value"><?= h($post['period']) ?></div>
+    <div class="single__meta-bar">
+        <div class="single__meta-item">
+            <div class="single__meta-label">制作期間</div>
+            <div class="single__meta-value"><?= h($post['period']) ?></div>
         </div>
-        <div class="work-meta-item">
-            <div class="work-meta-label">使用技術</div>
-            <div class="work-meta-value">
+        <div class="single__meta-item">
+            <div class="single__meta-label">使用技術</div>
+            <div class="single__meta-value">
                 <div class="tag-list">
                     <?php foreach ($tags as $tag): ?>
                         <span class="tag"><?= h(trim($tag)) ?></span>
@@ -91,15 +91,15 @@ require 'header.php';
                 </div>
             </div>
         </div>
-        <div class="work-meta-item">
-            <div class="work-meta-label">種別</div>
-            <div class="work-meta-value"><?= nl2br(h($post['type'])) ?></div>
+        <div class="single__meta-item">
+            <div class="single__meta-label">種別</div>
+            <div class="single__meta-value"><?= nl2br(h($post['type'])) ?></div>
             <?php // [組み込み] nl2br() = 文字列中の改行(\n)をHTMLの<br>タグに変換する ?>
         </div>
     </div>
 
     <!-- Content -->
-    <div class="work-content">
+    <div class="single__content">
         <div class="content-grid">
 
             <!-- 目次サイドバー -->
@@ -129,7 +129,7 @@ require 'header.php';
                 <?php endif; ?>
 
                 <?php if (!empty($post['external_url'])): ?>
-                    <div class="work-cta">
+                    <div class="single__cta">
                         <a href="<?= h($post['external_url']) ?>" target="_blank" rel="noopener" class="btn-primary">
                             作品へ
                             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>

@@ -145,7 +145,7 @@ if (document.querySelector('main.top')) {
 ============================================================ */
 if (document.querySelector('main.works')) {
   const FADE_MS   = 220;
-  const filterBtns = document.querySelectorAll('.works-filter__btn');
+  const filterBtns = document.querySelectorAll('.works__filter-btn');
   const cards      = document.querySelectorAll('.works__card[data-category]');
   const countEl    = document.getElementById('works-count');
   const total      = cards.length;
@@ -177,26 +177,4 @@ if (document.querySelector('main.works')) {
       if (countEl) countEl.textContent = visible + ' / ' + total;
     });
   });
-}
-
-/* ============================================================
-   SINGLE — 目次スクロールハイライト
-============================================================ */
-if (document.querySelector('main.single')) {
-  const tocLinks = document.querySelectorAll('#toc-nav a');
-  if (tocLinks.length) {
-    const sections = Array.from(tocLinks).map(a => document.querySelector(a.getAttribute('href')));
-
-    const activate = (index) => {
-      tocLinks.forEach((a, i) => a.classList.toggle('is-active', i === index));
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) activate(sections.indexOf(entry.target));
-      });
-    }, { rootMargin: '-20% 0px -60% 0px' });
-
-    sections.forEach(sec => { if (sec) observer.observe(sec); });
-  }
 }

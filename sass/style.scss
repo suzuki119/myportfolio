@@ -435,13 +435,17 @@ main {
     }
 }
 
-// ─── ワークスカード（index + works.php 共通） ────────────
-.works {
+// ─── index.php Worksセクション ──────────────────────────
+main.top .works {
     @include inner();
+    padding: rem(130) 0 rem(100);
     text-align: center;
 
     h2 { @include title(); }
+}
 
+// ─── ワークスカード（index + works.php 共通） ────────────
+.works {
     &__grid {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
@@ -807,25 +811,6 @@ header.header--work {
     }
 }
 
-.work-hero {
-    @include inner();
-    display: flex;
-    flex-direction: column;
-    padding: rem(80) 0;
-
-    &-eyebrow {
-        @include label-text;
-        margin-bottom: $space-l;
-    }
-
-    &-title {
-        font-family: $font-primary;
-        font-size: clamp(rem(32), 8vw, rem(160));
-        font-weight: lighter;
-        line-height: 0.92;
-        color: $color-white;
-    }
-}
 
 .hero-divider {
     @include inner();
@@ -835,13 +820,25 @@ header.header--work {
 
 
 // ─── works.php ────────────────────────────────────────
-main.works {
-    .work-hero--list {
+.works {
+    &__hero {
+        @include inner();
+        display: flex;
+        flex-direction: column;
+        padding: rem(80) 0;
         min-height: 36vh;
         justify-content: flex-end;
     }
 
-    .works-filter-bar {
+    &__hero-title {
+        font-family: $font-primary;
+        font-size: clamp(rem(32), 8vw, rem(160));
+        font-weight: lighter;
+        line-height: 0.92;
+        color: $color-white;
+    }
+
+    &__filter-bar {
         @include inner();
         display: flex;
         align-items: center;
@@ -855,49 +852,49 @@ main.works {
         }
     }
 
-    .works-filter {
+    &__filter {
         display: flex;
         flex-wrap: wrap;
         gap: $space-s;
+    }
 
-        &__btn {
-            @include label-text($color: $gray, $size: 16, $spacing: 0.25em);
-            background: none;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 6px 20px;
-            cursor: pointer;
-            transition: color 0.25s, border-color 0.25s;
+    &__filter-btn {
+        @include label-text($color: $gray, $size: 16, $spacing: 0.25em);
+        background: none;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 6px 20px;
+        cursor: pointer;
+        transition: color 0.25s, border-color 0.25s;
 
-            &:hover {
-                color: $color-text;
-                border-color: rgba(255, 255, 255, 0.25);
-            }
+        &:hover {
+            color: $color-text;
+            border-color: rgba(255, 255, 255, 0.25);
+        }
 
-            &.is-active {
-                color: $color-accent;
-                border-color: rgba($color-accent, 0.45);
-            }
+        &.is-active {
+            color: $color-accent;
+            border-color: rgba($color-accent, 0.45);
         }
     }
 
-    .works-count {
+    &__count {
         @include label-text($color: $gray, $size: 16, $spacing: 0.2em);
         white-space: nowrap;
     }
 
-    .works-list {
+    &__list {
         @include inner();
         padding: $space-xxl 0 120px;
 
         @include mq(desktop) {
             padding: $space-xl 0 80px;
         }
+    }
 
-        &__empty {
-            color: $gray;
-            font-size: rem(16);
-            padding: $space-xxl 0;
-        }
+    &__empty {
+        color: $gray;
+        font-size: rem(16);
+        padding: $space-xxl 0;
     }
 }
 
@@ -993,8 +990,23 @@ main.skills {
 
 
 // ─── single.php ───────────────────────────────────────
-main.single {
-    .work-meta-bar {
+.single {
+    &__hero {
+        @include inner();
+        display: flex;
+        flex-direction: column;
+        padding: rem(80) 0;
+    }
+
+    &__hero-title {
+        font-family: $font-primary;
+        font-size: clamp(rem(32), 8vw, rem(160));
+        font-weight: lighter;
+        line-height: 0.92;
+        color: $color-white;
+    }
+
+    &__meta-bar {
         @include inner();
         padding: $space-xxl 0;
         display: grid;
@@ -1006,7 +1018,7 @@ main.single {
         }
     }
 
-    .work-meta-item {
+    &__meta-item {
         padding: 0 $space-xl 0 0;
 
         &:not(:first-child) {
@@ -1025,12 +1037,12 @@ main.single {
         }
     }
 
-    .work-meta-label {
+    &__meta-label {
         @include label-text($size: 16, $spacing: 0.35em);
         margin-bottom: $space-s;
     }
 
-    .work-meta-value {
+    &__meta-value {
         font-size: rem(16);
         line-height: 1.9;
         color: #ffffffb3;
@@ -1043,7 +1055,7 @@ main.single {
         margin-top: $space-xs;
     }
 
-    .work-content {
+    &__content {
         @include inner();
         padding: rem(80) 0 rem(120);
     }
@@ -1101,8 +1113,8 @@ main.single {
     }
 
     .article-block {
+        scroll-margin-top: rem(120);
         margin: $space-xxxl 0;
-
         &:last-child { margin-bottom: 0; }
     }
 
@@ -1189,7 +1201,7 @@ main.single {
         }
     }
 
-    .work-cta {
+    &__cta {
         margin-top: $space-xxl;
         display: flex;
         gap: $space-m;

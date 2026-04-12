@@ -48,35 +48,35 @@ require 'header.php';
 <main class="works">
 
     <!-- ヒーロー -->
-    <div class="work-hero work-hero--list">
-        <h1 class="work-hero-title">Works</h1>
+    <div class="works__hero">
+        <h1 class="works__hero-title">Works</h1>
     </div>
 
     <div class="hero-divider"></div>
 
     <!-- カテゴリフィルター + 表示件数 -->
-    <div class="works-filter-bar">
+    <div class="works__filter-bar">
 
         <?php if (!empty($categories)): ?>
-        <div class="works-filter">
-            <button class="works-filter__btn is-active" data-filter="all">All</button>
+        <div class="works__filter">
+            <button class="works__filter-btn is-active" data-filter="all">All</button>
             <?php foreach ($categories as $cat): ?>
-                <button class="works-filter__btn" data-filter="<?= h($cat['name']) ?>">
+                <button class="works__filter-btn" data-filter="<?= h($cat['name']) ?>">
                     <?= h($cat['name']) ?>
                 </button>
             <?php endforeach; ?>
         </div>
         <?php endif; ?>
 
-        <span class="works-count" id="works-count"><?= $total ?> / <?= $total ?></span>
+        <span class="works__count" id="works-count"><?= $total ?> / <?= $total ?></span>
     </div>
 
     <!-- 記事グリッド -->
-    <div class="works-list">
+    <div class="works__list">
         <div class="works__grid" id="works-grid">
 
             <?php if (empty($posts)): ?>
-                <p class="works-list__empty">まだ公開されている作品はありません。</p>
+                <p class="works__empty">まだ公開されている作品はありません。</p>
             <?php else: ?>
                 <?php foreach ($posts as $post): ?>
                 <a class="works__card"
