@@ -9,15 +9,13 @@ $skills = $sk_stmt->fetchAll();
 $page_title       = 'Skills — Suzuki Yutaro';
 $page_description = '鈴木優太郎のスキル一覧。プログラミング・デザイン・その他ツール。';
 $og_url           = 'https://susuki-island.heavy.jp/myportfolio/skill.php';
-$body_id          = 'skill-page';
-
 require 'header.php';
 ?>
 
-  <main>
+  <main class="skills">
 
-    <section id="skill">
-      <h2>Skills</h2>
+    <section class="skill">
+      <h2 class="skill__title">Skills</h2>
 
       <?php if (!empty($skills)): ?>
 
@@ -60,7 +58,7 @@ require 'header.php';
         <?php endforeach; ?>
 
       <?php else: ?>
-        <p style="color:#999; text-align:center;">スキルはまだ登録されていません。</p>
+        <p>スキルはまだ登録されていません。</p>
       <?php endif; ?>
 
     </section>

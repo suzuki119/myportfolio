@@ -52,7 +52,6 @@ $page_title       = $post['title'] . ' — Suzuki Portfolio';
 $page_description = $ogp_description;
 $og_url           = SITE_URL . '/single.php?id=' . $post['id'];
 $og_image         = $ogp_image;
-$body_id          = 'single';
 require 'header.php';
 ?>
 
@@ -67,7 +66,7 @@ require 'header.php';
     </a>
 </header>
 
-<main>
+<main class="single">
 
     <!-- Hero -->
     <div class="work-hero">
@@ -152,28 +151,5 @@ require 'header.php';
     </div>
 
 </main>
-
-<script>
-(function () {
-    const tocLinks = document.querySelectorAll('#toc-nav a');
-    if (!tocLinks.length) return;
-
-    const sections = Array.from(tocLinks).map(a => document.querySelector(a.getAttribute('href')));
-
-    const activate = (index) => {
-        tocLinks.forEach((a, i) => a.classList.toggle('is-active', i === index));
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                activate(sections.indexOf(entry.target));
-            }
-        });
-    }, { rootMargin: '-20% 0px -60% 0px' });
-
-    sections.forEach(sec => { if (sec) observer.observe(sec); });
-})();
-</script>
 
 <?php require 'footer.php'; ?>

@@ -1,4 +1,6 @@
-// メールコピーボタン
+/* ============================================================
+   共通 — メールコピーボタン
+============================================================ */
 const copyBtn = document.querySelector('.contact__copy');
 if (copyBtn) {
   copyBtn.addEventListener('click', () => {
@@ -10,9 +12,33 @@ if (copyBtn) {
 }
 
 /* ============================================================
-   THREE.JS — 装飾的な背景クリスタル（スクロール連動なし）
+   共通 — ハンバーガーメニュー
 ============================================================ */
-if (document.body.id === 'index') {
+const navToggle = document.getElementById('nav-toggle');
+const mainNav   = document.getElementById('main-nav');
+
+if (navToggle && mainNav) {
+  navToggle.addEventListener('click', () => {
+    const isOpen = mainNav.classList.toggle('open');
+    navToggle.classList.toggle('open', isOpen);
+    navToggle.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+
+  mainNav.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      mainNav.classList.remove('open');
+      navToggle.classList.remove('open');
+      navToggle.setAttribute('aria-label', 'メニューを開く');
+      document.body.style.overflow = '';
+    });
+  });
+}
+
+/* ============================================================
+   TOP — Three.js 背景クリスタル
+============================================================ */
+if (document.querySelector('main.top')) {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 2000);
@@ -36,7 +62,7 @@ if (document.body.id === 'index') {
 
   const crystalGeo = createDiamond();
   const crystalMat = new THREE.MeshStandardMaterial({
-    color: "#a25c00" , metalness: 0.1, roughness: 0.7,
+    color: "#a25c00", metalness: 0.1, roughness: 0.7,
     transparent: true, opacity: 0.28, flatShading: true
   });
 
@@ -62,7 +88,6 @@ if (document.body.id === 'index') {
 
   for (let layer = 0; layer < V_LAYERS; layer++) {
     const offsetY = (layer - (V_LAYERS - 1) / 2) * V_SPACING;
-
     for (let i = layer % 2; i < PANEL_COUNT; i += 2) {
       const angle = (i / PANEL_COUNT) * Math.PI * 2;
       const pGeo = new THREE.PlaneGeometry(PANEL_W, PANEL_H);
@@ -85,7 +110,7 @@ if (document.body.id === 'index') {
   scene.add(dLight2);
   camera.position.z = BASE_RADIUS * 3;
 
-  // ── アニメーション（ゆっくり自動回転のみ） ──
+  // ── アニメーション ──
   let ticker = 0;
   function animate() {
     requestAnimationFrame(animate);
@@ -101,44 +126,77 @@ if (document.body.id === 'index') {
     renderer.setSize(innerWidth, innerHeight);
   }, { passive: true });
 
-
-  /* ============================================================
-     SCROLL ANIMATIONS — タイムライン線（スクロール連動）
-  ============================================================ */
+  // ── タイムライン線（スクロール連動） ──
   const tlWrap = document.querySelector('.timeline__wrap');
   if (tlWrap) {
     const updateTlLine = () => {
       const rect = tlWrap.getBoundingClientRect();
-      const wrapHeight = tlWrap.offsetHeight;
-      // 画面中央を基準に、どこまで進んだかを計算
       const scrolled = window.innerHeight / 2 - rect.top;
-      const height = Math.max(0, Math.min(wrapHeight, scrolled));
+      const height = Math.max(0, Math.min(tlWrap.offsetHeight, scrolled));
       tlWrap.style.setProperty('--tl-line-height', height + 'px');
     };
     window.addEventListener('scroll', updateTlLine, { passive: true });
-    updateTlLine(); // 初期値セット
+    updateTlLine();
   }
+}
 
-  /* ============================================================
-     HAMBURGER MENU
-  ============================================================ */
-  const navToggle = document.getElementById('nav-toggle');
-  const mainNav = document.getElementById('main-nav');
+/* ============================================================
+   WORKS — カテゴリフィルター
+============================================================ */
+if (document.querySelector('main.works')) {
+  const FADE_MS   = 220;
+  const filterBtns = document.querySelectorAll('.works-filter__btn');
+  const cards      = document.querySelectorAll('.works__card[data-category]');
+  const countEl    = document.getElementById('works-count');
+  const total      = cards.length;
 
-  navToggle.addEventListener('click', () => {
-    const isOpen = mainNav.classList.toggle('open');
-    navToggle.classList.toggle('open', isOpen);
-    navToggle.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
-    document.body.style.overflow = isOpen ? 'hidden' : '';
-  });
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
 
-  mainNav.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      mainNav.classList.remove('open');
-      navToggle.classList.remove('open');
-      navToggle.setAttribute('aria-label', 'メニューを開く');
-      document.body.style.overflow = '';
+      const filter = btn.dataset.filter;
+      let visible  = 0;
+
+      cards.forEach(card => {
+        const match = filter === 'all' || card.dataset.category === filter;
+        if (match) {
+          card.style.display = '';
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => card.classList.remove('is-hiding'));
+          });
+          visible++;
+        } else {
+          card.classList.add('is-hiding');
+          setTimeout(() => {
+            if (card.classList.contains('is-hiding')) card.style.display = 'none';
+          }, FADE_MS);
+        }
+      });
+
+      if (countEl) countEl.textContent = visible + ' / ' + total;
     });
   });
+}
 
+/* ============================================================
+   SINGLE — 目次スクロールハイライト
+============================================================ */
+if (document.querySelector('main.single')) {
+  const tocLinks = document.querySelectorAll('#toc-nav a');
+  if (tocLinks.length) {
+    const sections = Array.from(tocLinks).map(a => document.querySelector(a.getAttribute('href')));
+
+    const activate = (index) => {
+      tocLinks.forEach((a, i) => a.classList.toggle('is-active', i === index));
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) activate(sections.indexOf(entry.target));
+      });
+    }, { rootMargin: '-20% 0px -60% 0px' });
+
+    sections.forEach(sec => { if (sec) observer.observe(sec); });
+  }
 }

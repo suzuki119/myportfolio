@@ -5,7 +5,6 @@
 // $page_description – <meta name="description"> および og:description
 // $og_url           – og:url（省略可）
 // $og_image         – og:image（省略時は SITE_URL/ogp.png）
-// $body_id          – <body id="...">（省略可）
 // $extra_head       – <head>内の追加コード（省略可。Google Fontsなど）
 ?>
 
@@ -29,7 +28,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/the-new-css-reset/css/reset.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body<?= !empty($body_id) ? ' id="' . h($body_id) . '"' : '' ?>>
+
+<body>
     <header class="header">
         <a href="index.php" class="back-link">
         <div class="header__logo">

@@ -17,7 +17,6 @@ $skills = $sk_stmt->fetchAll();
 $page_title       = 'Suzuki Yutaro — Portfolio';
 $page_description = '鈴木優太郎のポートフォリオ。フロントエンドエンジニア志望。WordPress・JavaScript・SCSSによるWeb制作実績を掲載しています。';
 $og_url           = 'https://susuki-island.heavy.jp/myportfolio/';
-$body_id          = 'index';
 
 require 'header.php';
 ?>
@@ -26,19 +25,19 @@ require 'header.php';
     <canvas id="backcanvas"></canvas>
   </div>
 
-  <main>
+  <main class="top">
 
     <!-- ① HERO ────────────────────────── -->
-    <section id="hero">
-      <h1 class="hero__title"><img src="./img/portfolio-text.webp" alt="Portfolio"></h1>
+    <section class="main-visual">
+      <h1 class="main-visual__title"><img src="./img/portfolio-text.webp" alt="Portfolio"></h1>
     </section>
 
 
 
     <!-- ③ WORKS ────────────────────────── -->
-    <section id="works">
+    <section class="works">
 
-      <h2>Works</h2>
+      <h2 class="works__title">Works</h2>
 
       <div class="works__grid">
 
@@ -83,8 +82,8 @@ require 'header.php';
     </section>
 
    <!-- ② ABOUT ───────────────────────── -->
-    <section id="about">
-      <h2>About</h2>
+    <section class="about">
+      <h2 class="about__title">About</h2>
 
         <div class="about__grid">
 
@@ -135,8 +134,8 @@ require 'header.php';
     </section>
 
     <!-- ⑤ TIMELINE ──────────────────────── -->
-    <section id="timeline">
-      <h2>Timeline</h2>
+    <section class="timeline">
+      <h2 class="timeline__title">Timeline</h2>
       <div class="timeline__wrap">
 
         <div class="timeline__entry">

@@ -58,7 +58,7 @@ $space-xxxl: 3rem; // 48px
 
 @mixin mq($breakpoint: desktop) {
     @media (max-width: map.get($breakpoints, $breakpoint)) {
-        @content;
+    @content;
     }
 }
 
@@ -69,11 +69,10 @@ $space-xxxl: 3rem; // 48px
 }
 
 // セクションの余白
-@mixin inner() {
-    padding: rem(130) 9vw rem(100);
-    @include mq(desktop) {
-        padding: rem(80) 6vw $space-xxxl;
-    }
+@mixin inner($mw: 1300px, $w: 95%) {
+    width: $w;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 // セクションタイトル（h2）
@@ -98,16 +97,10 @@ $space-xxxl: 3rem; // 48px
     color: $color;
 }
 
-@function rem($px-value) {
-    @return #{math.div($px-value, 14)}rem;
-}
-
 
 /* ========================================
     ベーススタイル
 ======================================== */
-
-
 
 img {
     width: 100%;
@@ -125,12 +118,6 @@ body {
     color: $color-text;
     font-family: $font-text;
     overflow-x: hidden;
-}
-
-img {
-    width: 100%;
-    height: auto;
-    vertical-align: middle;
 }
 
 
@@ -269,18 +256,16 @@ main {
 
 
 
-// ─── ヒーロー ─────────────────────────────────────────
-#hero {
-    min-height: 100vh;
+// ─── メインビジュアル ─────────────────────────────────────────
+
+.main-visual {
+        min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
     padding-top: rem(80);
-}
-
-.hero {
     &__title {
         font-family: $font-primary;
         font-size: clamp(rem(60), 10vw, rem(140));
@@ -294,27 +279,24 @@ main {
             height: auto;
             margin-top: $space-l;
         }
-
         em {
             font-style: italic;
             color: $color-accent;
         }
-
     }
 }
 
 
 // ─── アバウト ─────────────────────────────────────────
-#about {
+
+.about {
+
     @include inner();
     min-height: 100vh;
-    margin: rem(100) rem(40) 0 rem(40);
+    padding: rem(90) rem(50);
     @include glass-card();
 
     h2 { @include title(); }
-}
-
-.about {
 
 
 
@@ -437,18 +419,6 @@ main {
 }
 
 
-// ─── ワークス ─────────────────────────────────────────
-#works {
-    @include inner();
-    min-height: 100vh;
-    text-align: center;
-
-    h2 { @include title(); }
-}
-
-// ─── ワークス一覧ページ ────────────────────────────────
-
-// index.php のWorksセクション「すべての作品を見る」ボタン
 .btn {
     @include label-text($color: $color-accent, $size: 16, $spacing: 0.25em);
     display: inline-block;
@@ -465,83 +435,13 @@ main {
     }
 }
 
-.works__more {
-    margin-top: $space-xxl;
-    text-align: center;
-}
-
-// works.php ヒーロー（高さ短め）
-.work-hero--list {
-    min-height: 36vh;
-    justify-content: flex-end;
-}
-
-.works-hero-count {
-    @include label-text($color: $gray, $size: 16, $spacing: 0.3em);
-    margin-top: $space-l;
-}
-
-// フィルターバー（ボタン + 件数を横並び）
-.works-filter-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: $space-xxl 9vw 0;
-    flex-wrap: wrap;
-    gap: $space-m;
-
-    @include mq(desktop) {
-        padding: $space-xl 6vw 0;
-    }
-}
-
-.works-filter {
-    display: flex;
-    flex-wrap: wrap;
-    gap: $space-s;
-
-    &__btn {
-        @include label-text($color: $gray, $size: 16, $spacing: 0.25em);
-        background: none;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 6px 20px;
-        cursor: pointer;
-        transition: color 0.25s, border-color 0.25s;
-
-        &:hover {
-            color: $color-text;
-            border-color: rgba(255, 255, 255, 0.25);
-        }
-
-        &.is-active {
-            color: $color-accent;
-            border-color: rgba($color-accent, 0.45);
-        }
-    }
-}
-
-// 件数カウンター
-.works-count {
-    @include label-text($color: $gray, $size: 16, $spacing: 0.2em);
-    white-space: nowrap;
-}
-
-
-.works-list {
-    padding: $space-xxl 9vw 120px;
-
-    @include mq(desktop) {
-        padding: $space-xl 6vw 80px;
-    }
-
-    &__empty {
-        color: $gray;
-        font-size: rem(16);
-        padding: $space-xxl 0;
-    }
-}
-
+// ─── ワークスカード（index + works.php 共通） ────────────
 .works {
+    @include inner();
+    text-align: center;
+
+    h2 { @include title(); }
+
     &__grid {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
@@ -626,102 +526,19 @@ main {
 
 }
 
-
-// ─── スキル ───────────────────────────────────────────
-#skill {
-    @include inner();
-    h2 { @include title(); }
-}
-
-.skill {
-    &__grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: $space-l;
-        @include mq(desktop) {
-            display: grid;
-        }
-    }
-
-    &__category {
-        font-family: $font-primary;
-        font-size: rem(24);
-        letter-spacing: 0.3em;
-        text-transform: uppercase;
-        color: $color-accent;
-        margin: $space-xl 0;
-    }
-
-    &__card {
-        @include glass-card();
-        padding: $space-l;
-        display: grid;
-        grid-template-columns: 1fr 1fr 4fr;
-        align-items: center;
-        gap: $space-l;
-        width: 100%;
-
-        @include mq(desktop) {
-            grid-template-columns: 1fr 3fr;
-            grid-template-rows: auto auto;
-        }
-    }
-
-    &__card-icon {
-        width: 100%;
-        aspect-ratio: 1;
-        background-color: #fff;
-        padding: $space-m;
-        @include mq(desktop) {
-            padding: $space-s;
-        }
-
-        img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-    }
-
-    &__card-meta {
-        display: flex;
-        flex-direction: column;
-        gap: $space-xs;
-    }
-
-    &__name {
-        font-size: rem(30);
-        color: $color-white;
-        font-family: $font-primary;
-        font-weight: 300;
-        letter-spacing: 0.05em;
-    }
-
-    &__years {
-        font-size: rem(13);
-        color: $gray;
-        letter-spacing: 0.05em;
-    }
-
-    &__detail {
-        font-size: rem(14);
-        color: $color-gray;
-        line-height: 1.7;
-
-        @include mq(desktop) {
-            grid-column: 1 / -1;
-        }
-    }
+.tag {
+    @include label-text($size: 14, $spacing: 0.18em);
+    border: 1px solid #b8a88a47;
+    padding: $space-xs $space-s;
 }
 
 
 // ─── タイムライン ──────────────────────────────────────
-#timeline {
-    @include inner();
-    h2 { @include title(); }
-}
-
 .timeline {
+    @include inner();
+    padding: rem(120) 0 rem(100);
+
+    h2 { @include title(); }
     &__wrap {
         position: relative;
         padding-bottom: $space-l;
@@ -844,7 +661,7 @@ main {
 
 
 // ─── コンタクト ────────────────────────────────────────
-#contact {
+.contact {
     @include inner();
     min-height: 60vh;
     display: flex;
@@ -852,9 +669,9 @@ main {
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: rem(120) 9vw rem(100); // innerより狭めに上書き
+    padding: rem(120) 0 rem(100);
 
-    h2 {
+    &__title {
         @include title();
         margin-bottom: $space-m; // contactは余白少なめ
     }
@@ -862,9 +679,7 @@ main {
     @include mq(desktop) {
         padding: rem(80) 6vw $space-xxxl;
     }
-}
 
-.contact {
     &__email-wrap {
         display: flex;
         align-items: center;
@@ -964,20 +779,17 @@ main {
 }
 
 
-// ─── 作品詳細 — ヘッダー ───────────────────────────────
+// ─── works.php / single.php 共通 ───────────────────────
 header.header--work {
     padding: $space-l $space-xxxl;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding-top: rem(150);
-
 }
-
 
 .back-link {
     display: flex;
-
     align-items: center;
     gap: $space-s;
     @include label-text($color: $color-gray, $spacing: 0.3em);
@@ -995,12 +807,11 @@ header.header--work {
     }
 }
 
-
-// ─── 作品詳細 — ヒーロー ───────────────────────────────
 .work-hero {
+    @include inner();
     display: flex;
     flex-direction: column;
-    padding: rem(80) 9vw rem(80);
+    padding: rem(80) 0;
 
     &-eyebrow {
         @include label-text;
@@ -1014,257 +825,406 @@ header.header--work {
         line-height: 0.92;
         color: $color-white;
     }
-
 }
 
 .hero-divider {
-    margin: 0 9vw;
+    @include inner();
     height: 1px;
     background: #ffffff12;
 }
 
 
-// ─── 作品詳細 — メタバー ───────────────────────────────
-.work-meta-bar {
-    padding: $space-xxl 9vw;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    border-bottom: 1px solid #ffffff0f;
-    @include mq(desktop) {
-        grid-template-columns: 1fr;
+// ─── works.php ────────────────────────────────────────
+main.works {
+    .work-hero--list {
+        min-height: 36vh;
+        justify-content: flex-end;
+    }
+
+    .works-filter-bar {
+        @include inner();
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: $space-xxl;
+        flex-wrap: wrap;
         gap: $space-m;
-    }
-}
 
-.work-meta-item {
-    padding: 0 $space-xl 0 0;
-
-    &:not(:first-child) {
-        border-left: 1px solid #ffffff0f;
-        padding-left: $space-xl;
-    }
-    @include mq(desktop) {
-        padding: 0;
-
-        &:not(:first-child) {
-            border-left: none;
-            padding-left: 0;
-            border-top: 1px solid #ffffff0f;
-            padding-top: $space-m;
+        @include mq(desktop) {
+            padding-top: $space-xl;
         }
     }
-}
 
-.work-meta-label {
-    @include label-text($size: 16, $spacing: 0.35em);
-    margin-bottom: $space-s;
-}
+    .works-filter {
+        display: flex;
+        flex-wrap: wrap;
+        gap: $space-s;
 
-.work-meta-value {
-    font-size: rem(16);
-    line-height: 1.9;
-    color: #ffffffb3;
-}
+        &__btn {
+            @include label-text($color: $gray, $size: 16, $spacing: 0.25em);
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 6px 20px;
+            cursor: pointer;
+            transition: color 0.25s, border-color 0.25s;
 
-.tag-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: $space-s;
-    margin-top: $space-xs;
-}
-
-.tag {
-    @include label-text($size: 14, $spacing: 0.18em);
-    border: 1px solid #b8a88a47;
-    padding: $space-xs $space-s;
-}
-
-
-// ─── 作品詳細 — コンテンツ ─────────────────────────────
-.work-content {
-    padding: rem(80) 9vw rem(120);
-}
-
-.content-grid {
-    display: grid;
-    grid-template-columns: 1fr 3fr;
-    gap: rem(80);
-    align-items: start;
-    @include mq(desktop) {
-        grid-template-columns: 1fr;
-        gap: $space-xxl;
-    }
-}
-
-.sidebar {
-    top: rem(120);
-    position: sticky;
-    @include mq(desktop) {
-        position: unset;
-    }
-
-    &-nav {
-        list-style: none;
-
-        li { margin-bottom: $space-xs; }
-
-        a {
-            @include label-text($color: $color-gray, $size: 16, $spacing: 0.25em);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: $space-s;
-            padding: $space-s 0;
-            border-bottom: 1px solid #ffffff0a;
-            transition: color 0.3s;
-
-            &::before {
-                content: '';
-                width: 20px;
-                height: 1px;
-                background: $color-accent;
-                opacity: 0;
-                transition: opacity 0.3s;
+            &:hover {
+                color: $color-text;
+                border-color: rgba(255, 255, 255, 0.25);
             }
 
-            &:hover,
             &.is-active {
                 color: $color-accent;
+                border-color: rgba($color-accent, 0.45);
+            }
+        }
+    }
 
-                &::before { opacity: 1; }
+    .works-count {
+        @include label-text($color: $gray, $size: 16, $spacing: 0.2em);
+        white-space: nowrap;
+    }
+
+    .works-list {
+        @include inner();
+        padding: $space-xxl 0 120px;
+
+        @include mq(desktop) {
+            padding: $space-xl 0 80px;
+        }
+
+        &__empty {
+            color: $gray;
+            font-size: rem(16);
+            padding: $space-xxl 0;
+        }
+    }
+}
+
+
+// ─── skill.php ────────────────────────────────────────
+main.skills {
+    .skill {
+        @include inner();
+        padding: rem(130) 0 rem(100);
+
+        &__title { @include title(); }
+
+        &__grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: $space-l;
+            @include mq(desktop) {
+                display: grid;
+            }
+        }
+
+        &__category {
+            font-family: $font-primary;
+            font-size: rem(24);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: $color-accent;
+            margin: $space-xl 0;
+        }
+
+        &__card {
+            @include glass-card();
+            padding: $space-l;
+            display: grid;
+            grid-template-columns: 1fr 1fr 4fr;
+            align-items: center;
+            gap: $space-l;
+            width: 100%;
+
+            @include mq(desktop) {
+                grid-template-columns: 1fr 3fr;
+                grid-template-rows: auto auto;
+            }
+        }
+
+        &__card-icon {
+            width: 100%;
+            aspect-ratio: 1;
+            background-color: #fff;
+            padding: $space-m;
+            @include mq(desktop) {
+                padding: $space-s;
+            }
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+        }
+
+        &__card-meta {
+            display: flex;
+            flex-direction: column;
+            gap: $space-xs;
+        }
+
+        &__name {
+            font-size: rem(30);
+            color: $color-white;
+            font-family: $font-primary;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+        }
+
+        &__years {
+            font-size: rem(13);
+            color: $gray;
+            letter-spacing: 0.05em;
+        }
+
+        &__detail {
+            font-size: rem(14);
+            color: $color-gray;
+            line-height: 1.7;
+
+            @include mq(desktop) {
+                grid-column: 1 / -1;
             }
         }
     }
 }
 
-.article-block {
-    margin: $space-xxxl 0;
 
-    &:last-child { margin-bottom: 0; }
-}
-
-.block-label {
-    @include label-text($size: 16, $spacing: 0.4em);
-    margin-bottom: $space-l;
-    display: flex;
-    align-items: center;
-    gap: $space-m;
-
-    &::after {
-        content: '';
-        flex: 1;
-        height: 1px;
-        background: #ffffff12;
-    }
-}
-
-.block-title {
-    font-family: $font-primary;
-    font-size: clamp(rem(26), 3vw, rem(40));
-    font-weight: lighter;
-    line-height: 1.2;
-    color: $color-white;
-    margin-bottom: $space-l;
-}
-
-.block-body {
-    font-size: rem(16);
-    line-height: 2.2;
-    color: $color-white;
-
-    p + p { margin-top: $space-m; }
-}
-
-
-// ─── 作品詳細 — サムネイル ─────────────────────────────
-.mock-img {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: linear-gradient(135deg, #0b0b14 0%, #131328 100%);
-    border: 1px solid #ffffff0f;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: $space-xxl;
-    overflow: hidden;
-    position: relative;
-
-    img {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-}
-
-.highlight-box {
-    background: #b8a88a0f;
-    border-left: 2px solid $color-accent;
-    padding: $space-l $space-l;
-    margin: $space-xl 0;
-    font-size: rem(16);
-    line-height: 2;
-    color: #ffffffb3;
-}
-
-td {
-    padding: $space-s;
-}
-
-.is-grid {
-    table {
-        width: 100%;
-    }
-    td {
-        width: 50%;
-        display: inline-block;
-        border: none;
-        padding: $space-s;
+// ─── single.php ───────────────────────────────────────
+main.single {
+    .work-meta-bar {
+        @include inner();
+        padding: $space-xxl 0;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        border-bottom: 1px solid #ffffff0f;
         @include mq(desktop) {
-            display: block;
-            width: 100%;
+            grid-template-columns: 1fr;
+            gap: $space-m;
         }
     }
-}
 
+    .work-meta-item {
+        padding: 0 $space-xl 0 0;
 
-// ─── 作品詳細 — CTA ────────────────────────────────────
-.work-cta {
-    margin-top: $space-xxl;
-    display: flex;
-    gap: $space-m;
-    flex-wrap: wrap;
-    align-items: center;
-}
+        &:not(:first-child) {
+            border-left: 1px solid #ffffff0f;
+            padding-left: $space-xl;
+        }
+        @include mq(desktop) {
+            padding: 0;
 
-.btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: $space-s;
-    padding: $space-m $space-xl;
-    background: transparent;
-    border: 1px solid #b8a88a80;
-    color: $color-accent;
-    font-family: $font-text;
-    font-size: rem(16);
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background 0.3s, border-color 0.3s, color 0.3s;
-
-    &:hover {
-        background: #b8a88a1a;
-        border-color: $color-accent;
-        color: $color-white;
+            &:not(:first-child) {
+                border-left: none;
+                padding-left: 0;
+                border-top: 1px solid #ffffff0f;
+                padding-top: $space-m;
+            }
+        }
     }
 
-    svg {
-        width: 14px;
-        height: 14px;
-        fill: none;
-        stroke: currentColor;
-        stroke-width: 1.5;
+    .work-meta-label {
+        @include label-text($size: 16, $spacing: 0.35em);
+        margin-bottom: $space-s;
+    }
+
+    .work-meta-value {
+        font-size: rem(16);
+        line-height: 1.9;
+        color: #ffffffb3;
+    }
+
+    .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: $space-s;
+        margin-top: $space-xs;
+    }
+
+    .work-content {
+        @include inner();
+        padding: rem(80) 0 rem(120);
+    }
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        gap: rem(80);
+        align-items: start;
+        @include mq(desktop) {
+            grid-template-columns: 1fr;
+            gap: $space-xxl;
+        }
+    }
+
+    .sidebar {
+        top: rem(120);
+        position: sticky;
+        @include mq(desktop) {
+            position: unset;
+        }
+
+        &-nav {
+            list-style: none;
+
+            li { margin-bottom: $space-xs; }
+
+            a {
+                @include label-text($color: $color-gray, $size: 16, $spacing: 0.25em);
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                gap: $space-s;
+                padding: $space-s 0;
+                border-bottom: 1px solid #ffffff0a;
+                transition: color 0.3s;
+
+                &::before {
+                    content: '';
+                    width: 20px;
+                    height: 1px;
+                    background: $color-accent;
+                    opacity: 0;
+                    transition: opacity 0.3s;
+                }
+
+                &:hover,
+                &.is-active {
+                    color: $color-accent;
+
+                    &::before { opacity: 1; }
+                }
+            }
+        }
+    }
+
+    .article-block {
+        margin: $space-xxxl 0;
+
+        &:last-child { margin-bottom: 0; }
+    }
+
+    .block-label {
+        @include label-text($size: 16, $spacing: 0.4em);
+        margin-bottom: $space-l;
+        display: flex;
+        align-items: center;
+        gap: $space-m;
+
+        &::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #ffffff12;
+        }
+    }
+
+    .block-title {
+        font-family: $font-primary;
+        font-size: clamp(rem(26), 3vw, rem(40));
+        font-weight: lighter;
+        line-height: 1.2;
+        color: $color-white;
+        margin-bottom: $space-l;
+    }
+
+    .block-body {
+        font-size: rem(16);
+        line-height: 2.2;
+        color: $color-white;
+
+        p + p { margin-top: $space-m; }
+    }
+
+    .mock-img {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background: linear-gradient(135deg, #0b0b14 0%, #131328 100%);
+        border: 1px solid #ffffff0f;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: $space-xxl;
+        overflow: hidden;
+        position: relative;
+
+        img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    .highlight-box {
+        background: #b8a88a0f;
+        border-left: 2px solid $color-accent;
+        padding: $space-l $space-l;
+        margin: $space-xl 0;
+        font-size: rem(16);
+        line-height: 2;
+        color: #ffffffb3;
+    }
+
+    td {
+        padding: $space-s;
+    }
+
+    .is-grid {
+        table {
+            width: 100%;
+        }
+        td {
+            width: 50%;
+            display: inline-block;
+            border: none;
+            padding: $space-s;
+            @include mq(desktop) {
+                display: block;
+                width: 100%;
+            }
+        }
+    }
+
+    .work-cta {
+        margin-top: $space-xxl;
+        display: flex;
+        gap: $space-m;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: $space-s;
+        padding: $space-m $space-xl;
+        background: transparent;
+        border: 1px solid #b8a88a80;
+        color: $color-accent;
+        font-family: $font-text;
+        font-size: rem(16);
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background 0.3s, border-color 0.3s, color 0.3s;
+
+        &:hover {
+            background: #b8a88a1a;
+            border-color: $color-accent;
+            color: $color-white;
+        }
+
+        svg {
+            width: 14px;
+            height: 14px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.5;
+        }
     }
 }

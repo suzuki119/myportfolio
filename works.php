@@ -31,7 +31,6 @@ $total = count($posts); // 記事の総数
 $page_title       = 'Works — Suzuki Portfolio';
 $page_description = '鈴木優太郎のWeb制作実績一覧。WordPress・JavaScript・SCSSによるWebサイト制作を掲載しています。';
 $og_url           = SITE_URL . '/works.php';
-$body_id          = 'works-page';
 require 'header.php';
 ?>
 
@@ -46,7 +45,7 @@ require 'header.php';
     </a>
 </header>
 
-<main>
+<main class="works">
 
     <!-- ヒーロー -->
     <div class="work-hero work-hero--list">
@@ -113,48 +112,5 @@ require 'header.php';
     </div>
 
 </main>
-
-<script>
-const FADE_MS = 220; // フィルターアニメーションの時間（ms）
-
-const filterBtns = document.querySelectorAll('.works-filter__btn');
-const cards       = document.querySelectorAll('.works__card[data-category]');
-const countEl     = document.getElementById('works-count');
-const total       = cards.length;
-
-filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('is-active'));
-        btn.classList.add('is-active');
-
-        const filter = btn.dataset.filter;
-        let visible  = 0;
-
-        cards.forEach(card => {
-            const match = filter === 'all' || card.dataset.category === filter;
-
-            if (match) {
-                // 非表示 → 表示：display を戻してからフェードイン
-                card.style.display = '';
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => card.classList.remove('is-hiding'));
-                });
-                visible++;
-            } else {
-                // 表示 → 非表示：フェードアウト後に display:none
-                card.classList.add('is-hiding');
-                setTimeout(() => {
-                    if (card.classList.contains('is-hiding')) {
-                        card.style.display = 'none';
-                    }
-                }, FADE_MS);
-            }
-        });
-
-        // 件数カウンターを更新
-        if (countEl) countEl.textContent = visible + ' / ' + total;
-    });
-});
-</script>
 
 <?php require 'footer.php'; ?>

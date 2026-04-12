@@ -1,8 +1,8 @@
     <footer class="footer">
 
     <!-- ⑥ CONTACT ──────────────────────── -->
-    <section id="contact">
-      <h2>Contact</h2>
+    <section class="contact">
+      <h2 class="contact__title">Contact</h2>
       <div class="contact__email-wrap">
         <a href="mailto:suzukiyutaro119@gmail.com" class="contact__email">suzukiyutaro119@gmail.com</a>
         <button class="contact__copy" data-email="suzukiyutaro119@gmail.com" aria-label="メールアドレスをコピー">
@@ -15,8 +15,8 @@
       </div>
         <div class="copyright">
             <div class="footer__octopus"><img src="./img/octopus.webp" alt="thanks"></div>
-  <small>&copy;Suzuki Yutaro Portfolio</small>
-</div>
+            <small>&copy;Suzuki Yutaro Portfolio</small>
+          </div>
     </section>
 
   </main>
