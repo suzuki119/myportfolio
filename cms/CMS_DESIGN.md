@@ -212,6 +212,75 @@ myportfolio/
 | categories | カテゴリの一覧 |
 | post_categories | 記事とカテゴリの紐付け（中間テーブル） |
 | post_sections | 記事の本文セクション（見出し＋本文の繰り返し） |
+| skill | スキルページ用データ |
+
+---
+
+### ER図（テーブル関係図）
+
+```mermaid
+erDiagram
+    users {
+        INT id PK
+        VARCHAR username UK
+        VARCHAR password
+        VARCHAR email
+        TIMESTAMP created_at
+    }
+
+    posts {
+        INT id PK
+        VARCHAR title
+        VARCHAR thumbnail
+        ENUM status
+        INT author_id FK
+        VARCHAR period
+        VARCHAR type
+        VARCHAR external_url
+        TEXT tags
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    categories {
+        INT id PK
+        VARCHAR name
+        VARCHAR slug UK
+    }
+
+    post_categories {
+        INT post_id FK
+        INT category_id FK
+    }
+
+    post_sections {
+        INT id PK
+        INT post_id FK
+        INT sort_order
+        VARCHAR title
+        LONGTEXT body
+    }
+
+    skill {
+        INT id PK
+        VARCHAR title
+        VARCHAR period
+        TEXT body
+        VARCHAR image_url
+        VARCHAR category
+    }
+
+    users ||--o{ posts : "author_id"
+    posts ||--o{ post_sections : "post_id"
+    posts }o--o{ categories : "post_categories"
+    post_categories }o--|| posts : "post_id"
+    post_categories }o--|| categories : "category_id"
+```
+
+> **記号の読み方：**
+> - `||` ＝ 1件（必須）
+> - `o{` ＝ 0件以上（任意・複数）
+> - `}o--o{` ＝ 多対多（中間テーブル経由）
 
 ---
 
@@ -1103,15 +1172,29 @@ DELETE FROM posts WHERE id = :id  ← ここで初めてDBのidと紐づく
 
 ### スーパーグローバル変数
 
-PHPが自動的に用意する特別な変数。どのファイル・どの関数の中からでも使える。
+PHPが自動的に用意する特別な変数。どのファイル・どの関数の中からでも使える（`global` 宣言不要）。
 
-| 変数 | 中身 |
-|------|------|
-| `$_SERVER` | サーバー・リクエストの情報 |
-| `$_POST` | フォームのPOST送信値 |
-| `$_GET` | URLの `?key=value` の値 |
-| `$_SESSION` | セッション変数（ログイン情報など） |
-| `$_FILES` | アップロードされたファイルの情報（Step 6で使う） |
+| 変数 | 中身 | 主な用途 |
+|------|------|----------|
+| `$_SERVER` | サーバー・リクエストの情報 | リクエストメソッド判定、IPアドレス取得など |
+| `$_POST` | フォームのPOST送信値 | フォーム送信の受け取り |
+| `$_GET` | URLの `?key=value` の値 | ページネーション、ID指定など |
+| `$_SESSION` | セッション変数（ログイン情報など） | ログイン状態の保持 |
+| `$_FILES` | アップロードされたファイルの情報 | 画像・ファイルアップロード処理 |
+| `$_COOKIE` | ブラウザのクッキー値 | 「次回もログイン状態を保持」など |
+| `$_REQUEST` | `$_GET` + `$_POST` + `$_COOKIE` の統合 | メソッドを問わず値を取得（セキュリティ上 `$_POST`/`$_GET` を直接使う方が推奨） |
+| `$_ENV` | サーバーの環境変数 | パスワードや秘密情報の外部管理 |
+| `$GLOBALS` | スクリプト内のすべてのグローバル変数 | 関数の中からグローバル変数を参照・変更 |
+
+#### よく使う `$_SERVER` のキー
+
+| キー | 値の例 | 意味 |
+|------|--------|------|
+| `$_SERVER['REQUEST_METHOD']` | `'GET'` / `'POST'` | アクセス方法 |
+| `$_SERVER['PHP_SELF']` | `'/cms/admin/index.php'` | 現在のファイルパス |
+| `$_SERVER['QUERY_STRING']` | `'id=3&tab=edit'` | URLの `?` 以降の文字列 |
+| `$_SERVER['REMOTE_ADDR']` | `'127.0.0.1'` | アクセス元のIPアドレス |
+| `$_SERVER['HTTP_HOST']` | `'localhost:8888'` | ホスト名 |
 
 `$_SERVER['REQUEST_METHOD']` はブラウザがどの方法でアクセスしてきたかを表す。
 
@@ -1125,6 +1208,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // フォームが送信されたときだけ実行する処理
 }
 ```
+
+#### `$_SESSION` の使い方
+
+```php
+session_start(); // ファイルの先頭で必ず呼ぶ（セッション開始）
+
+// 値をセット
+$_SESSION['user_id'] = $user['id'];
+
+// 値を取得
+$userId = $_SESSION['user_id'];
+
+// セッション破棄（ログアウト）
+$_SESSION = [];
+session_destroy();
+```
+
+#### `$_COOKIE` の使い方
+
+```php
+// クッキーをセット（有効期限：1週間）
+setcookie('remember_token', $token, time() + 60 * 60 * 24 * 7, '/');
+
+// クッキーを取得
+$token = $_COOKIE['remember_token'] ?? null;
+
+// クッキーを削除（有効期限を過去にする）
+setcookie('remember_token', '', time() - 3600, '/');
+```
+
+> **セキュリティ注意：** `$_GET` / `$_POST` / `$_COOKIE` から取得した値はユーザーが自由に改ざんできる。DBに渡す際はプリペアドステートメント、画面に出力する際は `htmlspecialchars()` で必ずエスケープする。
 
 ---
 
@@ -1689,15 +1803,15 @@ import 'ckeditor5/translations/ja.js';
 </script>
 ```
 
-**importmap とは：**  
-`import 'ckeditor5'` という短い名前が実際にどのURLを指すかをブラウザに教える仕組み。  
+**importmap とは：**
+`import 'ckeditor5'` という短い名前が実際にどのURLを指すかをブラウザに教える仕組み。
 `<script type="importmap">` は必ず `<script type="module">` より前に書く必要がある。
 
 ---
 
 **`type="module"` のスコープ問題と対策：**
 
-`<script type="module">` の中で定義した関数は、モジュールスコープに閉じられる。  
+`<script type="module">` の中で定義した関数は、モジュールスコープに閉じられる。
 そのままでは HTML 側の `onclick="addSection()"` から呼び出せず `ReferenceError` になる。
 
 → **`window.xxx = function` でグローバルに公開**することで解決：
@@ -1714,7 +1828,7 @@ window.addSection = function() { ... }; // ✅
 
 **エディタのインスタンス管理（Map を使う理由）：**
 
-CKEditor 5 には CKEditor 4 の `CKEDITOR.instances` のようなグローバル管理機能がない。  
+CKEditor 5 には CKEditor 4 の `CKEDITOR.instances` のようなグローバル管理機能がない。
 セクションの追加・削除時にエディタを操作するため、自前で `Map` を使って管理する。
 
 ```javascript
@@ -1731,15 +1845,15 @@ editorInstances.get(textarea).destroy();
 editorInstances.delete(textarea);
 ```
 
-**`Map` を選んだ理由：**  
-エディタを「どのtextareaに対応するか」で引き当てたいため、要素をキーにできる `Map` が適切。  
+**`Map` を選んだ理由：**
+エディタを「どのtextareaに対応するか」で引き当てたいため、要素をキーにできる `Map` が適切。
 配列だと「何番目か」で管理することになり、セクション削除時にインデックスがズレる危険がある。
 
 ---
 
 **フォーム送信時の同期処理：**
 
-CKEditor 5 は textarea を隠して独自の編集領域を表示する。  
+CKEditor 5 は textarea を隠して独自の編集領域を表示する。
 そのままフォームを送信すると textarea は空のまま → **送信前に `getData()` で内容を取り出して textarea に書き戻す**：
 
 ```javascript
@@ -1766,7 +1880,7 @@ document.querySelector('form').addEventListener('submit', function() {
 [ブラウザがHTMLとしてレンダリング]
 ```
 
-**注意：** `h()` でエスケープすると `<p>` が `&lt;p&gt;` になりタグが文字として表示されてしまう。  
+**注意：** `h()` でエスケープすると `<p>` が `&lt;p&gt;` になりタグが文字として表示されてしまう。
 管理者しか入力できない前提で、`h()` を外してHTMLをそのまま出力している。
 
 ---

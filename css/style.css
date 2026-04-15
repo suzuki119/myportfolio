@@ -1052,7 +1052,7 @@ main.skills .skill__detail {
 }
 .single .article-block {
   scroll-margin-top: 8.5714285714rem;
-  margin: 3rem 0;
+  margin: 7.1428571429rem 0;
 }
 .single .article-block:last-child {
   margin-bottom: 0;
@@ -1075,10 +1075,11 @@ main.skills .skill__detail {
 }
 .single .block-title {
   font-family: "Cormorant Garamond", serif;
-  font-size: clamp(1.8571428571rem, 3vw, 2.8571428571rem);
+  font-size: clamp(3rem, 3vw, 2.8571428571rem);
   font-weight: lighter;
   line-height: 1.2;
   color: #ffffff;
+  border-bottom: 1px solid #b8a88a;
   margin-bottom: 1.5rem;
 }
 .single .block-body {
@@ -1088,6 +1089,33 @@ main.skills .skill__detail {
 }
 .single .block-body p + p {
   margin-top: 1rem;
+}
+.single .block-body ul {
+  margin-left: 1.5rem;
+}
+.single .block-body li {
+  list-style: disc;
+}
+.single .block-body h3 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.8571428571rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 2rem 0 0.5rem;
+}
+.single .block-body h4 {
+  font-size: 1.4285714286rem;
+  font-weight: bold;
+  color: #b8a88a;
+  letter-spacing: 0.05em;
+  margin: 1.5rem 0 0.25rem;
+}
+.single .block-body strong {
+  font-weight: bold;
+  font-size: 1.4285714286rem;
+}
+.single .block-body iframe {
+  width: 100%;
 }
 .single .mock-img {
   width: 100%;

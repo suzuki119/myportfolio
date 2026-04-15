@@ -27,7 +27,9 @@ if (!$isNew) {
 // ===================================================
 //  保存処理
 // ===================================================
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     $title  = trim($_POST['title']  ?? '');
     $period = trim($_POST['period'] ?? '');
     $body   = trim($_POST['body']   ?? '');
@@ -36,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($title === '') {
         $error = 'タイトルは必須です。';
     } else {
+
         // 画像アップロード処理
         $image_url = $skill['image_url'];
 
@@ -46,14 +49,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (!in_array($ext, $allowed)) {
                 $error = '画像はjpg・png・gif・webp・svgのみ使用できます。';
-            } elseif ($file['size'] > 2 * 1024 * 1024) {
-                $error = '画像サイズは2MB以下にしてください。';
             } else {
                 $filename = uniqid() . '.' . $ext;
                 if (move_uploaded_file($file['tmp_name'], UPLOAD_DIR . $filename)) {
                     $image_url = UPLOAD_URL . $filename;
                 } else {
-                    $error = '画像の保存に失敗しました。';
+                    $error = '画像エラー';
                 }
             }
         }
@@ -173,6 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit"><?= $isNew ? '追加する' : '更新する' ?></button>
             <a class="back" href="<?= SITE_URL ?>/cms/admin/skill.php">← 一覧へ戻る</a>
         </div>
+
     </form>
 </body>
 </html>

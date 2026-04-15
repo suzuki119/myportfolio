@@ -1114,7 +1114,7 @@ main.skills {
 
     .article-block {
         scroll-margin-top: rem(120);
-        margin: $space-xxxl 0;
+        margin: rem(100) 0;
         &:last-child { margin-bottom: 0; }
     }
 
@@ -1135,10 +1135,11 @@ main.skills {
 
     .block-title {
         font-family: $font-primary;
-        font-size: clamp(rem(26), 3vw, rem(40));
+        font-size: clamp(rem(42), 3vw, rem(40));
         font-weight: lighter;
         line-height: 1.2;
         color: $color-white;
+        border-bottom: 1px solid $color-accent;
         margin-bottom: $space-l;
     }
 
@@ -1148,6 +1149,38 @@ main.skills {
         color: $color-white;
 
         p + p { margin-top: $space-m; }
+
+        ul{
+            margin-left: $space-l;
+        }
+        li{
+            list-style: disc;
+        }
+
+        h3 {
+            font-family: $font-primary;
+            font-size: rem(26);
+            font-weight: bold;
+            color: $color-white;
+            margin: $space-xl 0 $space-s;
+        }
+
+        h4 {
+            font-size: rem(20);
+            font-weight: bold;
+            color: $color-accent;
+            letter-spacing: 0.05em;
+            margin: $space-l 0 $space-xs;
+
+        }
+
+        strong {
+            font-weight: bold;
+            font-size: rem(20);
+        }
+        iframe {
+            width: 100%;
+        }
     }
 
     .mock-img {
