@@ -9,7 +9,7 @@ $stmt = $pdo->prepare(
      LEFT JOIN post_categories pc ON p.id = pc.post_id
      LEFT JOIN categories c ON pc.category_id = c.id
      WHERE p.status = :status
-     ORDER BY p.created_at DESC'
+     ORDER BY p.sort_order ASC'
 );
 $stmt->execute([':status' => 'published']);
 $posts = $stmt->fetchAll();

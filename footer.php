@@ -14,7 +14,7 @@
         <a href="https://github.com/suzuki119/" class="contact__link">GitHub</a>
       </div>
         <div class="copyright">
-            <div class="footer__octopus"><img src="./img/octopus.webp" alt="thanks"></div>
+            <a href="https://github.com/suzuki119/" class="contact__link"><div class="footer__octopus"><img src="./img/octopus.webp" alt="thanks"></div></a>
             <small>&copy;Suzuki Yutaro Portfolio</small>
           </div>
     </section>

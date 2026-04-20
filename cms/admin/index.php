@@ -28,9 +28,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['delete_id'])) {//ブ
 }
 
 // ===================================================
+//  並び替え処理（↑↓ボタンが押されたとき）
+// ===================================================
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['move_id'])) {
+    $move_id   = (int)$_POST['move_id'];
+    $direction = $_POST['direction']; // 'up' or 'down'
+
+    // 現在の記事の sort_order を取得
+    $stmt_cur = $pdo->prepare('SELECT id, sort_order FROM posts WHERE id = :id');
+    $stmt_cur->execute([':id' => $move_id]);
+    $current = $stmt_cur->fetch();
+
+    // 隣の記事を取得（up なら1つ小さい、down なら1つ大きい）
+    if ($direction === 'up') {
+        $stmt_nb = $pdo->prepare('SELECT id, sort_order FROM posts WHERE sort_order < :order ORDER BY sort_order DESC LIMIT 1');
+    } else {
+        $stmt_nb = $pdo->prepare('SELECT id, sort_order FROM posts WHERE sort_order > :order ORDER BY sort_order ASC LIMIT 1');
+    }
+    $stmt_nb->execute([':order' => $current['sort_order']]);
+    $neighbor = $stmt_nb->fetch();
+
+    // 隣が存在すれば sort_order を入れ替える
+    if ($neighbor) {
+        $pdo->prepare('UPDATE posts SET sort_order = :order WHERE id = :id')
+            ->execute([':order' => $neighbor['sort_order'], ':id' => $current['id']]);
+        $pdo->prepare('UPDATE posts SET sort_order = :order WHERE id = :id')
+            ->execute([':order' => $current['sort_order'], ':id' => $neighbor['id']]);
+    }
+
+    header('Location: ' . SITE_URL . '/cms/admin/index.php');
+    exit;
+}
+
+// ===================================================
 //  記事一覧を取得
 // ===================================================
-$stmt = $pdo->prepare('SELECT * FROM posts ORDER BY created_at DESC'); // DESC=新しい順
+$stmt = $pdo->prepare('SELECT * FROM posts ORDER BY sort_order ASC'); // sort_order 順に取得
 $stmt->execute();
 $posts = $stmt->fetchAll(); // [PDO組み込み] 全行を配列で取得
 
@@ -66,6 +99,7 @@ $currentCategoryId = $post_category_id ? $post_category_id[0]['category_id'] : n
         .actions form { display: inline; }
         .actions a { margin-right: 8px; color: #333; font-size: .85rem; }
         .actions button { background: none; border: none; color: #c0392b; cursor: pointer; font-size: .85rem; }
+        .actions button.sort-btn { color: #555; margin-right: 2px; }
         .empty { padding: 40px; text-align: center; color: #999; }
     </style>
 </head>
@@ -86,14 +120,33 @@ $currentCategoryId = $post_category_id ? $post_category_id[0]['category_id'] : n
         <table>
             <thead>
                 <tr>
+                    <th>順番</th>
                     <th>タイトル</th>
                     <th>公開状態</th>
                     <th>操作</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($posts as $post): // [組み込み] 配列をループする ?>
+                <?php foreach ($posts as $i => $post): // [組み込み] 配列をループする ?>
                 <tr>
+                    <td>
+                        <!-- ↑ボタン（最初の行は非表示） -->
+                        <?php if ($i > 0): ?>
+                            <form method="post" style="display:inline;">
+                                <input type="hidden" name="move_id" value="<?= h($post['id']) ?>">
+                                <input type="hidden" name="direction" value="up">
+                                <button type="submit" class="sort-btn">↑</button>
+                            </form>
+                        <?php endif; ?>
+                        <!-- ↓ボタン（最後の行は非表示） -->
+                        <?php if ($i < count($posts) - 1): ?>
+                            <form method="post" style="display:inline;">
+                                <input type="hidden" name="move_id" value="<?= h($post['id']) ?>">
+                                <input type="hidden" name="direction" value="down">
+                                <button type="submit" class="sort-btn">↓</button>
+                            </form>
+                        <?php endif; ?>
+                    </td>
                     <td><?= h($post['title']) ?></td><?php // [自作] h()=XSS対策 ?>
                     <td>
                         <?php if ($post['status'] === 'published'): ?>

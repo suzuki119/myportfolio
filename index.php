@@ -2,9 +2,9 @@
 require_once 'cms/config.php';
 $pdo = db();
 
-// 公開済み記事を新しい順に取得
+// 公開済み記事をsort順に取得
 $stmt = $pdo->prepare(
-    'SELECT * FROM posts WHERE status = :status ORDER BY created_at DESC'
+    'SELECT * FROM posts WHERE status = :status ORDER BY sort_order ASC'
 );
 $stmt->execute([':status' => 'published']);
 $posts = $stmt->fetchAll();
