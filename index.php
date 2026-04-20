@@ -29,7 +29,7 @@ require 'header.php';
 
     <!-- ① HERO ────────────────────────── -->
     <section class="main-visual">
-      <h1 class="main-visual__title"><img src="./img/portfolio-text.webp" alt="Portfolio"></h1>
+      <h1 class="main-visual__title"><img src="./img/portfolio-text.webp" alt="Portfolio" fetchpriority="high"></h1>
     </section>
 
 
@@ -146,7 +146,7 @@ require 'header.php';
             <div class="timeline__card">
               <div class="timeline__date">2006.11-2022</div>
               <div class="timeline__role">日間賀島に産まれる。</div>
-              <div class="timeline__desc">小中学校は日間賀島で過ごす。中学校卒業後</div>
+              <div class="timeline__desc">小中学校は日間賀島で過ごす。中学校卒業後、高校へ行くために、名古屋の祖母の家へ</div>
             </div>
           </div>
         </div>
