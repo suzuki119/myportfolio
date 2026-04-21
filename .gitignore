@@ -12,3 +12,7 @@ cms/test-db.php
 
 # macOSのシステムファイル
 .DS_Store
+**/.DS_Store
+
+#claude
+.claude/

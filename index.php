@@ -111,7 +111,7 @@ require 'header.php';
           </div>
 
           <div class="about__photo">
-            <img src="./img/about.jpg" alt="鈴木 優太郎">
+            <img src="./img/about.webp" alt="鈴木 優太郎">
           </div>
 
         </div>
