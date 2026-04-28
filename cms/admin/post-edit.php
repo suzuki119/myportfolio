@@ -51,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $period       = trim($_POST['period']       ?? '');
     $type         = trim($_POST['type']         ?? '');
     $external_url = trim($_POST['external_url'] ?? '');
+    $github_url   = trim($_POST['github_url']   ?? '');
     $tags         = trim($_POST['tags']         ?? '');
 
     if ($title === '') {
@@ -96,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'UPDATE posts SET
                     title = :title, thumbnail = :thumbnail, status = :status,
                     period = :period, type = :type,
-                    external_url = :external_url, tags = :tags
+                    external_url = :external_url, github_url = :github_url, tags = :tags
                  WHERE id = :id'
             );
             $stmt->execute([
@@ -106,6 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':period'       => $period,
                 ':type'         => $type,
                 ':external_url' => $external_url,
+                ':github_url'   => $github_url,
                 ':tags'         => $tags,
                 ':id'           => $id,
             ]);
@@ -152,6 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $post['period']       = $period;
     $post['type']         = $type;
     $post['external_url'] = $external_url;
+    $post['github_url']   = $github_url;
     $post['tags']         = $tags;
 }
 ?>
@@ -273,6 +276,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label>外部リンクURL
             <input type="url" name="external_url" value="<?= h($post['external_url'] ?? '') ?>">
+        </label>
+
+        <label>GitHubリポジトリURL
+            <input type="url" name="github_url" value="<?= h($post['github_url'] ?? '') ?>" placeholder="https://github.com/...">
         </label>
 
         <label>使用技術タグ（カンマ区切り 例：WordPress,SCSS,JavaScript）

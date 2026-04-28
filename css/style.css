@@ -24,6 +24,7 @@ body {
   color: #d8d8d8;
   font-family: "Space Mono", monospace;
   overflow-x: hidden;
+  overflow-wrap: break-word;
 }
 
 #canvas-container {
@@ -82,7 +83,7 @@ body {
 }
 .header__toggle span {
   display: block;
-  width: 30px;
+  width: 40px;
   height: 2px;
   background: #a0a0a0;
   transition: transform 0.3s, opacity 0.3s, background 0.3s;
@@ -944,7 +945,8 @@ main.skills .skill__detail {
   margin-right: auto;
   padding: 2.5rem 0;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.0588235294);
 }
 @media (max-width: 800px) {
@@ -954,21 +956,24 @@ main.skills .skill__detail {
   }
 }
 .single__meta-item {
-  padding: 0 2rem 0 0;
+  padding: 1.5rem 2rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.0588235294);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.0588235294);
 }
-.single__meta-item:not(:first-child) {
-  border-left: 1px solid rgba(255, 255, 255, 0.0588235294);
-  padding-left: 2rem;
+.single__meta-item:nth-child(2n) {
+  border-right: none;
+}
+.single__meta-item:nth-last-child(-n+2) {
+  border-bottom: none;
 }
 @media (max-width: 800px) {
   .single__meta-item {
-    padding: 0;
+    padding: 1rem 0;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.0588235294);
   }
-  .single__meta-item:not(:first-child) {
-    border-left: none;
-    padding-left: 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.0588235294);
-    padding-top: 1rem;
+  .single__meta-item:last-child {
+    border-bottom: none;
   }
 }
 .single__meta-label {
@@ -982,6 +987,24 @@ main.skills .skill__detail {
   font-size: 1.1428571429rem;
   line-height: 1.9;
   color: rgba(255, 255, 255, 0.7019607843);
+}
+.single__github-link {
+  display: inline-flex;
+  position: relative;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.7019607843);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.single__github-link img {
+  width: 7.1428571429rem;
+  height: 7.1428571429rem;
+  border-radius: 50%;
+  border: #ffffff 2px solid;
+  -o-object-fit: contain;
+     object-fit: contain;
+  flex-shrink: 0;
 }
 .single .tag-list {
   display: flex;
@@ -1084,7 +1107,7 @@ main.skills .skill__detail {
 }
 .single .block-body {
   font-size: 1.1428571429rem;
-  line-height: 2.2;
+  line-height: 1.8;
   color: #ffffff;
 }
 .single .block-body p + p {
@@ -1104,6 +1127,7 @@ main.skills .skill__detail {
   margin: 2rem 0 0.5rem;
 }
 .single .block-body h4 {
+  font-family: "Cormorant Garamond", serif;
   font-size: 1.4285714286rem;
   font-weight: bold;
   color: #b8a88a;
@@ -1198,5 +1222,8 @@ main.skills .skill__detail {
   fill: none;
   stroke: currentColor;
   stroke-width: 1.5;
+}
+.single .image {
+  margin: 2rem;
 }
 /*# sourceMappingURL=style.css.map */

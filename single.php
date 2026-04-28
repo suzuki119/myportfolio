@@ -94,7 +94,18 @@ require 'header.php';
         <div class="single__meta-item">
             <div class="single__meta-label">種別</div>
             <div class="single__meta-value"><?= nl2br(h($post['type'])) ?></div>
-            <?php // [組み込み] nl2br() = 文字列中の改行(\n)をHTMLの<br>タグに変換する ?>
+        </div>
+        <div class="single__meta-item">
+            <div class="single__git-value">
+                <?php if (!empty($post['github_url'])): ?>
+                    <a href="<?= h($post['github_url']) ?>" target="_blank" rel="noopener" class="single__github-link">
+                        <img src="<?= SITE_URL ?>/img/github_logo_icon.webp" alt="GitHub">
+                        <p>Github</p>
+                    </a>
+                <?php else: ?>
+                    —
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 

@@ -1,41 +1,40 @@
 @use "sass:math";
 @use "sass:map";
 
-
 /* ========================================
    変数定義
 ======================================== */
 // --- カラー ---
-$color-white:  #ffffff;
-$color-gray:   #e3e3e3;
+$color-white: #ffffff;
+$color-gray: #e3e3e3;
 $color-accent: #b8a88a;
-$color-bg:     #000000;
-$color-text:   #d8d8d8;
-$gray:         #a0a0a0;
+$color-bg: #000000;
+$color-text: #d8d8d8;
+$gray: #a0a0a0;
 
 // --- レイアウト / エフェクト ---
-$nav-bg:    rgba(0, 0, 0, 0.8);
-$glass-border:   #ffffff3f;
-$border-sub:     #ffffff67;
+$nav-bg: rgba(0, 0, 0, 0.8);
+$glass-border: #ffffff3f;
+$border-sub: #ffffff67;
 $canvas-opacity: 0.85;
 
 // --- タイポグラフィ ---
-$font-primary: 'Cormorant Garamond', serif;
-$font-text:  'Space Mono', monospace;
+$font-primary: "Cormorant Garamond", serif;
+$font-text: "Space Mono", monospace;
 
 // --- 重なり順 ---
-$z-canvas:   0;
-$z-main:     10;
-$z-header:   50;
-$z-toggle:   210;
-$z-menu:     20;
+$z-canvas: 0;
+$z-main: 10;
+$z-header: 50;
+$z-toggle: 210;
+$z-menu: 20;
 $z-progress: 300;
 
 // --- ブレークポイント ---
 $breakpoints: (
-    mobile: 375px,
-    tablet: 768px,
-    desktop: 800px
+  mobile: 375px,
+  tablet: 768px,
+  desktop: 800px,
 );
 
 // --- スペーシング ---
@@ -47,1229 +46,1293 @@ $space-xl: 2rem; // 32px
 $space-xxl: 2.5rem; // 40px
 $space-xxxl: 3rem; // 48px
 
-
 /* ========================================
    関数・ミックスイン
 ======================================== */
 
 @function rem($px-value) {
-    @return #{math.div($px-value, 14)}rem;
+  @return #{math.div($px-value, 14)}rem;
 }
 
 @mixin mq($breakpoint: desktop) {
-    @media (max-width: map.get($breakpoints, $breakpoint)) {
+  @media (max-width: map.get($breakpoints, $breakpoint)) {
     @content;
-    }
+  }
 }
 
 @mixin glass-card() {
-    background-color: $color-bg;
-    border: $gray 2px solid;
-    border-radius: 8px;
+  background-color: $color-bg;
+  border: $gray 2px solid;
+  border-radius: 8px;
 }
 
 // セクションの余白
 @mixin inner($mw: 1300px, $w: 95%) {
-    width: $w;
-    margin-left: auto;
-    margin-right: auto;
+  width: $w;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 // セクションタイトル（h2）
 @mixin title() {
-    font-family: $font-primary;
-    font-size: clamp(rem(42), 5.5vw, rem(84));
-    line-height: 1;
-    color: $color-white;
-    text-align: center;
-    margin-bottom: rem(72);
-    @include mq(desktop) {
-        margin-bottom: $space-xxxl;
-    }
+  font-family: $font-primary;
+  font-size: clamp(rem(42), 5.5vw, rem(84));
+  line-height: 1;
+  color: $color-white;
+  text-align: center;
+  margin-bottom: rem(72);
+  @include mq(desktop) {
+    margin-bottom: $space-xxxl;
+  }
 }
-
-
 
 @mixin label-text($color: $color-accent, $size: 16, $spacing: 0.45em) {
-    font-size: rem($size);
-    letter-spacing: $spacing;
-    text-transform: uppercase;
-    color: $color;
+  font-size: rem($size);
+  letter-spacing: $spacing;
+  text-transform: uppercase;
+  color: $color;
 }
-
 
 /* ========================================
     ベーススタイル
 ======================================== */
 
 img {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    vertical-align: middle;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
 }
 
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 body {
-    background: $color-bg;
-    color: $color-text;
-    font-family: $font-text;
-    overflow-x: hidden;
+  background: $color-bg;
+  color: $color-text;
+  font-family: $font-text;
+  overflow-x: hidden;
+  overflow-wrap: break-word;
 }
-
 
 // ─── Three.js キャンバス ───────────────────────────────
 #canvas-container {
-    position: fixed;
-    inset: 0;
-    z-index: $z-canvas;
-    opacity: $canvas-opacity;
-    pointer-events: none;
-    transition: opacity 0.6s;
+  position: fixed;
+  inset: 0;
+  z-index: $z-canvas;
+  opacity: $canvas-opacity;
+  pointer-events: none;
+  transition: opacity 0.6s;
 }
 
 #backcanvas {
-    display: block;
-    width: 100%;
-    height: 100%;
+  display: block;
+  width: 100%;
+  height: 100%;
 }
-
-
 
 /* ========================================
     スタイル
 ======================================== */
 // ─── ヘッダー ─────────────────────────────────────────
 
-
 .header {
-    position: fixed;
-    width: 100%;
-    padding: $space-l $space-xxxl;
+  position: fixed;
+  width: 100%;
+  padding: $space-l $space-xxxl;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: $z-header;
+  background: $color-bg;
+  border-bottom: 1px solid $border-sub;
+  &__logo {
+    & img {
+      width: 200px;
+      height: auto;
+    }
+  }
+
+  &__toggle {
+    display: none;
+    position: relative;
+    flex-direction: column;
+    justify-content: center;
+    gap: $space-xs;
+    cursor: pointer;
+    padding: $space-xs;
+    z-index: $z-toggle;
+
+    &::after {
+      content: "menu";
+      position: absolute;
+      text-align: center;
+      display: block;
+      width: 100%;
+      bottom: rem(-20);
+      left: 0;
+      font-size: rem(16);
+      color: $gray;
+    }
+
+    span {
+      display: block;
+      width: 40px;
+      height: 2px;
+      background: $gray;
+      transition:
+        transform 0.3s,
+        opacity 0.3s,
+        background 0.3s;
+    }
+
+    &.open {
+      span {
+        background: $color-text;
+      }
+      span:nth-child(1) {
+        transform: translateY(6px) rotate(45deg);
+      }
+      span:nth-child(2) {
+        opacity: 0;
+      }
+      span:nth-child(3) {
+        transform: translateY(-6px) rotate(-45deg);
+      }
+    }
+
+    @include mq(desktop) {
+      display: flex;
+    }
+  }
+
+  &__nav {
     display: flex;
+    position: fixed;
+    right: rem(48);
+    padding: $space-l 0;
+    gap: $space-xl;
     align-items: center;
-    justify-content: space-between;
     z-index: $z-header;
-    background: $color-bg;
-    border-bottom: 1px solid $border-sub;
-    &__logo {
-        & img {
-            width: 200px;
-            height: auto;
-        }
+
+    a {
+      @include label-text($color: $color-gray, $spacing: 0.22em);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.3s;
+      &:hover {
+        color: $color-text;
+      }
     }
 
-    &__toggle {
-        display: none;
-        position: relative;
-        flex-direction: column;
-        justify-content: center;
-        gap: $space-xs;
-        cursor: pointer;
-        padding: $space-xs;
-        z-index: $z-toggle;
+    @include mq(desktop) {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 0;
+      background: $nav-bg;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: $space-xxl;
+      z-index: $z-menu;
 
-        &::after {
-            content: 'menu';
-            position: absolute;
-            text-align: center;
-            display: block;
-            width: 100%;
-            bottom: rem(-20);
-            left: 0;
-            font-size: rem(16);
-            color: $gray;
-        }
-
-        span {
-            display: block;
-            width: 30px;
-            height: 2px;
-            background: $gray;
-            transition: transform 0.3s, opacity 0.3s, background 0.3s;
-        }
-
-        &.open {
-            span                { background: $color-text; }
-            span:nth-child(1)   { transform: translateY(6px) rotate(45deg); }
-            span:nth-child(2)   { opacity: 0; }
-            span:nth-child(3)   { transform: translateY(-6px) rotate(-45deg); }
-        }
-
-        @include mq(desktop) {
-            display: flex;
-        }
-    }
-
-    &__nav {
+      &.open {
         display: flex;
-        position: fixed;
-        right: rem(48);
-        padding: $space-l 0;
-        gap: $space-xl;
-        align-items: center;
-        z-index: $z-header;
+      }
 
-        a {
-            @include label-text($color: $color-gray, $spacing: 0.22em);
-            text-decoration: none;
-            cursor: pointer;
-            transition: color 0.3s;
-            &:hover { color: $color-text; }
-        }
-
-        @include mq(desktop) {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            padding: 0;
-            background: $nav-bg;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: $space-xxl;
-            z-index: $z-menu;
-
-            &.open { display: flex; }
-
-            a {
-                font-size: rem(16);
-                letter-spacing: 0.3em;
-                color: $color-text;
-            }
-        }
+      a {
+        font-size: rem(16);
+        letter-spacing: 0.3em;
+        color: $color-text;
+      }
     }
+  }
 }
-
 
 // ─── メインラッパー ────────────────────────────────────
 main {
-    position: relative;
-    z-index: $z-main;
+  position: relative;
+  z-index: $z-main;
 }
-
-
 
 // ─── メインビジュアル ─────────────────────────────────────────
 
 .main-visual {
-        min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding-top: rem(80);
-    &__title {
-        font-family: $font-primary;
-        font-size: clamp(rem(60), 10vw, rem(140));
-        font-weight: 300;
-        line-height: 0.95;
-        letter-spacing: -0.01em;
-        color: $color-white;
-        & img{
-            width: 80%;
-            max-width: rem(800);
-            height: auto;
-            margin-top: $space-l;
-        }
-        em {
-            font-style: italic;
-            color: $color-accent;
-        }
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding-top: rem(80);
+  &__title {
+    font-family: $font-primary;
+    font-size: clamp(rem(60), 10vw, rem(140));
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+    color: $color-white;
+    & img {
+      width: 80%;
+      max-width: rem(800);
+      height: auto;
+      margin-top: $space-l;
     }
+    em {
+      font-style: italic;
+      color: $color-accent;
+    }
+  }
 }
-
 
 // ─── アバウト ─────────────────────────────────────────
 
 .about {
+  @include inner();
+  min-height: 100vh;
+  padding: rem(90) rem(50);
+  @include glass-card();
 
-    @include inner();
-    min-height: 100vh;
-    padding: rem(90) rem(50);
-    @include glass-card();
+  h2 {
+    @include title();
+  }
 
-    h2 { @include title(); }
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $space-xxl;
+    align-items: center;
 
-
-
-    &__grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: $space-xxl;
-        align-items: center;
-
-        @include mq(desktop) {
-            grid-template-columns: 1fr;
-        }
+    @include mq(desktop) {
+      grid-template-columns: 1fr;
     }
+  }
 
-    &__card {
-
-        @include mq(desktop) {
-            padding: $space-xl $space-l;
-        }
+  &__card {
+    @include mq(desktop) {
+      padding: $space-xl $space-l;
     }
+  }
 
-    &__name {
-        font-family: $font-primary;
-        font-size: rem(34);
-        font-weight: lighter;
-        margin-bottom: $space-xs;
-    }
+  &__name {
+    font-family: $font-primary;
+    font-size: rem(34);
+    font-weight: lighter;
+    margin-bottom: $space-xs;
+  }
 
-    &__name-en {
-        font-size: rem(16);
-        letter-spacing: 0.28em;
-        color: $color-accent;
-        margin-bottom: $space-l;
-    }
+  &__name-en {
+    font-size: rem(16);
+    letter-spacing: 0.28em;
+    color: $color-accent;
+    margin-bottom: $space-l;
+  }
 
-    &__icons {
-        display: flex;
-        gap: rem(75);
-        margin-bottom: $space-xl;
-    }
+  &__icons {
+    display: flex;
+    gap: rem(75);
+    margin-bottom: $space-xl;
+  }
 
-    &__git-link, &__blog-link {
-        position: relative;
-        align-items: center;
-        justify-content: center;
-        width: 50px;
-        height: 50px;
-        border: 2px solid #bebebe;
-        text-decoration: none;
-        transition: border-color 0.3s;
-
-        &:hover {
-            border-color: $color-accent;
-        }
-
-        &__img {
-            width: 20px;
-            height: 20px;
-            object-fit: contain;
-        }
-
-        &::after{
-            content: "";
-            position: absolute;
-            display: inline-block;
-            width: 100%;
-            left: rem(50);
-            top: 25%;
-            font-size: rem(12);
-            color: $color-gray;
-        }
-    }
-    &__git-link::after { content: "GitHub"; }
-    &__blog-link::after { content: "Blog"; }
-
-    &__info {
-        font-size: rem(16);
-        line-height: 2.1;
-        margin-bottom: $space-l;
-    }
-
-    &__mypr {
-        font-family: $font-primary;
-        font-size: rem(17);
-        font-weight: lighter;
-        letter-spacing: 0.3em;
-        text-transform: uppercase;
-        color: $color-accent;
-        margin: $space-l 0 $space-s;
-    }
-
-    &__body {
-        font-size: rem(16);
-        line-height: 2;
-    }
-
-    &__photo {
-        aspect-ratio: 3/4;
-        background: #ffffff06;
-        border: 1px solid #ffffff0f;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        color: $color-gray;
-        font-size: rem(16);
-        letter-spacing: 0.2em;
-        margin-bottom: $space-xl;
-
-        @include mq(desktop) {
-            aspect-ratio: 4/3;
-        }
-
-        img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-    }
-}
-
-
-.btn {
-    @include label-text($color: $color-accent, $size: 16, $spacing: 0.25em);
-    display: inline-block;
-    text-align: center;
-    margin: $space-xxl auto;
+  &__git-link,
+  &__blog-link {
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border: 2px solid #bebebe;
     text-decoration: none;
-    padding-bottom: 2px;
-    border-bottom: 1px solid rgba($color-accent, 0.4);
-    transition: color 0.3s, border-color 0.3s;
+    transition: border-color 0.3s;
 
     &:hover {
-        color: $color-white;
-        border-bottom-color: $color-white;
+      border-color: $color-accent;
     }
+
+    &__img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      display: inline-block;
+      width: 100%;
+      left: rem(50);
+      top: 25%;
+      font-size: rem(12);
+      color: $color-gray;
+    }
+  }
+  &__git-link::after {
+    content: "GitHub";
+  }
+  &__blog-link::after {
+    content: "Blog";
+  }
+
+  &__info {
+    font-size: rem(16);
+    line-height: 2.1;
+    margin-bottom: $space-l;
+  }
+
+  &__mypr {
+    font-family: $font-primary;
+    font-size: rem(17);
+    font-weight: lighter;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: $color-accent;
+    margin: $space-l 0 $space-s;
+  }
+
+  &__body {
+    font-size: rem(16);
+    line-height: 2;
+  }
+
+  &__photo {
+    aspect-ratio: 3/4;
+    background: #ffffff06;
+    border: 1px solid #ffffff0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: $color-gray;
+    font-size: rem(16);
+    letter-spacing: 0.2em;
+    margin-bottom: $space-xl;
+
+    @include mq(desktop) {
+      aspect-ratio: 4/3;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+}
+
+.btn {
+  @include label-text($color: $color-accent, $size: 16, $spacing: 0.25em);
+  display: inline-block;
+  text-align: center;
+  margin: $space-xxl auto;
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba($color-accent, 0.4);
+  transition:
+    color 0.3s,
+    border-color 0.3s;
+
+  &:hover {
+    color: $color-white;
+    border-bottom-color: $color-white;
+  }
 }
 
 // ─── index.php Worksセクション ──────────────────────────
 main.top .works {
-    @include inner();
-    padding: rem(130) 0 rem(100);
-    text-align: center;
+  @include inner();
+  padding: rem(130) 0 rem(100);
+  text-align: center;
 
-    h2 { @include title(); }
+  h2 {
+    @include title();
+  }
 }
 
 // ─── ワークスカード（index + works.php 共通） ────────────
 .works {
-    &__grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: $space-l;
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: $space-l;
 
-        @include mq(desktop) {
-            grid-template-columns: 1fr 1fr;
+    @include mq(desktop) {
+      grid-template-columns: 1fr 1fr;
 
-            gap: $space-m;
-        }
+      gap: $space-m;
     }
+  }
 
-    &__card {
-        @include glass-card();
-        overflow: hidden;
-        text-decoration: none;
-        color: inherit;
-        display: block;
-        transition: all 0.35s, transform 0.35s;
-        text-align: left;
+  &__card {
+    @include glass-card();
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition:
+      all 0.35s,
+      transform 0.35s;
+    text-align: left;
 
-        &:hover {
-            border-color: $color-white;
-        }
+    &:hover {
+      border-color: $color-white;
     }
+  }
 
-    &__card-img {
-        width: 100%;
-        aspect-ratio: 4/3;
-        background: #111;
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+  &__card-img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: #111;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-        img {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s;
-        }
+    img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
     }
+  }
 
-    &__card-img-bg {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
-    }
+  &__card-img-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  }
 
-    &__card-body {
-        padding: $space-m $space-l $space-l;
-    }
+  &__card-body {
+    padding: $space-m $space-l $space-l;
+  }
 
-    &__card-tags {
-        display: flex;
-        gap: $space-s;
-        flex-wrap: wrap;
-        margin-bottom: $space-s;
-    }
+  &__card-tags {
+    display: flex;
+    gap: $space-s;
+    flex-wrap: wrap;
+    margin-bottom: $space-s;
+  }
 
-    &__card-tag {
-        @include label-text($size: 14, $spacing: 0.18em);
-        border: 1px solid #b8a88a47;
-        padding: $space-xs $space-s;
-    }
-
-    &__card-title {
-        font-family: $font-primary;
-        font-size: rem(32);
-        font-weight: lighter;
-        margin-bottom: $space-xs;
-    }
-
-    &__card-period {
-        font-size: rem(16);
-        letter-spacing: 0.15em;
-        color: $color-gray;
-    }
-
-}
-
-.tag {
+  &__card-tag {
     @include label-text($size: 14, $spacing: 0.18em);
     border: 1px solid #b8a88a47;
     padding: $space-xs $space-s;
+  }
+
+  &__card-title {
+    font-family: $font-primary;
+    font-size: rem(32);
+    font-weight: lighter;
+    margin-bottom: $space-xs;
+  }
+
+  &__card-period {
+    font-size: rem(16);
+    letter-spacing: 0.15em;
+    color: $color-gray;
+  }
 }
 
+.tag {
+  @include label-text($size: 14, $spacing: 0.18em);
+  border: 1px solid #b8a88a47;
+  padding: $space-xs $space-s;
+}
 
 // ─── タイムライン ──────────────────────────────────────
 .timeline {
-    @include inner();
-    padding: rem(120) 0 rem(100);
+  @include inner();
+  padding: rem(120) 0 rem(100);
 
-    h2 { @include title(); }
-    &__wrap {
-        position: relative;
-        padding-bottom: $space-l;
+  h2 {
+    @include title();
+  }
+  &__wrap {
+    position: relative;
+    padding-bottom: $space-l;
 
-        &::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            top: 0;
-            height: var(--tl-line-height, 0px);
-            width: 1px;
-            background: #8b8b8b;
+    &::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0;
+      height: var(--tl-line-height, 0px);
+      width: 1px;
+      background: #8b8b8b;
 
-            @include mq(desktop) {
-                left: $space-m;
-                transform: none;
-            }
-        }
+      @include mq(desktop) {
+        left: $space-m;
+        transform: none;
+      }
+    }
+  }
+
+  &__entry {
+    display: grid;
+    grid-template-columns: 1fr 48px 1fr;
+    margin-bottom: $space-xxxl;
+    position: relative;
+
+    &:last-child {
+      margin-bottom: 0;
     }
 
-    &__entry {
-        display: grid;
-        grid-template-columns: 1fr 48px 1fr;
-        margin-bottom: $space-xxxl;
-        position: relative;
-
-        &:last-child { margin-bottom: 0; }
-
-        // 奇数エントリ：カードを左側に配置
-        &:nth-child(odd) {
-            .timeline__side {
-                grid-column: 1;
-                grid-row: 1;
-            }
-            .timeline__center {
-                grid-column: 2;
-                grid-row: 1;
-            }
-        }
-
-        // 偶数エントリ：カードを右側に配置
-        &:nth-child(even) {
-            .timeline__center {
-                grid-column: 2;
-                grid-row: 1;
-            }
-            .timeline__side {
-                grid-column: 3;
-                grid-row: 1;
-            }
-        }
-
-        @include mq(desktop) {
-            grid-template-columns: $space-xl 1fr;
-
-            &:nth-child(odd),
-            &:nth-child(even) {
-                .timeline__center {
-                    grid-column: 1;
-                    grid-row: 1;
-                }
-                .timeline__side {
-                    grid-column: 2;
-                    grid-row: 1;
-                }
-            }
-        }
+    // 奇数エントリ：カードを左側に配置
+    &:nth-child(odd) {
+      .timeline__side {
+        grid-column: 1;
+        grid-row: 1;
+      }
+      .timeline__center {
+        grid-column: 2;
+        grid-row: 1;
+      }
     }
 
-    &__center {
-        display: flex;
-        justify-content: center;
-        padding-top: $space-m;
-        position: relative;
-        z-index: 2;
-    }
-
-    &__dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: $color-accent;
-        box-shadow: 0 0 18px #b8a88ab3;
-        flex-shrink: 0;
-    }
-
-    &__side {
-        padding: 0 $space-l;
-
-        @include mq(desktop) {
-            padding: 0 0 0 $space-m;
-        }
-    }
-
-    &__card {
-        @include glass-card();
-        padding: $space-l $space-l;
-    }
-
-    &__date {
-        @include label-text($spacing: 0.25em);
-        margin-bottom: $space-s;
-    }
-
-    &__role {
-        font-family: $font-primary;
-        font-size: rem(22);
-        font-weight: lighter;
-        margin-bottom: $space-s;
-    }
-
-    &__desc {
-        font-size: rem(16);
-        line-height: 1.85;
-        color: $color-gray;
-    }
-}
-
-
-
-// ─── コンタクト ────────────────────────────────────────
-.contact {
-    @include inner();
-    min-height: 60vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: rem(120) 0 rem(100);
-
-    &__title {
-        @include title();
-        margin-bottom: $space-m; // contactは余白少なめ
+    // 偶数エントリ：カードを右側に配置
+    &:nth-child(even) {
+      .timeline__center {
+        grid-column: 2;
+        grid-row: 1;
+      }
+      .timeline__side {
+        grid-column: 3;
+        grid-row: 1;
+      }
     }
 
     @include mq(desktop) {
-        padding: rem(80) 6vw $space-xxxl;
-    }
+      grid-template-columns: $space-xl 1fr;
 
-    &__email-wrap {
-        display: flex;
-        align-items: center;
-        gap: $space-m;
-        margin: $space-l 0 $space-xxxl;
-
-        @include mq(desktop) {
-            flex-direction: column;
-            gap: $space-s;
+      &:nth-child(odd),
+      &:nth-child(even) {
+        .timeline__center {
+          grid-column: 1;
+          grid-row: 1;
         }
-    }
-
-    &__email {
-        font-family: $font-primary;
-        font-size: clamp(rem(18), 2.5vw, rem(32));
-        color: $color-accent;
-        text-decoration: none;
-        letter-spacing: 0.04em;
-        transition: opacity 0.3s;
-
-        &:hover { opacity: 0.7; }
-
-        @include mq(desktop) {
-            word-break: break-all;
-            font-size: clamp(rem(16), 4vw, rem(22));
+        .timeline__side {
+          grid-column: 2;
+          grid-row: 1;
         }
+      }
     }
+  }
 
-    &__copy {
-        background: transparent;
-        border: none;
-        padding: $space-xs;
-        cursor: pointer;
-        flex-shrink: 0;
-        opacity: 0.5;
-        transition: opacity 0.25s;
+  &__center {
+    display: flex;
+    justify-content: center;
+    padding-top: $space-m;
+    position: relative;
+    z-index: 2;
+  }
 
-        img { display: block; width: 24px; height: 24px; }
+  &__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: $color-accent;
+    box-shadow: 0 0 18px #b8a88ab3;
+    flex-shrink: 0;
+  }
 
-        &:hover { opacity: 1; }
-        &.copied { opacity: 0.3; }
+  &__side {
+    padding: 0 $space-l;
+
+    @include mq(desktop) {
+      padding: 0 0 0 $space-m;
     }
+  }
 
-    &__links {
-        display: flex;
-        justify-content: center;
-        gap: $space-xxl;
+  &__card {
+    @include glass-card();
+    padding: $space-l $space-l;
+  }
 
-        @include mq(desktop) {
-            flex-direction: column;
-            gap: $space-m;
-            align-items: center;
-        }
-    }
+  &__date {
+    @include label-text($spacing: 0.25em);
+    margin-bottom: $space-s;
+  }
 
-    &__link {
-        @include label-text($color: $color-gray, $size: 16, $spacing: 0.3em);
-        text-decoration: none;
-        padding-bottom: $space-xs;
-        border-bottom: 1px solid transparent;
-        transition: color 0.3s, border-color 0.3s;
+  &__role {
+    font-family: $font-primary;
+    font-size: rem(22);
+    font-weight: lighter;
+    margin-bottom: $space-s;
+  }
 
-        &:hover {
-            color: $color-white;
-            border-bottom-color: $color-accent;
-        }
-    }
+  &__desc {
+    font-size: rem(16);
+    line-height: 1.85;
+    color: $color-gray;
+  }
 }
 
+// ─── コンタクト ────────────────────────────────────────
+.contact {
+  @include inner();
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: rem(120) 0 rem(100);
+
+  &__title {
+    @include title();
+    margin-bottom: $space-m; // contactは余白少なめ
+  }
+
+  @include mq(desktop) {
+    padding: rem(80) 6vw $space-xxxl;
+  }
+
+  &__email-wrap {
+    display: flex;
+    align-items: center;
+    gap: $space-m;
+    margin: $space-l 0 $space-xxxl;
+
+    @include mq(desktop) {
+      flex-direction: column;
+      gap: $space-s;
+    }
+  }
+
+  &__email {
+    font-family: $font-primary;
+    font-size: clamp(rem(18), 2.5vw, rem(32));
+    color: $color-accent;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: opacity 0.3s;
+
+    &:hover {
+      opacity: 0.7;
+    }
+
+    @include mq(desktop) {
+      word-break: break-all;
+      font-size: clamp(rem(16), 4vw, rem(22));
+    }
+  }
+
+  &__copy {
+    background: transparent;
+    border: none;
+    padding: $space-xs;
+    cursor: pointer;
+    flex-shrink: 0;
+    opacity: 0.5;
+    transition: opacity 0.25s;
+
+    img {
+      display: block;
+      width: 24px;
+      height: 24px;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+    &.copied {
+      opacity: 0.3;
+    }
+  }
+
+  &__links {
+    display: flex;
+    justify-content: center;
+    gap: $space-xxl;
+
+    @include mq(desktop) {
+      flex-direction: column;
+      gap: $space-m;
+      align-items: center;
+    }
+  }
+
+  &__link {
+    @include label-text($color: $color-gray, $size: 16, $spacing: 0.3em);
+    text-decoration: none;
+    padding-bottom: $space-xs;
+    border-bottom: 1px solid transparent;
+    transition:
+      color 0.3s,
+      border-color 0.3s;
+
+    &:hover {
+      color: $color-white;
+      border-bottom-color: $color-accent;
+    }
+  }
+}
 
 // ─── フッター ─────────────────────────────────────────
 .footer {
-    position: relative;
-    &__octopus {
-        position: absolute;
-        width: 120px;
-        left: rem(-100);
-        bottom: rem(20);
+  position: relative;
+  &__octopus {
+    position: absolute;
+    width: 120px;
+    left: rem(-100);
+    bottom: rem(20);
 
-        @include mq(desktop) {
-            position: relative;
-            left: 0;
-            bottom: 0;
-            margin: $space-xl auto;
-        }
+    @include mq(desktop) {
+      position: relative;
+      left: 0;
+      bottom: 0;
+      margin: $space-xl auto;
     }
+  }
 }
-.copyright{
-    text-align: center;
-    padding: $space-xl;
-    font-size: rem(16);
-    letter-spacing: 0.25em;
-    color: $color-gray;
-    border-top: 1px solid #ffffff0a;
-    position: relative;
-    z-index: $z-main;
+.copyright {
+  text-align: center;
+  padding: $space-xl;
+  font-size: rem(16);
+  letter-spacing: 0.25em;
+  color: $color-gray;
+  border-top: 1px solid #ffffff0a;
+  position: relative;
+  z-index: $z-main;
 }
-
 
 // ─── works.php / single.php 共通 ───────────────────────
 header.header--work {
-    padding: $space-l $space-xxxl;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: rem(150);
+  padding: $space-l $space-xxxl;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: rem(150);
 }
 
 .back-link {
-    display: flex;
-    align-items: center;
-    gap: $space-s;
-    @include label-text($color: $color-gray, $spacing: 0.3em);
-    text-decoration: none;
-    transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: $space-s;
+  @include label-text($color: $color-gray, $spacing: 0.3em);
+  text-decoration: none;
+  transition: color 0.3s;
 
-    &:hover { color: $color-accent; }
+  &:hover {
+    color: $color-accent;
+  }
 
-    svg {
-        width: 14px;
-        height: 14px;
-        fill: none;
-        stroke: currentColor;
-        stroke-width: 1.5;
-    }
+  svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+  }
 }
-
 
 .hero-divider {
-    @include inner();
-    height: 1px;
-    background: #ffffff12;
+  @include inner();
+  height: 1px;
+  background: #ffffff12;
 }
-
 
 // ─── works.php ────────────────────────────────────────
 .works {
-    &__hero {
-        @include inner();
-        display: flex;
-        flex-direction: column;
-        padding: rem(80) 0;
-        min-height: 36vh;
-        justify-content: flex-end;
+  &__hero {
+    @include inner();
+    display: flex;
+    flex-direction: column;
+    padding: rem(80) 0;
+    min-height: 36vh;
+    justify-content: flex-end;
+  }
+
+  &__hero-title {
+    font-family: $font-primary;
+    font-size: clamp(rem(32), 8vw, rem(160));
+    font-weight: lighter;
+    line-height: 0.92;
+    color: $color-white;
+  }
+
+  &__filter-bar {
+    @include inner();
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: $space-xxl;
+    flex-wrap: wrap;
+    gap: $space-m;
+
+    @include mq(desktop) {
+      padding-top: $space-xl;
+    }
+  }
+
+  &__filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-s;
+  }
+
+  &__filter-btn {
+    @include label-text($color: $gray, $size: 16, $spacing: 0.25em);
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 6px 20px;
+    cursor: pointer;
+    transition:
+      color 0.25s,
+      border-color 0.25s;
+
+    &:hover {
+      color: $color-text;
+      border-color: rgba(255, 255, 255, 0.25);
     }
 
-    &__hero-title {
-        font-family: $font-primary;
-        font-size: clamp(rem(32), 8vw, rem(160));
-        font-weight: lighter;
-        line-height: 0.92;
-        color: $color-white;
+    &.is-active {
+      color: $color-accent;
+      border-color: rgba($color-accent, 0.45);
     }
+  }
 
-    &__filter-bar {
-        @include inner();
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding-top: $space-xxl;
-        flex-wrap: wrap;
-        gap: $space-m;
+  &__count {
+    @include label-text($color: $gray, $size: 16, $spacing: 0.2em);
+    white-space: nowrap;
+  }
 
-        @include mq(desktop) {
-            padding-top: $space-xl;
-        }
+  &__list {
+    @include inner();
+    padding: $space-xxl 0 120px;
+
+    @include mq(desktop) {
+      padding: $space-xl 0 80px;
     }
+  }
 
-    &__filter {
-        display: flex;
-        flex-wrap: wrap;
-        gap: $space-s;
-    }
-
-    &__filter-btn {
-        @include label-text($color: $gray, $size: 16, $spacing: 0.25em);
-        background: none;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 6px 20px;
-        cursor: pointer;
-        transition: color 0.25s, border-color 0.25s;
-
-        &:hover {
-            color: $color-text;
-            border-color: rgba(255, 255, 255, 0.25);
-        }
-
-        &.is-active {
-            color: $color-accent;
-            border-color: rgba($color-accent, 0.45);
-        }
-    }
-
-    &__count {
-        @include label-text($color: $gray, $size: 16, $spacing: 0.2em);
-        white-space: nowrap;
-    }
-
-    &__list {
-        @include inner();
-        padding: $space-xxl 0 120px;
-
-        @include mq(desktop) {
-            padding: $space-xl 0 80px;
-        }
-    }
-
-    &__empty {
-        color: $gray;
-        font-size: rem(16);
-        padding: $space-xxl 0;
-    }
+  &__empty {
+    color: $gray;
+    font-size: rem(16);
+    padding: $space-xxl 0;
+  }
 }
-
 
 // ─── skill.php ────────────────────────────────────────
 main.skills {
-    .skill {
-        @include inner();
-        padding: rem(130) 0 rem(100);
+  .skill {
+    @include inner();
+    padding: rem(130) 0 rem(100);
 
-        &__title { @include title(); }
-
-        &__grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: $space-l;
-            @include mq(desktop) {
-                display: grid;
-            }
-        }
-
-        &__category {
-            font-family: $font-primary;
-            font-size: rem(24);
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: $color-accent;
-            margin: $space-xl 0;
-        }
-
-        &__card {
-            @include glass-card();
-            padding: $space-l;
-            display: grid;
-            grid-template-columns: 1fr 1fr 4fr;
-            align-items: center;
-            gap: $space-l;
-            width: 100%;
-
-            @include mq(desktop) {
-                grid-template-columns: 1fr 3fr;
-                grid-template-rows: auto auto;
-            }
-        }
-
-        &__card-icon {
-            width: 100%;
-            aspect-ratio: 1;
-            background-color: #fff;
-            padding: $space-m;
-            @include mq(desktop) {
-                padding: $space-s;
-            }
-
-            img {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-            }
-        }
-
-        &__card-meta {
-            display: flex;
-            flex-direction: column;
-            gap: $space-xs;
-        }
-
-        &__name {
-            font-size: rem(30);
-            color: $color-white;
-            font-family: $font-primary;
-            font-weight: 300;
-            letter-spacing: 0.05em;
-        }
-
-        &__years {
-            font-size: rem(13);
-            color: $gray;
-            letter-spacing: 0.05em;
-        }
-
-        &__detail {
-            font-size: rem(14);
-            color: $color-gray;
-            line-height: 1.7;
-
-            @include mq(desktop) {
-                grid-column: 1 / -1;
-            }
-        }
+    &__title {
+      @include title();
     }
-}
 
+    &__grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: $space-l;
+      @include mq(desktop) {
+        display: grid;
+      }
+    }
+
+    &__category {
+      font-family: $font-primary;
+      font-size: rem(24);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: $color-accent;
+      margin: $space-xl 0;
+    }
+
+    &__card {
+      @include glass-card();
+      padding: $space-l;
+      display: grid;
+      grid-template-columns: 1fr 1fr 4fr;
+      align-items: center;
+      gap: $space-l;
+      width: 100%;
+
+      @include mq(desktop) {
+        grid-template-columns: 1fr 3fr;
+        grid-template-rows: auto auto;
+      }
+    }
+
+    &__card-icon {
+      width: 100%;
+      aspect-ratio: 1;
+      background-color: #fff;
+      padding: $space-m;
+      @include mq(desktop) {
+        padding: $space-s;
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+
+    &__card-meta {
+      display: flex;
+      flex-direction: column;
+      gap: $space-xs;
+    }
+
+    &__name {
+      font-size: rem(30);
+      color: $color-white;
+      font-family: $font-primary;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+    }
+
+    &__years {
+      font-size: rem(13);
+      color: $gray;
+      letter-spacing: 0.05em;
+    }
+
+    &__detail {
+      font-size: rem(14);
+      color: $color-gray;
+      line-height: 1.7;
+
+      @include mq(desktop) {
+        grid-column: 1 / -1;
+      }
+    }
+  }
+}
 
 // ─── single.php ───────────────────────────────────────
 .single {
-    &__hero {
-        @include inner();
-        display: flex;
-        flex-direction: column;
-        padding: rem(80) 0;
+  &__hero {
+    @include inner();
+    display: flex;
+    flex-direction: column;
+    padding: rem(80) 0;
+  }
+
+  &__hero-title {
+    font-family: $font-primary;
+    font-size: clamp(rem(32), 8vw, rem(160));
+    font-weight: lighter;
+    line-height: 0.92;
+    color: $color-white;
+  }
+
+  &__meta-bar {
+    @include inner();
+    padding: $space-xxl 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-bottom: 1px solid #ffffff0f;
+    @include mq(desktop) {
+      grid-template-columns: 1fr;
+      gap: $space-m;
+    }
+  }
+
+  &__meta-item {
+    padding: $space-l $space-xl;
+    border-right: 1px solid #ffffff0f;
+    border-bottom: 1px solid #ffffff0f;
+
+    &:nth-child(2n) {
+      border-right: none;
     }
 
-    &__hero-title {
-        font-family: $font-primary;
-        font-size: clamp(rem(32), 8vw, rem(160));
-        font-weight: lighter;
-        line-height: 0.92;
-        color: $color-white;
+    &:nth-last-child(-n + 2) {
+      border-bottom: none;
     }
 
-    &__meta-bar {
-        @include inner();
-        padding: $space-xxl 0;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        border-bottom: 1px solid #ffffff0f;
-        @include mq(desktop) {
-            grid-template-columns: 1fr;
-            gap: $space-m;
-        }
+    @include mq(desktop) {
+      padding: $space-m 0;
+      border-right: none;
+      border-bottom: 1px solid #ffffff0f;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  &__meta-label {
+    @include label-text($size: 16, $spacing: 0.35em);
+    margin-bottom: $space-s;
+  }
+
+  &__meta-value {
+    font-size: rem(16);
+    line-height: 1.9;
+    color: #ffffffb3;
+  }
+
+  &__github-link {
+    display: inline-flex;
+    position: relative;
+    align-items: center;
+    gap: $space-s;
+    color: #ffffffb3;
+    text-decoration: none;
+    transition: color 0.3s;
+
+    img {
+      width: rem(100);
+      height: rem(100);
+      border-radius: 50%;
+      border: $color-white 2px solid;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-s;
+    margin-top: $space-xs;
+  }
+
+  &__content {
+    @include inner();
+    padding: rem(80) 0 rem(120);
+  }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: rem(80);
+    align-items: start;
+    @include mq(desktop) {
+      grid-template-columns: 1fr;
+      gap: $space-xxl;
+    }
+  }
+
+  .sidebar {
+    top: rem(120);
+    position: sticky;
+    @include mq(desktop) {
+      position: unset;
     }
 
-    &__meta-item {
-        padding: 0 $space-xl 0 0;
+    &-nav {
+      list-style: none;
 
-        &:not(:first-child) {
-            border-left: 1px solid #ffffff0f;
-            padding-left: $space-xl;
-        }
-        @include mq(desktop) {
-            padding: 0;
+      li {
+        margin-bottom: $space-xs;
+      }
 
-            &:not(:first-child) {
-                border-left: none;
-                padding-left: 0;
-                border-top: 1px solid #ffffff0f;
-                padding-top: $space-m;
-            }
-        }
-    }
-
-    &__meta-label {
-        @include label-text($size: 16, $spacing: 0.35em);
-        margin-bottom: $space-s;
-    }
-
-    &__meta-value {
-        font-size: rem(16);
-        line-height: 1.9;
-        color: #ffffffb3;
-    }
-
-    .tag-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: $space-s;
-        margin-top: $space-xs;
-    }
-
-    &__content {
-        @include inner();
-        padding: rem(80) 0 rem(120);
-    }
-
-    .content-grid {
-        display: grid;
-        grid-template-columns: 1fr 3fr;
-        gap: rem(80);
-        align-items: start;
-        @include mq(desktop) {
-            grid-template-columns: 1fr;
-            gap: $space-xxl;
-        }
-    }
-
-    .sidebar {
-        top: rem(120);
-        position: sticky;
-        @include mq(desktop) {
-            position: unset;
-        }
-
-        &-nav {
-            list-style: none;
-
-            li { margin-bottom: $space-xs; }
-
-            a {
-                @include label-text($color: $color-gray, $size: 16, $spacing: 0.25em);
-                text-decoration: none;
-                display: flex;
-                align-items: center;
-                gap: $space-s;
-                padding: $space-s 0;
-                border-bottom: 1px solid #ffffff0a;
-                transition: color 0.3s;
-
-                &::before {
-                    content: '';
-                    width: 20px;
-                    height: 1px;
-                    background: $color-accent;
-                    opacity: 0;
-                    transition: opacity 0.3s;
-                }
-
-                &:hover,
-                &.is-active {
-                    color: $color-accent;
-
-                    &::before { opacity: 1; }
-                }
-            }
-        }
-    }
-
-    .article-block {
-        scroll-margin-top: rem(120);
-        margin: rem(100) 0;
-        &:last-child { margin-bottom: 0; }
-    }
-
-    .block-label {
-        @include label-text($size: 16, $spacing: 0.4em);
-        margin-bottom: $space-l;
-        display: flex;
-        align-items: center;
-        gap: $space-m;
-
-        &::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #ffffff12;
-        }
-    }
-
-    .block-title {
-        font-family: $font-primary;
-        font-size: clamp(rem(42), 3vw, rem(40));
-        font-weight: lighter;
-        line-height: 1.2;
-        color: $color-white;
-        border-bottom: 1px solid $color-accent;
-        margin-bottom: $space-l;
-    }
-
-    .block-body {
-        font-size: rem(16);
-        line-height: 2.2;
-        color: $color-white;
-
-        p + p { margin-top: $space-m; }
-
-        ul{
-            margin-left: $space-l;
-        }
-        li{
-            list-style: disc;
-        }
-
-        h3 {
-            font-family: $font-primary;
-            font-size: rem(26);
-            font-weight: bold;
-            color: $color-white;
-            margin: $space-xl 0 $space-s;
-        }
-
-        h4 {
-            font-size: rem(20);
-            font-weight: bold;
-            color: $color-accent;
-            letter-spacing: 0.05em;
-            margin: $space-l 0 $space-xs;
-
-        }
-
-        strong {
-            font-weight: bold;
-            font-size: rem(20);
-        }
-        iframe {
-            width: 100%;
-        }
-    }
-
-    .mock-img {
-        width: 100%;
-        aspect-ratio: 16 / 9;
-        background: linear-gradient(135deg, #0b0b14 0%, #131328 100%);
-        border: 1px solid #ffffff0f;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: $space-xxl;
-        overflow: hidden;
-        position: relative;
-
-        img {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-    }
-
-    .highlight-box {
-        background: #b8a88a0f;
-        border-left: 2px solid $color-accent;
-        padding: $space-l $space-l;
-        margin: $space-xl 0;
-        font-size: rem(16);
-        line-height: 2;
-        color: #ffffffb3;
-    }
-
-    td {
-        padding: $space-s;
-    }
-
-    .is-grid {
-        table {
-            width: 100%;
-        }
-        td {
-            width: 50%;
-            display: inline-block;
-            border: none;
-            padding: $space-s;
-            @include mq(desktop) {
-                display: block;
-                width: 100%;
-            }
-        }
-    }
-
-    &__cta {
-        margin-top: $space-xxl;
-        display: flex;
-        gap: $space-m;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-
-    .btn-primary {
-        display: inline-flex;
-        align-items: center;
-        gap: $space-s;
-        padding: $space-m $space-xl;
-        background: transparent;
-        border: 1px solid #b8a88a80;
-        color: $color-accent;
-        font-family: $font-text;
-        font-size: rem(16);
-        letter-spacing: 0.3em;
-        text-transform: uppercase;
+      a {
+        @include label-text($color: $color-gray, $size: 16, $spacing: 0.25em);
         text-decoration: none;
-        cursor: pointer;
-        transition: background 0.3s, border-color 0.3s, color 0.3s;
+        display: flex;
+        align-items: center;
+        gap: $space-s;
+        padding: $space-s 0;
+        border-bottom: 1px solid #ffffff0a;
+        transition: color 0.3s;
 
-        &:hover {
-            background: #b8a88a1a;
-            border-color: $color-accent;
-            color: $color-white;
+        &::before {
+          content: "";
+          width: 20px;
+          height: 1px;
+          background: $color-accent;
+          opacity: 0;
+          transition: opacity 0.3s;
         }
 
-        svg {
-            width: 14px;
-            height: 14px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 1.5;
+        &:hover,
+        &.is-active {
+          color: $color-accent;
+
+          &::before {
+            opacity: 1;
+          }
         }
+      }
     }
+  }
+
+  .article-block {
+    scroll-margin-top: rem(120);
+    margin: rem(100) 0;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .block-label {
+    @include label-text($size: 16, $spacing: 0.4em);
+    margin-bottom: $space-l;
+    display: flex;
+    align-items: center;
+    gap: $space-m;
+
+    &::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: #ffffff12;
+    }
+  }
+
+  .block-title {
+    font-family: $font-primary;
+    font-size: clamp(rem(42), 3vw, rem(40));
+    font-weight: lighter;
+    line-height: 1.2;
+    color: $color-white;
+    border-bottom: 1px solid $color-accent;
+    margin-bottom: $space-l;
+  }
+
+  .block-body {
+    font-size: rem(16);
+    line-height: 1.8;
+    color: $color-white;
+
+    p + p {
+      margin-top: $space-m;
+    }
+
+    ul {
+      margin-left: $space-l;
+    }
+    li {
+      list-style: disc;
+    }
+
+    h3 {
+      font-family: $font-primary;
+      font-size: rem(26);
+      font-weight: bold;
+      color: $color-white;
+      margin: $space-xl 0 $space-s;
+    }
+
+    h4 {
+      font-family: $font-primary;
+      font-size: rem(20);
+      font-weight: bold;
+      color: $color-accent;
+      letter-spacing: 0.05em;
+      margin: $space-l 0 $space-xs;
+    }
+
+    strong {
+      font-weight: bold;
+      font-size: rem(20);
+    }
+    iframe {
+      width: 100%;
+    }
+  }
+
+  .mock-img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: linear-gradient(135deg, #0b0b14 0%, #131328 100%);
+    border: 1px solid #ffffff0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: $space-xxl;
+    overflow: hidden;
+    position: relative;
+
+    img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .highlight-box {
+    background: #b8a88a0f;
+    border-left: 2px solid $color-accent;
+    padding: $space-l $space-l;
+    margin: $space-xl 0;
+    font-size: rem(16);
+    line-height: 2;
+    color: #ffffffb3;
+  }
+
+  td {
+    padding: $space-s;
+  }
+
+  .is-grid {
+    table {
+      width: 100%;
+    }
+    td {
+      width: 50%;
+      display: inline-block;
+      border: none;
+      padding: $space-s;
+      @include mq(desktop) {
+        display: block;
+        width: 100%;
+      }
+    }
+  }
+
+  &__cta {
+    margin-top: $space-xxl;
+    display: flex;
+    gap: $space-m;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-s;
+    padding: $space-m $space-xl;
+    background: transparent;
+    border: 1px solid #b8a88a80;
+    color: $color-accent;
+    font-family: $font-text;
+    font-size: rem(16);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background 0.3s,
+      border-color 0.3s,
+      color 0.3s;
+
+    &:hover {
+      background: #b8a88a1a;
+      border-color: $color-accent;
+      color: $color-white;
+    }
+
+    svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+    }
+  }
+
+  .image {
+    margin: $space-xl;
+  }
 }
