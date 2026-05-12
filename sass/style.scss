@@ -726,13 +726,12 @@ main.top .works {
   }
 
   &__copy {
+    position: relative;
     background: transparent;
     border: none;
     padding: $space-xs;
     cursor: pointer;
     flex-shrink: 0;
-    opacity: 0.5;
-    transition: opacity 0.25s;
 
     img {
       display: block;
@@ -740,11 +739,21 @@ main.top .works {
       height: 24px;
     }
 
-    &:hover {
-      opacity: 1;
-    }
-    &.copied {
-      opacity: 0.3;
+    &.copied::after {
+      content: "コピーできました";
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: $color-accent;
+      color: $color-bg;
+      font-size: rem(12);
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      padding: $space-xs $space-s;
+      border-radius: 4px;
+      pointer-events: none;
+      animation: fadeInUp 0.2s ease;
     }
   }
 
@@ -1334,5 +1343,16 @@ main.skills {
 
   .image {
     margin: $space-xl;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 }
