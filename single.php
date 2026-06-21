@@ -103,7 +103,7 @@ require 'header.php';
                         <p>Github</p>
                     </a>
                 <?php else: ?>
-                    —
+
                 <?php endif; ?>
             </div>
         </div>
