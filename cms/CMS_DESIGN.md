@@ -353,6 +353,22 @@ ALTER TABLE posts ADD COLUMN tags TEXT DEFAULT NULL;
 ALTER TABLE posts DROP COLUMN content;
 ```
 
+> **2026-06-26 追加済み：** 動画（YouTube / Vimeo 埋め込み）対応のため `video_url` カラムを追加した。
+
+```sql
+ALTER TABLE posts ADD COLUMN video_url VARCHAR(2083) DEFAULT NULL AFTER external_url;
+```
+
+#### 動画対応の仕組み（YouTube / Vimeo 埋め込み）
+
+- `posts.video_url` に YouTube / Vimeo の動画URLを保存する（管理画面の「動画URL」欄）。
+- 表示時は `config.php` の `video_embed_url()` が各種URLを iframe 用の埋め込みURLに変換する。
+  - 対応：`youtube.com/watch?v=`・`youtu.be/`・`youtube.com/shorts/`・`youtube.com/embed/`・`vimeo.com/{id}`・`player.vimeo.com/video/{id}`
+  - 対応外・空のときは `null` を返す。
+- `single.php` では動画URLがあれば `.single__video`（16:9レスポンシブ iframe）として記事先頭に表示する。**動画がある場合はサムネイル画像より動画を優先表示**する。
+- CSS は `sass/style.scss` の `.single__video` に定義（`css/style.css` にもコンパイル済みで反映。sassコンパイラ未導入のため手動同期した点に注意）。
+- 動画ファイルそのものはサーバーに保存しない方式（外部ホスティング埋め込み）。容量・帯域・変換の負荷がなく共有サーバーでも安定。
+
 ---
 
 ### categories テーブル

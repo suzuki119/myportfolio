@@ -1171,6 +1171,20 @@ main.skills .skill__detail {
   -o-object-fit: cover;
      object-fit: cover;
 }
+.single .single__video {
+  width: 100%;
+  aspect-ratio: 16/9;
+  margin-bottom: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.0588235294);
+  overflow: hidden;
+  background: #000;
+}
+.single .single__video iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+}
 .single .highlight-box {
   background: rgba(184, 168, 138, 0.0588235294);
   border-left: 2px solid #b8a88a;

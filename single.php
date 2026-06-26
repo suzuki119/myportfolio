@@ -133,7 +133,18 @@ require 'header.php';
 
             <article>
 
-                <?php if ($post['thumbnail']): ?>
+                <?php $embed_url = video_embed_url($post['video_url'] ?? null); ?>
+                <?php if ($embed_url): ?>
+                    <div class="single__video">
+                        <iframe
+                            src="<?= h($embed_url) ?>"
+                            title="<?= h($post['title']) ?>"
+                            loading="lazy"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen></iframe>
+                    </div>
+                <?php elseif ($post['thumbnail']): ?>
                     <div class="mock-img">
                         <img src="<?= UPLOAD_URL . h($post['thumbnail']) ?>" alt="<?= h($post['title']) ?>">
                     </div>

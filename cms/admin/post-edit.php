@@ -51,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $period       = trim($_POST['period']       ?? '');
     $type         = trim($_POST['type']         ?? '');
     $external_url = trim($_POST['external_url'] ?? '');
+    $video_url    = trim($_POST['video_url']    ?? '');
     $github_url   = trim($_POST['github_url']   ?? '');
     $tags         = trim($_POST['tags']         ?? '');
 
@@ -97,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'UPDATE posts SET
                     title = :title, thumbnail = :thumbnail, status = :status,
                     period = :period, type = :type,
-                    external_url = :external_url, github_url = :github_url, tags = :tags
+                    external_url = :external_url, video_url = :video_url, github_url = :github_url, tags = :tags
                  WHERE id = :id'
             );
             $stmt->execute([
@@ -107,6 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':period'       => $period,
                 ':type'         => $type,
                 ':external_url' => $external_url,
+                ':video_url'    => $video_url,
                 ':github_url'   => $github_url,
                 ':tags'         => $tags,
                 ':id'           => $id,
@@ -154,6 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $post['period']       = $period;
     $post['type']         = $type;
     $post['external_url'] = $external_url;
+    $post['video_url']    = $video_url;
     $post['github_url']   = $github_url;
     $post['tags']         = $tags;
 }
@@ -276,6 +279,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label>外部リンクURL
             <input type="url" name="external_url" value="<?= h($post['external_url'] ?? '') ?>">
+        </label>
+
+        <label>動画URL（YouTube / Vimeo）
+            <input type="url" name="video_url" value="<?= h($post['video_url'] ?? '') ?>" placeholder="https://www.youtube.com/watch?v=...">
+            <span class="meta">YouTube・Vimeoの動画URLを貼り付けると、記事内に埋め込み再生されます。</span>
         </label>
 
         <label>GitHubリポジトリURL

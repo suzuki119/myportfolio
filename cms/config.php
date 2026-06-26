@@ -77,6 +77,42 @@ function h(string $str): string
 }
 
 /**
+ * YouTube / Vimeo の各種URLを埋め込み用URL（iframe の src）に変換する
+ * 対応外・空のときは null を返す
+ * 使い方： $embed = video_embed_url($post['video_url']);
+ *
+ * 対応形式：
+ *   https://www.youtube.com/watch?v=XXXX
+ *   https://youtu.be/XXXX
+ *   https://www.youtube.com/shorts/XXXX
+ *   https://www.youtube.com/embed/XXXX（すでに埋め込みURL）
+ *   https://vimeo.com/123456789
+ */
+function video_embed_url(?string $url): ?string
+{
+    $url = trim((string)$url);
+    if ($url === '') {
+        return null;
+    }
+
+    // YouTube：動画IDは英数字・ハイフン・アンダースコアの11文字前後
+    if (preg_match(
+        '~(?:youtube\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/)|youtu\.be/)([A-Za-z0-9_-]+)~',
+        $url,
+        $m
+    )) {
+        return 'https://www.youtube.com/embed/' . $m[1];
+    }
+
+    // Vimeo
+    if (preg_match('~vimeo\.com/(?:video/)?(\d+)~', $url, $m)) {
+        return 'https://player.vimeo.com/video/' . $m[1];
+    }
+
+    return null;
+}
+
+/**
  * ログイン済みかチェック。未ログインならログイン画面へ飛ばす
  * 使い方： require_login();
  */
