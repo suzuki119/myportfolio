@@ -20,7 +20,7 @@ $canvas-opacity: 0.85;
 
 // --- タイポグラフィ ---
 $font-primary: "Cormorant Garamond", serif;
-$font-text: "Space Mono", monospace;
+$font-text: "Noto Sans JP", sans-serif;
 
 // --- 重なり順 ---
 $z-canvas: 0;
@@ -76,7 +76,7 @@ $space-xxxl: 3rem; // 48px
 // セクションタイトル（h2）
 @mixin title() {
   font-family: $font-primary;
-  font-size: clamp(rem(42), 5.5vw, rem(84));
+  font-size: clamp(rem(54), 5.5vw, rem(84));
   line-height: 1;
   color: $color-white;
   text-align: center;
@@ -159,27 +159,15 @@ body {
     position: relative;
     flex-direction: column;
     justify-content: center;
-    gap: $space-xs;
+    gap: $space-s;
     cursor: pointer;
     padding: $space-xs;
     z-index: $z-toggle;
 
-    &::after {
-      content: "menu";
-      position: absolute;
-      text-align: center;
-      display: block;
-      width: 100%;
-      bottom: rem(-20);
-      left: 0;
-      font-size: rem(16);
-      color: $gray;
-    }
-
     span {
       display: block;
       width: 40px;
-      height: 2px;
+      height: 3px;
       background: $gray;
       transition:
         transform 0.3s,
@@ -192,13 +180,13 @@ body {
         background: $color-text;
       }
       span:nth-child(1) {
-        transform: translateY(6px) rotate(45deg);
+        transform: translateY(11px) rotate(45deg);
       }
       span:nth-child(2) {
         opacity: 0;
       }
       span:nth-child(3) {
-        transform: translateY(-6px) rotate(-45deg);
+        transform: translateY(-11px) rotate(-45deg);
       }
     }
 
@@ -246,7 +234,7 @@ body {
       }
 
       a {
-        font-size: rem(16);
+        font-size: rem(20);
         letter-spacing: 0.3em;
         color: $color-text;
       }
@@ -737,6 +725,15 @@ main.top .works {
       display: block;
       width: 24px;
       height: 24px;
+      transition:
+        opacity 0.2s,
+        filter 0.2s;
+    }
+
+    // コピー後はボタンを暗くして押したことを伝える
+    &.copied img {
+      opacity: 0.35;
+      filter: brightness(0.5);
     }
 
     &.copied::after {

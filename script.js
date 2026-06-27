@@ -1,14 +1,27 @@
 /* ============================================================
    共通 — メールコピーボタン
 ============================================================ */
-const copyBtn = document.querySelector('.contact__copy');
+const copyBtn   = document.querySelector('.contact__copy');
+const emailLink = document.querySelector('.contact__email');
+
 if (copyBtn) {
-  copyBtn.addEventListener('click', () => {
+  // メールアドレスをコピーし、「コピーできました」表示＋ボタンを暗くする
+  const copyEmail = () => {
     navigator.clipboard.writeText(copyBtn.dataset.email).then(() => {
       copyBtn.classList.add('copied');
       setTimeout(() => copyBtn.classList.remove('copied'), 2000);
     });
-  });
+  };
+
+  copyBtn.addEventListener('click', copyEmail);
+
+  // メールアドレスの文字を押してもコピーできるようにする（mailto は開かない）
+  if (emailLink) {
+    emailLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      copyEmail();
+    });
+  }
 }
 
 /* ============================================================

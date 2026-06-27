@@ -126,5 +126,5 @@ function require_login(): void
         header('Location: ' . SITE_URL . '/cms/login.php'); // [組み込み] 別URLへリダイレクト
         exit;
     }
-    
+
 }
