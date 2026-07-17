@@ -176,7 +176,7 @@ main {
 }
 
 .about {
-  width: 95%;
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
   min-height: 100vh;
@@ -188,6 +188,11 @@ main {
 @media (max-width: 800px) {
   .about {
     width: 90%;
+  }
+}
+@media (max-width: 800px) {
+  .about {
+    padding: 5.7142857143rem 0.7142857143rem;
   }
 }
 .about h2 {
@@ -334,7 +339,7 @@ main {
 }
 
 main.top .works {
-  width: 95%;
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
   padding: 9.2857142857rem 0 7.1428571429rem;
@@ -447,7 +452,7 @@ main.top .works h2 {
 }
 
 .timeline {
-  width: 95%;
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
   padding: 8.5714285714rem 0 7.1428571429rem;
@@ -578,7 +583,7 @@ main.top .works h2 {
 }
 
 .contact {
-  width: 95%;
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
   min-height: 60vh;
@@ -765,7 +770,7 @@ header.header--work {
 }
 
 .hero-divider {
-  width: 95%;
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
   height: 1px;
@@ -778,13 +783,12 @@ header.header--work {
 }
 
 .works__hero {
-  width: 95%;
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
   display: flex;
   flex-direction: column;
   padding: 5.7142857143rem 0;
-  min-height: 36vh;
   justify-content: flex-end;
 }
 @media (max-width: 800px) {
@@ -800,7 +804,7 @@ header.header--work {
   color: #ffffff;
 }
 .works__filter-bar {
-  width: 95%;
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
   display: flex;
@@ -852,7 +856,7 @@ header.header--work {
   white-space: nowrap;
 }
 .works__list {
-  width: 95%;
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
   padding: 2.5rem 0 120px;
@@ -874,7 +878,7 @@ header.header--work {
 }
 
 main.skills .skill {
-  width: 95%;
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
   padding: 9.2857142857rem 0 7.1428571429rem;
@@ -979,7 +983,7 @@ main.skills .skill__detail {
 }
 
 .single__hero {
-  width: 95%;
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
   display: flex;
@@ -999,7 +1003,7 @@ main.skills .skill__detail {
   color: #ffffff;
 }
 .single__meta-bar {
-  width: 95%;
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
   padding: 2.5rem 0;
@@ -1077,7 +1081,7 @@ main.skills .skill__detail {
   margin-top: 0.25rem;
 }
 .single__content {
-  width: 95%;
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
   padding: 5.7142857143rem 0 8.5714285714rem;

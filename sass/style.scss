@@ -1,102 +1,6 @@
 @use "sass:math";
 @use "sass:map";
-
-/* ========================================
-   変数定義
-======================================== */
-// --- カラー ---
-$color-white: #ffffff;
-$color-gray: #e3e3e3;
-$color-accent: #b8a88a;
-$color-bg: #000000;
-$color-text: #d8d8d8;
-$gray: #a0a0a0;
-
-// --- レイアウト / エフェクト ---
-$nav-bg: rgba(0, 0, 0, 0.8);
-$glass-border: #ffffff3f;
-$border-sub: #ffffff67;
-$canvas-opacity: 0.85;
-
-// --- タイポグラフィ ---
-$font-primary: "Cormorant Garamond", serif;
-$font-text: "Noto Sans JP", sans-serif;
-
-// --- 重なり順 ---
-$z-canvas: 0;
-$z-main: 10;
-$z-header: 50;
-$z-toggle: 210;
-$z-menu: 20;
-$z-progress: 300;
-
-// --- ブレークポイント ---
-$breakpoints: (
-  mobile: 375px,
-  phone: 600px,
-  tablet: 768px,
-  desktop: 800px,
-);
-
-// --- スペーシング ---
-$space-xs: 0.25rem; // 4px
-$space-s: 0.5rem; // 8px
-$space-m: 1rem; // 16px
-$space-l: 1.5rem; // 24px
-$space-xl: 2rem; // 32px
-$space-xxl: 2.5rem; // 40px
-$space-xxxl: 3rem; // 48px
-
-/* ========================================
-   関数・ミックスイン
-======================================== */
-
-@function rem($px-value) {
-  @return #{math.div($px-value, 14)}rem;
-}
-
-@mixin mq($breakpoint: desktop) {
-  @media (max-width: map.get($breakpoints, $breakpoint)) {
-    @content;
-  }
-}
-
-@mixin glass-card() {
-  background-color: $color-bg;
-  border: $gray 2px solid;
-  border-radius: 8px;
-}
-
-// セクションの余白
-@mixin inner($mw: 1300px, $w: 95%) {
-  width: $w;
-  margin-left: auto;
-  margin-right: auto;
-  @include mq(desktop) {
-    width: 90%;
-  }
-}
-
-// セクションタイトル（h2）
-@mixin title() {
-  font-family: $font-primary;
-  font-size: clamp(rem(54), 5.5vw, rem(84));
-  line-height: 1;
-  color: $color-white;
-  text-align: center;
-  margin-bottom: rem(72);
-  @include mq(desktop) {
-    font-size: clamp(rem(34), 9vw, rem(52)); // スマホでは見出しを縮小
-    margin-bottom: $space-xxxl;
-  }
-}
-
-@mixin label-text($color: $color-accent, $size: 16, $spacing: 0.45em) {
-  font-size: rem($size);
-  letter-spacing: $spacing;
-  text-transform: uppercase;
-  color: $color;
-}
+@use "__variable" as *;
 
 /* ========================================
     ベーススタイル
@@ -293,6 +197,10 @@ main {
   min-height: 100vh;
   padding: rem(90) rem(50);
   @include glass-card();
+
+  @include mq(desktop) {
+    padding: rem(80) rem(10);
+  }
 
   h2 {
     @include title();
@@ -858,7 +766,6 @@ header.header--work {
     display: flex;
     flex-direction: column;
     padding: rem(80) 0;
-    min-height: 36vh;
     justify-content: flex-end;
   }
 
