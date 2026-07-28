@@ -359,6 +359,42 @@ main.top .works {
 
 // ─── ワークスカード（index + works.php 共通） ────────────
 .works {
+  & .note-card {
+    background: #71717159;
+    padding: $space-l;
+
+    &__wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: $space-l;
+      align-items: center;
+      text-align: left;
+      border: 1px solid #ffffff0f;
+      font-size: rem(14);
+      letter-spacing: 0.1em;
+      color: $color-accent;
+      margin: $space-xl 0;
+      @include mq(desktop) {
+        grid-template-columns: 1fr;
+        gap: $space-m;
+      }
+    }
+    &__link {
+      @include label-text($color: $color-accent, $size: 14, $spacing: 0.25em);
+      text-decoration: none;
+      padding-bottom: 2px;
+      border-bottom: 1px solid rgba($color-accent, 0.4);
+      transition:
+        color 0.3s,
+        border-color 0.3s;
+
+      &:hover {
+        color: $color-white;
+        border-bottom-color: $color-white;
+      }
+    }
+  }
+
   &__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;

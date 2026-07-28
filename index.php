@@ -77,7 +77,22 @@ require 'header.php';
         <?php endif; ?>
 
       </div>
-      <a href="works.php" class="btn">作品一覧へ</a>
+
+            <a href="works.php" class="btn">作品一覧へ</a>
+
+
+      <div class="works__note note-card">
+        <div class="note-card__wrap">
+        <p class="note-card__text">
+          当サイトはPHPによる自作CMSで構築・更新しています。
+          phpの学習を兼ねて、WordPressのようなCMSを自作してみました。管理画面から記事を追加・編集・削除できるようになっています。
+        </p>
+        <img src="./img/portfolio-note.webp" alt="CMSの管理画面" class="note-card__img">
+        </div>
+      <a href="https://susuki-island.heavy.jp/myportfolio/single.php?id=11" class="note-card__link">当該記事へ</a>
+      </div>
+
+
 
     </section>
 

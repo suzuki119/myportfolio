@@ -365,6 +365,42 @@ main.top .works h2 {
   }
 }
 
+.works .note-card {
+  background: rgba(113, 113, 113, 0.3490196078);
+  padding: 1.5rem;
+}
+.works .note-card__wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: center;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.0588235294);
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  color: #b8a88a;
+  margin: 2rem 0;
+}
+@media (max-width: 800px) {
+  .works .note-card__wrap {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+.works .note-card__link {
+  font-size: 1rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #b8a88a;
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba(184, 168, 138, 0.4);
+  transition: color 0.3s, border-color 0.3s;
+}
+.works .note-card__link:hover {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
+}
 .works__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
