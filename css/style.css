@@ -1386,4 +1386,75 @@ main.skills .skill__detail {
     transform: translateX(-50%) translateY(0);
   }
 }
+
+/* ─── simple-single.php（シンプル表示）─── */
+.single--simple .single__hero {
+  padding: 4rem 0 2.2857142857rem;
+}
+.single--simple .single__hero-title {
+  font-size: clamp(2rem, 5vw, 6.2857142857rem);
+}
+.single--simple .single__meta-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+}
+@media (max-width: 800px) {
+  .single--simple .single__meta-bar {
+    gap: 1rem;
+  }
+}
+.single--simple .single__meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  border: none;
+}
+@media (max-width: 800px) {
+  .single--simple .single__meta-item {
+    padding: 0;
+    border: none;
+  }
+}
+.single--simple .single__meta-label {
+  margin-bottom: 0;
+}
+.single--simple .single__github-link img {
+  width: 2.2857142857rem;
+  height: 2.2857142857rem;
+  border-width: 1px;
+}
+.single--simple .tag-list {
+  margin-top: 0;
+}
+.single--simple .single__content {
+  max-width: 54.2857142857rem;
+  padding: 3.4285714286rem 0 6.8571428571rem;
+}
+@media (max-width: 800px) {
+  .single--simple .single__content {
+    padding: 2.2857142857rem 0 4.5714285714rem;
+  }
+}
+.single--simple .mock-img,
+.single--simple .single__video {
+  margin-bottom: 2rem;
+}
+.single--simple .article-block {
+  margin: 4rem 0;
+}
+.single--simple .article-block:first-child {
+  margin-top: 0;
+}
+.single--simple .block-title {
+  font-size: clamp(1.7142857143rem, 2.4vw, 2.1428571429rem);
+}
+@media (max-width: 800px) {
+  .single--simple .block-title {
+    font-size: 1.5714285714rem;
+  }
+}
 /*# sourceMappingURL=style.css.map */

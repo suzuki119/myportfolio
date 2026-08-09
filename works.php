@@ -80,8 +80,8 @@ require 'header.php';
             <?php else: ?>
                 <?php foreach ($posts as $post): ?>
                 <a class="works__card"
-                   href="single.php?id=<?= h($post['id']) ?>"
-                   data-category="<?= h($post['category_name'] ?? '') ?>">
+                   href="<?= post_url($post) ?>"
+                   data-category="<?= h($post['category_name'] ?? '') ?>"><?php // [自作] simple=1 なら simple-single.php へ振り分ける ?>
 
                     <div class="works__card-img">
                         <?php if ($post['thumbnail']): ?>

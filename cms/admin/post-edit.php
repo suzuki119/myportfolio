@@ -54,6 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $video_url    = trim($_POST['video_url']    ?? '');
     $github_url   = trim($_POST['github_url']   ?? '');
     $tags         = trim($_POST['tags']         ?? '');
+    $simple       = isset($_POST['simple']) ? 1 : 0;
+    // [組み込み] isset()=値が存在するか調べる。チェックボックスは未チェックだと送信されないので、この判定で 0/1 にする
 
     if ($title === '') {
         $error = 'タイトルは必須です。';
@@ -98,10 +100,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'UPDATE posts SET
                     title = :title, thumbnail = :thumbnail, status = :status,
                     period = :period, type = :type,
-                    external_url = :external_url, video_url = :video_url, github_url = :github_url, tags = :tags
+                    external_url = :external_url, video_url = :video_url, github_url = :github_url,
+                    tags = :tags, simple = :simple
                  WHERE id = :id'
             );
             $stmt->execute([
+                ':simple'       => $simple,
                 ':title'        => $title,
                 ':thumbnail'    => $thumbnail,
                 ':status'       => $status,
@@ -159,6 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $post['video_url']    = $video_url;
     $post['github_url']   = $github_url;
     $post['tags']         = $tags;
+    $post['simple']       = $simple;
 }
 ?>
 <!DOCTYPE html>
@@ -189,6 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         a.back { font-size: .9rem; color: #666; }
         .error { margin-top: 16px; padding: 10px; background: #fdecea; border-left: 4px solid #c0392b; font-size: .9rem; }
         .meta { margin-top: 8px; font-size: .8rem; color: #999; }
+        .checkbox-line { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-weight: normal; }
         .thumbnail-preview img { max-width: 200px; margin-top: 8px; display: block; }
         .thumbnail-preview label { font-weight: normal; font-size: .85rem; color: #c0392b; margin-top: 6px; }
 
@@ -305,6 +311,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             <?php endif; ?>
             <input type="file" name="thumbnail" accept="image/*" style="margin-top:8px;">
+        </label>
+
+        <label>表示形式
+            <span class="checkbox-line">
+                <input type="checkbox" name="simple" value="1" <?= !empty($post['simple']) ? 'checked' : '' ?>>
+                シンプル表示にする（simple-single.php で表示）
+            </span>
+            <span class="meta">目次サイドバーなしの1カラムで表示されます。すぐ見終わる短い内容向け。</span>
         </label>
 
         <label>ステータス

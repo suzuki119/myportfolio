@@ -43,7 +43,7 @@ require 'header.php';
 
         <?php foreach ($posts as $post): // [組み込み] 配列をループして1件ずつ処理する ?>
 
-        <a class="works__card" href="single.php?id=<?= h($post['id']) ?>">
+        <a class="works__card" href="<?= post_url($post) ?>"><?php // [自作] simple=1 なら simple-single.php へ振り分ける ?>
 
           <div class="works__card-img">
             <?php if ($post['thumbnail']): // サムネイルがあれば画像を表示 ?>

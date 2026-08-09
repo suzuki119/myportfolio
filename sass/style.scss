@@ -1316,6 +1316,89 @@ main.skills {
   }
 }
 
+// ─── simple-single.php（シンプル表示）──────────────────
+// .single のスタイルを土台にして、余白・カラム数だけ上書きする。
+// 目次サイドバーがないぶん、本文を中央寄せの1カラムに絞る。
+.single--simple {
+  .single__hero {
+    padding: rem(56) 0 rem(32);
+  }
+
+  .single__hero-title {
+    font-size: clamp(rem(28), 5vw, rem(88)); // 通常表示より控えめなサイズ
+  }
+
+  // メタ情報はグリッドの箱をやめて1行に並べる
+  .single__meta-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-l;
+    padding: $space-l 0;
+
+    @include mq(desktop) {
+      gap: $space-m;
+    }
+  }
+
+  .single__meta-item {
+    display: flex;
+    align-items: center;
+    gap: $space-s;
+    padding: 0;
+    border: none;
+
+    @include mq(desktop) {
+      padding: 0;
+      border: none;
+    }
+  }
+
+  .single__meta-label {
+    margin-bottom: 0;
+  }
+
+  .single__github-link img {
+    width: rem(32);
+    height: rem(32);
+    border-width: 1px;
+  }
+
+  .tag-list {
+    margin-top: 0;
+  }
+
+  .single__content {
+    max-width: rem(760);
+    padding: rem(48) 0 rem(96);
+
+    @include mq(desktop) {
+      padding: rem(32) 0 rem(64);
+    }
+  }
+
+  .mock-img,
+  .single__video {
+    margin-bottom: $space-xl;
+  }
+
+  .article-block {
+    margin: rem(56) 0;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .block-title {
+    font-size: clamp(rem(24), 2.4vw, rem(30));
+
+    @include mq(desktop) {
+      font-size: rem(22);
+    }
+  }
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

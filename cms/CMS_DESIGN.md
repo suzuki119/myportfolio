@@ -323,6 +323,7 @@ CREATE TABLE users (
 | type | VARCHAR(100) | 種別（例：個人制作 / ブログサイト） |
 | external_url | VARCHAR(2083) | 外部リンクURL（作品へのリンクなど） |
 | tags | TEXT | 使用技術タグ（カンマ区切り 例：WordPress,SCSS） |
+| simple | TINYINT(1) | シンプル表示フラグ（1 = `simple-single.php` で表示） |
 | created_at | TIMESTAMP | 作成日時 |
 | updated_at | TIMESTAMP | 更新日時（自動更新） |
 
@@ -368,6 +369,44 @@ ALTER TABLE posts ADD COLUMN video_url VARCHAR(2083) DEFAULT NULL AFTER external
 - `single.php` では動画URLがあれば `.single__video`（16:9レスポンシブ iframe）として記事先頭に表示する。**動画がある場合はサムネイル画像より動画を優先表示**する。
 - CSS は `sass/style.scss` の `.single__video` に定義（`css/style.css` にもコンパイル済みで反映。sassコンパイラ未導入のため手動同期した点に注意）。
 - 動画ファイルそのものはサーバーに保存しない方式（外部ホスティング埋め込み）。容量・帯域・変換の負荷がなく共有サーバーでも安定。
+
+> **2026-08-06 追加済み：** シンプル表示（`simple-single.php`）対応のため `simple` カラムを追加した。
+
+```sql
+ALTER TABLE posts ADD COLUMN simple TINYINT(1) DEFAULT NULL AFTER status;
+```
+
+> **未実施（推奨）：** 既存記事の `simple` が NULL のままなので、下記で 0 に揃えると
+> 「NULL / 0 / 1」の3状態を気にしなくてよくなる。PHP側は `!empty()` で判定しているため未実施でも動く。
+
+```sql
+UPDATE posts SET simple = 0 WHERE simple IS NULL;
+ALTER TABLE posts MODIFY COLUMN simple TINYINT(1) NOT NULL DEFAULT 0;
+```
+
+#### シンプル表示の仕組み（simple-single.php）
+
+すぐ見終わる短い内容の記事向けに、通常の詳細ページとは別のレイアウトで表示する。
+
+- `posts.simple` が 1 の記事は `simple-single.php`、それ以外は従来どおり `single.php` で表示する。
+- 振り分けは `config.php` の `post_url($post)` が担当する。カード側は `href="<?= post_url($post) ?>"` と書くだけでよい（`index.php` / `works.php`）。
+- URL直打ち・古いリンク対策として、両ページが冒頭でフラグを見て相手側へリダイレクトする。
+  - `single.php`：`simple` が 1 → `simple-single.php` へ
+  - `simple-single.php`：`simple` が 0/NULL → `single.php` へ
+- 管理画面の「表示形式」チェックボックス（`post-new.php` / `post-edit.php`）で 0/1 を切り替える。チェックボックスは未チェックだと送信されないため `isset($_POST['simple']) ? 1 : 0` で受け取る。
+- 管理画面の記事一覧（`admin/index.php`）に「表示形式」列を追加し、通常／シンプルが一覧で分かるようにした。
+
+**通常表示との違い：**
+
+| | single.php | simple-single.php |
+|---|---|---|
+| 目次サイドバー | あり（sticky） | なし |
+| レイアウト | 2カラム（1fr 3fr） | 1カラム（最大760px・中央寄せ） |
+| メタ情報 | 罫線で区切ったグリッド4枠 | 1行に折り返して並べる（空欄の項目は非表示） |
+| 見出し・余白 | 大きめ | 控えめ |
+
+- CSSは `.single` を土台にして `.single--simple` で余白とカラム数だけ上書きする方式。`<main class="single single--simple">` と2つ付けることで、本文まわり（`.block-body` / `.mock-img` / `.btn-primary` など）のスタイルをそのまま流用している。
+- SCSSは `sass/style.scss` の末尾付近に `.single--simple` ブロックとして定義。`css/style.css` へは該当ブロックのみコンパイルして追記した（既存CSSはautoprefixer付きで生成されているため、全体再コンパイルはしていない）。
 
 ---
 
@@ -1932,3 +1971,90 @@ toolbar: {
 ---
 
 *このファイルはStep完了のたびに更新する*
+
+---
+
+### 2026-08-03 記事の並び替えを「数字で位置指定」方式に変更
+
+**変更前の問題：**
+
+管理画面の記事一覧では ↑↓ ボタンで並び替えていたが、順番がずれることがあった。原因は2つ。
+
+1. **`post-new.php` が `sort_order` を指定していなかった**
+   `posts.sort_order` の既定値は `0` のため、新規作成した記事はすべて `0` で入る。
+   結果、既存の1番目と番号が重複する（実際にDBは `0, 0, 1, 2` という状態になっていた）。
+
+2. **一覧の `ORDER BY sort_order ASC` に第2キーが無かった**
+   同じ `sort_order` の記事どうしはMySQLが返す順序が保証されない。
+   そのため ↑↓ を押すたびに表示順が入れ替わって見える＝「ずれる」。
+
+**変更後の仕組み：**
+
+↑↓ ボタンを廃止し、各行の `<input type="number">` に「何番にしたいか」を入力する方式にした。
+
+並び替えのアルゴリズムは **swap（交換）ではなく insert（抜き取って差し込む）**。
+
+```
+元： A(1) B(2) C(3) D(4) E(5)
+A を 5番へ移動した場合
+
+× swap 方式（交換）   ： E B C D A   ← AとEが入れ替わるだけ
+○ insert 方式（繰り上げ）： B C D E A   ← B〜Eが1つずつ繰り上がる
+```
+
+処理は `cms/admin/index.php` の POST ハンドラ（`position_id` / `position`）で行う。
+
+1. `SELECT id FROM posts ORDER BY sort_order ASC, id ASC` で現在の並びをID配列にする
+2. `array_search()` で移動対象が今何番目かを調べる
+3. `array_splice()` で抜き取り、`array_splice()` で目的の位置に差し込む
+4. 並び終わった配列の順に `sort_order` を **1, 2, 3… と全件振り直す**
+
+**この方式の利点：**
+
+- 毎回1から振り直すので、**番号の重複や抜けが自動的に解消される**
+  （既存の `0, 0, 1, 2` という壊れた状態も、一度並び替えるだけで `1, 2, 3, 4` に正規化される）
+- 削除で番号が飛んでも次の並び替えで直る
+- 「1→5」が直感どおり（間の記事が繰り上がる）に動く
+
+**あわせて修正した点：**
+
+| ファイル | 修正内容 |
+|---|---|
+| `cms/admin/index.php` | ↑↓ボタン → 数値入力フォーム。insert方式の並び替え処理に置き換え |
+| `cms/admin/index.php` | 一覧取得を `ORDER BY sort_order ASC, id ASC` に（第2キー追加で並びを安定させる） |
+| `cms/admin/post-new.php` | INSERT時に `sort_order = MAX(sort_order) + 1` を設定し、新規記事を末尾に置く |
+
+**学んだこと：**
+
+- `ORDER BY` のキーに重複値があると並び順は不定になる。**一意なキー（id）を第2ソートキーに足す**のが定石
+- `array_splice($arr, $pos, 0, [$val])` は「削除0件＋挿入」で **指定位置への差し込み** になる
+- 全件UPDATEは途中で失敗すると番号が中途半端に残るため、`beginTransaction()` / `commit()` / `rollBack()` で囲む
+- `COALESCE(MAX(col), 0) + 1` は、レコード0件（MAXがNULL）でも安全に「次の番号」を得られる
+- 入力値は `max(1, min(件数, $n))` で範囲に丸めると、想定外の数値が来ても壊れない
+
+---
+
+### 2026-08-06 シンプル表示（simple-single.php）の追加
+
+すぐ見終わる短い内容の記事を、通常の詳細ページとは別レイアウトで出せるようにした。
+DB・振り分け・レイアウトの詳細は「posts テーブル」の**シンプル表示の仕組み**を参照。
+
+| ファイル | 変更内容 |
+|---|---|
+| `cms/config.php` | `post_url($post)` を追加。`simple` の値で `single.php` / `simple-single.php` を返し分ける |
+| `simple-single.php` | 新規作成。目次サイドバーなしの1カラム表示 |
+| `single.php` | `simple = 1` の記事は `simple-single.php` へリダイレクト |
+| `index.php` / `works.php` | カードのリンクを `post_url($post)` に置き換え |
+| `cms/admin/post-new.php` | 「表示形式」チェックボックスを追加。INSERT に `simple` を追加 |
+| `cms/admin/post-edit.php` | 同上。UPDATE に `simple = :simple` を追加 |
+| `cms/admin/index.php` | 記事一覧に「表示形式」列（通常／シンプル）を追加 |
+| `sass/style.scss` / `css/style.css` | `.single--simple` を追加 |
+
+**学んだこと：**
+
+- **チェックボックスは未チェックだとPOSTされない**。`$_POST['simple']` を直接読むと未チェック時に警告になるので、`isset($_POST['simple']) ? 1 : 0` で 0/1 に変換して受け取る
+- MySQLに BOOLEAN 型はなく、`BOOLEAN` と書いても実体は `TINYINT(1)`。PHP側には `0` / `1`（文字列）で返ってくるため、`=== true` ではなく `!empty()` で判定する
+- 既存行があるテーブルにカラムを足すと、既存行は DEFAULT 値（指定なしなら NULL）で埋まる。**NULL / 0 / 1 の3状態**になるので、`!empty()` で判定するか `NOT NULL DEFAULT 0` に揃えるかを決めておく
+- 表示の振り分けは各テンプレートに `if` を散らさず、**URLを返す関数（`post_url()`）に1か所へ集約**すると、カード側は変更不要になる
+- ページを分けたら**両方向のリダイレクト**を入れておく。片方だけだと、フラグを切り替えたときに古いURLが空振りする
+- CSSは新レイアウトをゼロから書かず、`class="single single--simple"` と**土台＋修飾子**にすると、本文まわりのスタイルを丸ごと流用できる

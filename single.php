@@ -23,6 +23,12 @@ if (!$post) {
     exit;
 }
 
+// シンプル表示の記事は簡易表示ページへ回す（古いリンク・直打ち対策）
+if (!empty($post['simple'])) {
+    header('Location: ' . SITE_URL . '/simple-single.php?id=' . $post['id']);
+    exit;
+}
+
 // セクションを sort_order 順に取得（post_sections テーブル：見出し＋本文の繰り返し）
 $s_stmt = $pdo->prepare(
     'SELECT * FROM post_sections WHERE post_id = :post_id ORDER BY sort_order ASC'

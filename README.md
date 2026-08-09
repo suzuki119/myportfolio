@@ -46,6 +46,7 @@ myportfolio/
 ├── index.php          # トップページ
 ├── works.php          # 作品一覧
 ├── single.php         # 作品詳細
+├── simple-single.php  # 作品詳細（シンプル表示／posts.simple = 1 の記事）
 ├── skill.php          # スキルページ
 ├── header.php         # 共通ヘッダー
 ├── footer.php         # 共通フッター

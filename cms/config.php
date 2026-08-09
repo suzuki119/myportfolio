@@ -113,6 +113,18 @@ function video_embed_url(?string $url): ?string
 }
 
 /**
+ * 記事の詳細ページURLを返す
+ * simple = 1 の記事は簡易表示ページ（simple-single.php）へ振り分ける
+ * 使い方： <a href="<?= post_url($post) ?>">
+ */
+function post_url(array $post): string
+{
+    $page = !empty($post['simple']) ? 'simple-single.php' : 'single.php';
+    // [組み込み] !empty()=null・0・'' のいずれでもないとき true。simple が NULL の既存記事は通常表示になる
+    return $page . '?id=' . (int)$post['id'];
+}
+
+/**
  * ログイン済みかチェック。未ログインならログイン画面へ飛ばす
  * 使い方： require_login();
  */

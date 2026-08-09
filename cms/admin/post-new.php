@@ -23,6 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $video_url    = trim($_POST['video_url']    ?? '');
     $github_url   = trim($_POST['github_url']   ?? '');
     $tags         = trim($_POST['tags']         ?? '');
+    $simple       = isset($_POST['simple']) ? 1 : 0;
+    // [組み込み] isset()=値が存在するか調べる。チェックボックスは未チェックだと送信されないので、この判定で 0/1 にする
 
     if ($title === '') {
         $error = 'タイトルは必須です。';
@@ -60,12 +62,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($error === '') {
+            // 新しい記事は一覧の最後に並べる
+            // （指定しないと sort_order が既定値0のまま入り、既存の1番と番号がぶつかる）
+            $next_order = (int)$pdo->query('SELECT COALESCE(MAX(sort_order), 0) + 1 FROM posts')->fetchColumn();
+            // [SQL] COALESCE()=NULLだったら代わりの値を使う。記事が0件のときは 0 + 1 = 1 になる
+
             // ① 記事を INSERT して発行されたIDを取得
             $stmt = $pdo->prepare(
-                'INSERT INTO posts (title, thumbnail, status, author_id, period, type, external_url, video_url, github_url, tags)
-                 VALUES (:title, :thumbnail, :status, :author_id, :period, :type, :external_url, :video_url, :github_url, :tags)'
+                'INSERT INTO posts (title, thumbnail, status, author_id, period, type, external_url, video_url, github_url, tags, simple, sort_order)
+                 VALUES (:title, :thumbnail, :status, :author_id, :period, :type, :external_url, :video_url, :github_url, :tags, :simple, :sort_order)'
             );
             $stmt->execute([
+                ':sort_order'   => $next_order,
+                ':simple'       => $simple,
                 ':title'        => $title,
                 ':thumbnail'    => $thumbnail,
                 ':status'       => $status,
@@ -112,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         a.back { font-size: .9rem; color: #666; }
         .error { margin-top: 16px; padding: 10px; background: #fdecea; border-left: 4px solid #c0392b; font-size: .9rem; }
         .note { margin-top: 12px; font-size: .8rem; color: #999; }
+        .checkbox-line { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-weight: normal; }
     </style>
 </head>
 <body>
@@ -157,6 +167,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label>サムネイル画像（任意）
             <input type="file" name="thumbnail" accept="image/*">
+        </label>
+
+        <label>表示形式
+            <span class="checkbox-line">
+                <input type="checkbox" name="simple" value="1" <?= !empty($_POST['simple']) ? 'checked' : '' ?>>
+                シンプル表示にする（simple-single.php で表示）
+            </span>
+            <span class="note">目次サイドバーなしの1カラムで表示されます。すぐ見終わる短い内容向け。</span>
         </label>
 
         <label>ステータス
