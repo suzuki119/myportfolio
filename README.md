@@ -51,6 +51,8 @@ myportfolio/
 ├── header.php         # 共通ヘッダー
 ├── footer.php         # 共通フッター
 ├── script.js          # フロントエンドJS
+├── bg.js              # TOPの3D背景（three.js r160 / dash のGLBを使用・TOPのみ読み込み）
+├── dash/              # three.js製 3Dアニメビューア（独立したGitリポジトリ）
 ├── css/               # コンパイル済みCSS
 ├── sass/              # SCSS ソース
 ├── img/               # 静的画像
