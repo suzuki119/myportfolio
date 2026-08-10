@@ -51,7 +51,9 @@ myportfolio/
 ├── header.php         # 共通ヘッダー
 ├── footer.php         # 共通フッター
 ├── script.js          # フロントエンドJS
-├── bg.js              # TOPの3D背景（three.js r160 / dash のGLBを使用・TOPのみ読み込み）
+├── bg.js              # TOPの3D背景（three.js r160・スクロール連動・TOPのみ読み込み）
+├── speedlines.js      # 集中線／流線（LPの SpeedLines.jsx を素のthree.jsに移植）
+├── models/            # 背景で使う3Dモデル（zintai.glb）
 ├── dash/              # three.js製 3Dアニメビューア（独立したGitリポジトリ）
 ├── css/               # コンパイル済みCSS
 ├── sass/              # SCSS ソース
