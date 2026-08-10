@@ -17,6 +17,7 @@ $skills = $sk_stmt->fetchAll();
 $page_title       = 'Suzuki Yutaro — Portfolio';
 $page_description = '鈴木優太郎のポートフォリオ。フロントエンドエンジニア志望。WordPress・JavaScript・SCSSによるWeb制作実績を掲載しています。';
 $og_url           = 'https://susuki-island.heavy.jp/myportfolio/';
+$use_bg_3d        = true; // [footer.php] 背景の3Dアニメーション（bg.js）を読み込む
 
 require 'header.php';
 ?>

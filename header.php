@@ -33,6 +33,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Zen+Kaku+Gothic+New&display=swap" rel="stylesheet">
 
+  <?php // [three.js] bg.js（type="module"）が import する名前の解決表。モジュールスクリプトより前に置く必要がある ?>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+
   <?php if (!empty($extra_head)) echo $extra_head; ?>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/the-new-css-reset/css/reset.min.css">
   <link rel="stylesheet" href="css/style.css">
