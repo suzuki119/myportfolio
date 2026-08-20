@@ -22,13 +22,14 @@
   </main>
 </footer>
 
-<?php // three.js は bg.js が importmap 経由でESM版を読み込むため、ここでの読み込みは不要 ?>
+<?php // three.js / React は dist/bg.js にバンドル済みのため、ここでの読み込みは不要 ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
 <script src="script.js" defer></script>
 
 <?php // 背景の3Dは重い（zintai.glb が約3.2MB）ため、TOPページでのみ読み込む ?>
+<?php // src/ を Vite でビルドしたもの。src を編集したら `npm run build` で作り直す ?>
 <?php if (!empty($use_bg_3d)): ?>
-<script type="module" src="bg.js"></script>
+<script type="module" src="dist/bg.js"></script>
 <?php endif; ?>
 
 </body>

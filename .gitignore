@@ -17,4 +17,4 @@ cms/test-db.php
 #claude
 .claude/
 # Reactの依存パッケージ（npm install で再取得できるため管理しない）
-three-app/node_modules/
+node_modules/

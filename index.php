@@ -22,9 +22,8 @@ $use_bg_3d        = true; // [footer.php] 背景の3Dアニメーション（bg.
 require 'header.php';
 ?>
 
-  <div id="canvas-container">
-    <canvas id="backcanvas"></canvas>
-  </div>
+  <?php // [React] src/main.jsx がこの中に <canvas> を作る（dist/bg.js／footer.php で読み込み） ?>
+  <div id="canvas-container"></div>
 
   <main class="top">
 
