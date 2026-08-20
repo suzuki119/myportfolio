@@ -13,16 +13,16 @@
      ・集中線の色を黒→金。LPは背景が明るいので黒＋NormalBlending だが、
        このサイトは背景が黒なので、そのままだと線が完全に見えなくなる
 ============================================================ */
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { SpeedLines } from './speedlines.js';
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { SpeedLines } from "./speedlines.js";
 
 // GLB本来の色ではなく、サイトの配色（半透明の金）に寄せたい場合は true
 const USE_SITE_MATERIAL = false;
 
 // パーティクルを出すか
-const SHOW_PARTICLES = true;
+const SHOW_PARTICLES = false;
 
 /**
  * スクロール順に並べる。上から順に判定して「越えているうち一番あと」を採用するので、
@@ -30,18 +30,48 @@ const SHOW_PARTICLES = true;
  * camera / target は LP の値をそのまま流用している。
  */
 const SECTIONS = [
-  { trigger: '.main-visual', anchor: 'top',    name: 'tati',    camera: [0, 0.3, 5.5],    target: [0, 0.0, 0] },
-  { trigger: '.works',       anchor: 'top',    name: 'run',     camera: [-0.8, 0.5, 4.2], target: [0, 0.3, 0] },
-  { trigger: '.about',       anchor: 'center', name: 'fastrun', camera: [3.6, 1.2, 0.8],  target: [0, 0.5, 0] },
-  { trigger: '.timeline',    anchor: 'top',    name: 'run',     camera: [-2.4, 0.8, 3.4], target: [0, 0.3, 0] },
-  { trigger: '.footer',      anchor: 'top',    name: 'tukare',  camera: [0.9, -0.5, 2.4], target: [0, -0.4, 0] },
+  {
+    trigger: ".main-visual",
+    anchor: "top",
+    name: "tati",
+    camera: [0, 0.3, 5.5],
+    target: [0, 0.0, 0],
+  },
+  {
+    trigger: ".works",
+    anchor: "top",
+    name: "run",
+    camera: [-0.8, 0.5, 4.2],
+    target: [0, 0.3, 0],
+  },
+  {
+    trigger: ".about",
+    anchor: "center",
+    name: "fastrun",
+    camera: [3.6, 1.2, 0.8],
+    target: [0, 0.5, 0],
+  },
+  {
+    trigger: ".timeline",
+    anchor: "top",
+    name: "run",
+    camera: [-2.4, 0.8, 3.4],
+    target: [0, 0.3, 0],
+  },
+  {
+    trigger: ".footer",
+    anchor: "top",
+    name: "tukare",
+    camera: [0.9, -0.5, 2.4],
+    target: [0, -0.4, 0],
+  },
 ];
 
 // セクションの基準点がこの高さ（画面の上から何割か）を越えたら切り替える
 const TRIGGER_LINE = 0.75;
 
 // 集中線を出すアニメーション
-const RUNNING_ANIMATIONS = new Set(['run', 'fastrun']);
+const RUNNING_ANIMATIONS = new Set(["run", "fastrun"]);
 
 // クリップを切り替えるときのクロスフェード秒数（0 にすると即座に切り替わる）
 const FADE_DURATION = 0.4;
@@ -54,18 +84,26 @@ const SPEED_LINE_ORIGIN = [0, 0.3, -1];
 // モデルのローカル座標で「正面」を指す軸。zintai.glb は +Z が正面
 const CHARACTER_FORWARD_AXIS = [0, 0, 1];
 
-const canvas = document.getElementById('backcanvas');
+const canvas = document.getElementById("backcanvas");
 
-if (document.querySelector('main.top') && canvas) {
-
+if (document.querySelector("main.top") && canvas) {
   /* ── レンダラー / シーン ───────────────────────────── */
   const scene = new THREE.Scene();
   // 背景色は設定しない（alpha:true でCSSの黒背景を透かす）
 
-  const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000);
+  const camera = new THREE.PerspectiveCamera(
+    75,
+    innerWidth / innerHeight,
+    0.1,
+    1000,
+  );
   camera.position.fromArray(SECTIONS[0].camera);
 
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true,
+    alpha: true,
+  });
   renderer.setSize(innerWidth, innerHeight);
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); // 高DPI端末で描画量が跳ね上がるのを防ぐ
   renderer.toneMapping = THREE.ACESFilmicToneMapping; // R3F の既定に合わせる
@@ -76,7 +114,9 @@ if (document.querySelector('main.top') && canvas) {
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
 
   /* ── セクション判定 ──────────────────────────────── */
-  const elements = SECTIONS.map(({ trigger }) => document.querySelector(trigger));
+  const elements = SECTIONS.map(({ trigger }) =>
+    document.querySelector(trigger),
+  );
   let sectionIndex = 0;
 
   /**
@@ -93,7 +133,8 @@ if (document.querySelector('main.top') && canvas) {
       const el = elements[i];
       if (!el) continue;
       const rect = el.getBoundingClientRect();
-      const point = SECTIONS[i].anchor === 'center' ? rect.top + rect.height / 2 : rect.top;
+      const point =
+        SECTIONS[i].anchor === "center" ? rect.top + rect.height / 2 : rect.top;
       if (point <= line) next = i;
     }
 
@@ -130,8 +171,14 @@ if (document.querySelector('main.top') && canvas) {
     if (!next) return;
     if (currentAction === next && next.isRunning()) return;
 
-    next.reset().setLoop(THREE.LoopRepeat, Infinity).setEffectiveWeight(1).fadeIn(FADE_DURATION).play();
-    if (currentAction && currentAction !== next) currentAction.fadeOut(FADE_DURATION);
+    next
+      .reset()
+      .setLoop(THREE.LoopRepeat, Infinity)
+      .setEffectiveWeight(1)
+      .fadeIn(FADE_DURATION)
+      .play();
+    if (currentAction && currentAction !== next)
+      currentAction.fadeOut(FADE_DURATION);
     currentAction = next;
   }
 
@@ -140,7 +187,7 @@ if (document.querySelector('main.top') && canvas) {
   const loader = new GLTFLoader();
   loader.load(
     // ページのURLではなくこのJSの位置を基準に解決する（どのページから読んでもズレない）
-    new URL('./models/zintai.glb', import.meta.url).href,
+    new URL("./models/zintai.glb", import.meta.url).href,
     (gltf) => {
       const model = gltf.scene;
 
@@ -150,7 +197,7 @@ if (document.querySelector('main.top') && canvas) {
 
       if (USE_SITE_MATERIAL) {
         const bgMat = new THREE.MeshStandardMaterial({
-          color: '#a25c00',
+          color: "#a25c00",
           metalness: 0.1,
           roughness: 0.7,
           transparent: true,
@@ -204,8 +251,8 @@ if (document.querySelector('main.top') && canvas) {
     undefined,
     (error) => {
       // 読み込みに失敗しても背景が消えるだけでページは動く
-      console.error('背景モデル（zintai.glb）の読み込みに失敗しました', error);
-    }
+      console.error("背景モデル（zintai.glb）の読み込みに失敗しました", error);
+    },
   );
 
   /* ── パーティクル ────────────────────────────────── */
@@ -220,18 +267,18 @@ if (document.querySelector('main.top') && canvas) {
     }
 
     const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
     particles = new THREE.Points(
       geo,
       new THREE.PointsMaterial({
         size: 0.05,
-        color: '#b8a88a', // LPは紫（#7a3bff）。サイトの配色に合わせて金にしている
+        color: "#b8a88a", // LPは紫（#7a3bff）。サイトの配色に合わせて金にしている
         sizeAttenuation: true,
         transparent: true,
         opacity: 0.6,
         depthWrite: false,
-      })
+      }),
     );
     scene.add(particles);
   }
@@ -263,7 +310,9 @@ if (document.querySelector('main.top') && canvas) {
     _camA.fromArray(section.camera);
     _camB.fromArray(section.target);
 
-    const k = snap ? 1 : 1 - Math.exp(-CAMERA_DAMPING * Math.min(delta, 1 / 30));
+    const k = snap
+      ? 1
+      : 1 - Math.exp(-CAMERA_DAMPING * Math.min(delta, 1 / 30));
     snap = false;
 
     camera.position.lerp(_camA, k);
@@ -284,25 +333,29 @@ if (document.querySelector('main.top') && canvas) {
   animate();
   measureSection();
 
-  addEventListener('scroll', measureSection, { passive: true });
+  addEventListener("scroll", measureSection, { passive: true });
 
-  addEventListener('resize', () => {
-    camera.aspect = innerWidth / innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(innerWidth, innerHeight);
-    measureSection();
-  }, { passive: true });
+  addEventListener(
+    "resize",
+    () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+      measureSection();
+    },
+    { passive: true },
+  );
 
   /* ── タイムライン線（スクロール連動）──────────────── */
-  const tlWrap = document.querySelector('.timeline__wrap');
+  const tlWrap = document.querySelector(".timeline__wrap");
   if (tlWrap) {
     const updateTlLine = () => {
       const rect = tlWrap.getBoundingClientRect();
       const scrolled = innerHeight / 2 - rect.top;
       const height = Math.max(0, Math.min(tlWrap.offsetHeight, scrolled));
-      tlWrap.style.setProperty('--tl-line-height', height + 'px');
+      tlWrap.style.setProperty("--tl-line-height", height + "px");
     };
-    addEventListener('scroll', updateTlLine, { passive: true });
+    addEventListener("scroll", updateTlLine, { passive: true });
     updateTlLine();
   }
 }
