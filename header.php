@@ -52,7 +52,7 @@
     <header class="header">
         <a href="index.php" class="back-link">
         <div class="header__logo">
-          <img src="./img/portfolio.webp" alt="logo">
+          <img src="./img/portfolio.svg" alt="logo">
         </div>
       </a>
     <button class="header__toggle" id="nav-toggle" aria-label="メニューを開く">

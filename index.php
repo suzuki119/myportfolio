@@ -30,7 +30,7 @@ require 'header.php';
 
     <!-- ① HERO ────────────────────────── -->
     <section class="main-visual">
-      <h1 class="main-visual__title"><img src="./img/portfolio-text.webp" alt="Portfolio" fetchpriority="high"></h1>
+      <h1 class="main-visual__title"><img src="./img/portfolio-text.svg" alt="Portfolio" fetchpriority="high"></h1>
     </section>
 
 

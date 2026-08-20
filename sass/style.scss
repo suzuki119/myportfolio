@@ -164,10 +164,9 @@ main {
 
 .main-visual {
   min-height: 100vh;
-  display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-content: center;
   text-align: center;
   padding-top: rem(80);
   &__title {
@@ -466,7 +465,7 @@ main.top .works {
   &__card-title {
     font-family: $font-primary;
     font-size: rem(32);
-    font-weight: lighter;
+    font-weight: bold;
     margin-bottom: $space-xs;
   }
 

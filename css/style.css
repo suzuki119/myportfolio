@@ -20,8 +20,8 @@ html {
 }
 
 body {
-  background: #000000;
-  color: #d8d8d8;
+  background: #f4f1f1;
+  color: #2c2a2a;
   font-family: "Noto Sans JP", sans-serif;
   overflow-x: hidden;
   overflow-wrap: break-word;
@@ -54,7 +54,7 @@ body {
   align-items: center;
   justify-content: space-between;
   z-index: 50;
-  background: #000000;
+  background: #f4f1f1;
   border-bottom: 1px solid rgba(255, 255, 255, 0.4039215686);
 }
 .header__logo img {
@@ -79,7 +79,7 @@ body {
   transition: transform 0.3s, opacity 0.3s, background 0.3s;
 }
 .header__toggle.open span {
-  background: #d8d8d8;
+  background: #2c2a2a;
 }
 .header__toggle.open span:nth-child(1) {
   transform: translateY(11px) rotate(45deg);
@@ -108,13 +108,13 @@ body {
   font-size: 1.1428571429rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #e3e3e3;
+  color: #474141;
   text-decoration: none;
   cursor: pointer;
   transition: color 0.3s;
 }
 .header__nav a:hover {
-  color: #d8d8d8;
+  color: #2c2a2a;
 }
 @media (max-width: 800px) {
   .header__nav {
@@ -138,7 +138,7 @@ body {
   .header__nav a {
     font-size: 1.4285714286rem;
     letter-spacing: 0.3em;
-    color: #d8d8d8;
+    color: #2c2a2a;
   }
 }
 
@@ -149,10 +149,9 @@ main {
 
 .main-visual {
   min-height: 100vh;
-  display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-content: center;
   text-align: center;
   padding-top: 5.7142857143rem;
 }
@@ -162,7 +161,7 @@ main {
   font-weight: 300;
   line-height: 0.95;
   letter-spacing: -0.01em;
-  color: #ffffff;
+  color: #444343;
 }
 .main-visual__title img {
   width: 80%;
@@ -181,7 +180,7 @@ main {
   margin-right: auto;
   min-height: 100vh;
   padding: 6.4285714286rem 3.5714285714rem;
-  background-color: #000000;
+  background-color: #f4f1f1;
   border: #a0a0a0 2px solid;
   border-radius: 8px;
 }
@@ -199,7 +198,7 @@ main {
   font-family: "Cormorant Garamond", serif;
   font-size: clamp(3.8571428571rem, 5.5vw, 6rem);
   line-height: 1;
-  color: #ffffff;
+  color: #444343;
   text-align: center;
   margin-bottom: 5.1428571429rem;
 }
@@ -269,7 +268,7 @@ main {
   left: 3.5714285714rem;
   top: 25%;
   font-size: 0.8571428571rem;
-  color: #e3e3e3;
+  color: #474141;
 }
 .about__git-link::after {
   content: "GitHub";
@@ -303,7 +302,7 @@ main {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  color: #e3e3e3;
+  color: #474141;
   font-size: 1.1428571429rem;
   letter-spacing: 0.2em;
   margin-bottom: 2rem;
@@ -334,8 +333,8 @@ main {
   transition: color 0.3s, border-color 0.3s;
 }
 .btn:hover {
-  color: #ffffff;
-  border-bottom-color: #ffffff;
+  color: #444343;
+  border-bottom-color: #444343;
 }
 
 main.top .works {
@@ -354,7 +353,7 @@ main.top .works h2 {
   font-family: "Cormorant Garamond", serif;
   font-size: clamp(3.8571428571rem, 5.5vw, 6rem);
   line-height: 1;
-  color: #ffffff;
+  color: #444343;
   text-align: center;
   margin-bottom: 5.1428571429rem;
 }
@@ -398,8 +397,8 @@ main.top .works h2 {
   transition: color 0.3s, border-color 0.3s;
 }
 .works .note-card__link:hover {
-  color: #ffffff;
-  border-bottom-color: #ffffff;
+  color: #444343;
+  border-bottom-color: #444343;
 }
 .works__grid {
   display: grid;
@@ -412,7 +411,7 @@ main.top .works h2 {
   }
 }
 .works__card {
-  background-color: #000000;
+  background-color: #f4f1f1;
   border: #a0a0a0 2px solid;
   border-radius: 8px;
   overflow: hidden;
@@ -423,7 +422,7 @@ main.top .works h2 {
   text-align: left;
 }
 .works__card:hover {
-  border-color: #ffffff;
+  border-color: #444343;
 }
 .works__card-img {
   width: 100%;
@@ -469,13 +468,13 @@ main.top .works h2 {
 .works__card-title {
   font-family: "Cormorant Garamond", serif;
   font-size: 2.2857142857rem;
-  font-weight: lighter;
+  font-weight: bold;
   margin-bottom: 0.25rem;
 }
 .works__card-period {
   font-size: 1.1428571429rem;
   letter-spacing: 0.15em;
-  color: #e3e3e3;
+  color: #474141;
 }
 
 .tag {
@@ -502,7 +501,7 @@ main.top .works h2 {
   font-family: "Cormorant Garamond", serif;
   font-size: clamp(3.8571428571rem, 5.5vw, 6rem);
   line-height: 1;
-  color: #ffffff;
+  color: #444343;
   text-align: center;
   margin-bottom: 5.1428571429rem;
 }
@@ -594,7 +593,7 @@ main.top .works h2 {
   }
 }
 .timeline__card {
-  background-color: #000000;
+  background-color: #f4f1f1;
   border: #a0a0a0 2px solid;
   border-radius: 8px;
   padding: 1.5rem 1.5rem;
@@ -615,7 +614,7 @@ main.top .works h2 {
 .timeline__desc {
   font-size: 1.1428571429rem;
   line-height: 1.85;
-  color: #e3e3e3;
+  color: #474141;
 }
 
 .contact {
@@ -639,7 +638,7 @@ main.top .works h2 {
   font-family: "Cormorant Garamond", serif;
   font-size: clamp(3.8571428571rem, 5.5vw, 6rem);
   line-height: 1;
-  color: #ffffff;
+  color: #444343;
   text-align: center;
   margin-bottom: 5.1428571429rem;
   margin-bottom: 1rem;
@@ -709,7 +708,7 @@ main.top .works h2 {
   left: 50%;
   transform: translateX(-50%);
   background: #b8a88a;
-  color: #000000;
+  color: #f4f1f1;
   font-size: 0.8571428571rem;
   letter-spacing: 0.05em;
   white-space: nowrap;
@@ -735,14 +734,14 @@ main.top .works h2 {
   font-size: 1.1428571429rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #e3e3e3;
+  color: #474141;
   text-decoration: none;
   padding-bottom: 0.25rem;
   border-bottom: 1px solid transparent;
   transition: color 0.3s, border-color 0.3s;
 }
 .contact__link:hover {
-  color: #ffffff;
+  color: #444343;
   border-bottom-color: #b8a88a;
 }
 
@@ -769,7 +768,7 @@ main.top .works h2 {
   padding: 2rem;
   font-size: 1.1428571429rem;
   letter-spacing: 0.25em;
-  color: #e3e3e3;
+  color: #474141;
   border-top: 1px solid rgba(255, 255, 255, 0.0392156863);
   position: relative;
   z-index: 10;
@@ -790,7 +789,7 @@ header.header--work {
   font-size: 1.1428571429rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #e3e3e3;
+  color: #474141;
   text-decoration: none;
   transition: color 0.3s;
 }
@@ -837,7 +836,7 @@ header.header--work {
   font-size: clamp(2.2857142857rem, 8vw, 11.4285714286rem);
   font-weight: lighter;
   line-height: 0.92;
-  color: #ffffff;
+  color: #444343;
 }
 .works__filter-bar {
   width: 90%;
@@ -877,7 +876,7 @@ header.header--work {
   transition: color 0.25s, border-color 0.25s;
 }
 .works__filter-btn:hover {
-  color: #d8d8d8;
+  color: #2c2a2a;
   border-color: rgba(255, 255, 255, 0.25);
 }
 .works__filter-btn.is-active {
@@ -928,7 +927,7 @@ main.skills .skill__title {
   font-family: "Cormorant Garamond", serif;
   font-size: clamp(3.8571428571rem, 5.5vw, 6rem);
   line-height: 1;
-  color: #ffffff;
+  color: #444343;
   text-align: center;
   margin-bottom: 5.1428571429rem;
 }
@@ -957,7 +956,7 @@ main.skills .skill__category {
   margin: 2rem 0;
 }
 main.skills .skill__card {
-  background-color: #000000;
+  background-color: #f4f1f1;
   border: #a0a0a0 2px solid;
   border-radius: 8px;
   padding: 1.5rem;
@@ -997,7 +996,7 @@ main.skills .skill__card-meta {
 }
 main.skills .skill__name {
   font-size: 2.1428571429rem;
-  color: #ffffff;
+  color: #444343;
   font-family: "Cormorant Garamond", serif;
   font-weight: 300;
   letter-spacing: 0.05em;
@@ -1009,7 +1008,7 @@ main.skills .skill__years {
 }
 main.skills .skill__detail {
   font-size: 1rem;
-  color: #e3e3e3;
+  color: #474141;
   line-height: 1.7;
 }
 @media (max-width: 800px) {
@@ -1036,7 +1035,7 @@ main.skills .skill__detail {
   font-size: clamp(2.2857142857rem, 8vw, 11.4285714286rem);
   font-weight: lighter;
   line-height: 0.92;
-  color: #ffffff;
+  color: #444343;
 }
 .single__meta-bar {
   width: 90%;
@@ -1105,7 +1104,7 @@ main.skills .skill__detail {
   width: 7.1428571429rem;
   height: 7.1428571429rem;
   border-radius: 50%;
-  border: #ffffff 2px solid;
+  border: #444343 2px solid;
   -o-object-fit: contain;
      object-fit: contain;
   flex-shrink: 0;
@@ -1164,7 +1163,7 @@ main.skills .skill__detail {
   font-size: 1.1428571429rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: #e3e3e3;
+  color: #474141;
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -1215,7 +1214,7 @@ main.skills .skill__detail {
   font-size: clamp(3rem, 3vw, 2.8571428571rem);
   font-weight: lighter;
   line-height: 1.2;
-  color: #ffffff;
+  color: #444343;
   border-bottom: 1px solid #b8a88a;
   margin-bottom: 1.5rem;
 }
@@ -1227,7 +1226,7 @@ main.skills .skill__detail {
 .single .block-body {
   font-size: 1.1428571429rem;
   line-height: 1.8;
-  color: #ffffff;
+  color: #444343;
 }
 .single .block-body p + p {
   margin-top: 1rem;
@@ -1242,7 +1241,7 @@ main.skills .skill__detail {
   font-family: "Cormorant Garamond", serif;
   font-size: 1.8571428571rem;
   font-weight: bold;
-  color: #ffffff;
+  color: #444343;
   margin: 2rem 0 0.5rem;
 }
 @media (max-width: 800px) {
@@ -1352,7 +1351,7 @@ main.skills .skill__detail {
 .single .btn-primary:hover {
   background: rgba(184, 168, 138, 0.1019607843);
   border-color: #b8a88a;
-  color: #ffffff;
+  color: #444343;
 }
 .single .btn-primary svg {
   width: 14px;
@@ -1365,29 +1364,6 @@ main.skills .skill__detail {
   margin: 2rem;
 }
 
-@-webkit-keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
-/* ─── simple-single.php（シンプル表示）─── */
 .single--simple .single__hero {
   padding: 4rem 0 2.2857142857rem;
 }
@@ -1455,6 +1431,28 @@ main.skills .skill__detail {
 @media (max-width: 800px) {
   .single--simple .block-title {
     font-size: 1.5714285714rem;
+  }
+}
+
+@-webkit-keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 }
 /*# sourceMappingURL=style.css.map */
