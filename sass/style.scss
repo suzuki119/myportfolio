@@ -58,7 +58,7 @@ body {
   justify-content: space-between;
   z-index: $z-header;
   background: $color-bg;
-  border-bottom: 1px solid $border-sub;
+  border-bottom: 1px solid $color-border;
   &__logo {
     & img {
       width: 200px;
@@ -80,7 +80,7 @@ body {
       display: block;
       width: 40px;
       height: 3px;
-      background: $gray;
+      background: $color-text-weak;
       transition:
         transform 0.3s,
         opacity 0.3s,
@@ -117,7 +117,7 @@ body {
     z-index: $z-header;
 
     a {
-      @include label-text($color: $color-gray, $spacing: 0.22em);
+      @include label-text($color: $color-text-sub, $spacing: 0.22em);
       text-decoration: none;
       cursor: pointer;
       transition: color 0.3s;
@@ -175,7 +175,7 @@ main {
     font-weight: 300;
     line-height: 0.95;
     letter-spacing: -0.01em;
-    color: $color-white;
+    color: $color-text-sub;
     & img {
       width: 80%;
       max-width: rem(800);
@@ -249,7 +249,7 @@ main {
     justify-content: center;
     width: 50px;
     height: 50px;
-    border: 2px solid #bebebe;
+    border: 2px solid $color-border-strong;
     text-decoration: none;
     transition: border-color 0.3s;
 
@@ -271,7 +271,7 @@ main {
       left: rem(50);
       top: 25%;
       font-size: rem(12);
-      color: $color-gray;
+      color: $color-text-sub;
     }
   }
   &__git-link::after {
@@ -304,13 +304,13 @@ main {
 
   &__photo {
     aspect-ratio: 3/4;
-    background: #ffffff06;
-    border: 1px solid #ffffff0f;
+    background: $color-surface;
+    border: 1px solid $color-border;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    color: $color-gray;
+    color: $color-text-sub;
     font-size: rem(16);
     letter-spacing: 0.2em;
     margin-bottom: $space-xl;
@@ -340,8 +340,8 @@ main {
     border-color 0.3s;
 
   &:hover {
-    color: $color-white;
-    border-bottom-color: $color-white;
+    color: $color-text-sub;
+    border-bottom-color: $color-text-sub;
   }
 }
 
@@ -359,7 +359,7 @@ main.top .works {
 // ─── ワークスカード（index + works.php 共通） ────────────
 .works {
   & .note-card {
-    background: #71717159;
+    background: $color-surface;
     padding: $space-l;
 
     &__wrap {
@@ -368,7 +368,7 @@ main.top .works {
       gap: $space-l;
       align-items: center;
       text-align: left;
-      border: 1px solid #ffffff0f;
+      border: 1px solid $color-border;
       font-size: rem(14);
       letter-spacing: 0.1em;
       color: $color-accent;
@@ -388,8 +388,8 @@ main.top .works {
         border-color 0.3s;
 
       &:hover {
-        color: $color-white;
-        border-bottom-color: $color-white;
+        color: $color-text-sub;
+        border-bottom-color: $color-text-sub;
       }
     }
   }
@@ -415,14 +415,14 @@ main.top .works {
     text-align: left;
 
     &:hover {
-      border-color: $color-white;
+      border-color: $color-text-sub;
     }
   }
 
   &__card-img {
     width: 100%;
     aspect-ratio: 4/3;
-    background: #111;
+    background: $color-surface;
     position: relative;
     overflow: hidden;
     display: flex;
@@ -442,7 +442,11 @@ main.top .works {
   &__card-img-bg {
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    background: linear-gradient(
+      135deg,
+      $color-surface 0%,
+      $color-surface-alt 100%
+    );
   }
 
   &__card-body {
@@ -458,7 +462,7 @@ main.top .works {
 
   &__card-tag {
     @include label-text($size: 14, $spacing: 0.18em);
-    border: 1px solid #b8a88a47;
+    border: 1px solid rgba($color-accent, 0.35);
     padding: $space-xs $space-s;
   }
 
@@ -472,13 +476,13 @@ main.top .works {
   &__card-period {
     font-size: rem(16);
     letter-spacing: 0.15em;
-    color: $color-gray;
+    color: $color-text-sub;
   }
 }
 
 .tag {
   @include label-text($size: 14, $spacing: 0.18em);
-  border: 1px solid #b8a88a47;
+  border: 1px solid rgba($color-accent, 0.35);
   padding: $space-xs $space-s;
 }
 
@@ -502,7 +506,7 @@ main.top .works {
       top: 0;
       height: var(--tl-line-height, 0px);
       width: 1px;
-      background: #8b8b8b;
+      background: $color-border-strong;
 
       @include mq(desktop) {
         left: $space-m;
@@ -575,7 +579,7 @@ main.top .works {
     height: 10px;
     border-radius: 50%;
     background: $color-accent;
-    box-shadow: 0 0 18px #b8a88ab3;
+    box-shadow: 0 0 18px rgba($color-accent, 0.35);
     flex-shrink: 0;
   }
 
@@ -602,12 +606,13 @@ main.top .works {
     font-size: rem(22);
     font-weight: lighter;
     margin-bottom: $space-s;
+    font-weight: bold;
   }
 
   &__desc {
     font-size: rem(16);
     line-height: 1.85;
-    color: $color-gray;
+    color: $color-text-sub;
   }
 }
 
@@ -715,7 +720,7 @@ main.top .works {
   }
 
   &__link {
-    @include label-text($color: $color-gray, $size: 16, $spacing: 0.3em);
+    @include label-text($color: $color-text-sub, $size: 16, $spacing: 0.3em);
     text-decoration: none;
     padding-bottom: $space-xs;
     border-bottom: 1px solid transparent;
@@ -724,7 +729,7 @@ main.top .works {
       border-color 0.3s;
 
     &:hover {
-      color: $color-white;
+      color: $color-text-sub;
       border-bottom-color: $color-accent;
     }
   }
@@ -752,8 +757,8 @@ main.top .works {
   padding: $space-xl;
   font-size: rem(16);
   letter-spacing: 0.25em;
-  color: $color-gray;
-  border-top: 1px solid #ffffff0a;
+  color: $color-text-sub;
+  border-top: 1px solid $color-border;
   position: relative;
   z-index: $z-main;
 }
@@ -771,7 +776,7 @@ header.header--work {
   display: flex;
   align-items: center;
   gap: $space-s;
-  @include label-text($color: $color-gray, $spacing: 0.3em);
+  @include label-text($color: $color-text-sub, $spacing: 0.3em);
   text-decoration: none;
   transition: color 0.3s;
 
@@ -791,7 +796,7 @@ header.header--work {
 .hero-divider {
   @include inner();
   height: 1px;
-  background: #ffffff12;
+  background: $color-border;
 }
 
 // ─── works.php ────────────────────────────────────────
@@ -809,7 +814,7 @@ header.header--work {
     font-size: clamp(rem(32), 8vw, rem(160));
     font-weight: lighter;
     line-height: 0.92;
-    color: $color-white;
+    color: $color-text-sub;
   }
 
   &__filter-bar {
@@ -833,9 +838,9 @@ header.header--work {
   }
 
   &__filter-btn {
-    @include label-text($color: $gray, $size: 16, $spacing: 0.25em);
+    @include label-text($color: $color-text-weak, $size: 16, $spacing: 0.25em);
     background: none;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid $color-border;
     padding: 6px 20px;
     cursor: pointer;
     transition:
@@ -844,7 +849,7 @@ header.header--work {
 
     &:hover {
       color: $color-text;
-      border-color: rgba(255, 255, 255, 0.25);
+      border-color: $color-border-strong;
     }
 
     &.is-active {
@@ -854,7 +859,7 @@ header.header--work {
   }
 
   &__count {
-    @include label-text($color: $gray, $size: 16, $spacing: 0.2em);
+    @include label-text($color: $color-text-weak, $size: 16, $spacing: 0.2em);
     white-space: nowrap;
   }
 
@@ -868,7 +873,7 @@ header.header--work {
   }
 
   &__empty {
-    color: $gray;
+    color: $color-text-weak;
     font-size: rem(16);
     padding: $space-xxl 0;
   }
@@ -941,7 +946,7 @@ main.skills {
 
     &__name {
       font-size: rem(30);
-      color: $color-white;
+      color: $color-text-sub;
       font-family: $font-primary;
       font-weight: 300;
       letter-spacing: 0.05em;
@@ -949,13 +954,13 @@ main.skills {
 
     &__years {
       font-size: rem(13);
-      color: $gray;
+      color: $color-text-weak;
       letter-spacing: 0.05em;
     }
 
     &__detail {
       font-size: rem(14);
-      color: $color-gray;
+      color: $color-text-sub;
       line-height: 1.7;
 
       @include mq(desktop) {
@@ -979,7 +984,7 @@ main.skills {
     font-size: clamp(rem(32), 8vw, rem(160));
     font-weight: lighter;
     line-height: 0.92;
-    color: $color-white;
+    color: $color-text-sub;
   }
 
   &__meta-bar {
@@ -988,7 +993,7 @@ main.skills {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0;
-    border-bottom: 1px solid #ffffff0f;
+    border-bottom: 1px solid $color-border;
     @include mq(desktop) {
       grid-template-columns: 1fr;
       gap: $space-m;
@@ -997,8 +1002,8 @@ main.skills {
 
   &__meta-item {
     padding: $space-l $space-xl;
-    border-right: 1px solid #ffffff0f;
-    border-bottom: 1px solid #ffffff0f;
+    border-right: 1px solid $color-border;
+    border-bottom: 1px solid $color-border;
 
     &:nth-child(2n) {
       border-right: none;
@@ -1011,7 +1016,7 @@ main.skills {
     @include mq(desktop) {
       padding: $space-m 0;
       border-right: none;
-      border-bottom: 1px solid #ffffff0f;
+      border-bottom: 1px solid $color-border;
 
       &:last-child {
         border-bottom: none;
@@ -1027,7 +1032,7 @@ main.skills {
   &__meta-value {
     font-size: rem(16);
     line-height: 1.9;
-    color: #ffffffb3;
+    color: $color-text-sub;
   }
 
   &__github-link {
@@ -1035,7 +1040,7 @@ main.skills {
     position: relative;
     align-items: center;
     gap: $space-s;
-    color: #ffffffb3;
+    color: $color-text-sub;
     text-decoration: none;
     transition: color 0.3s;
 
@@ -1043,7 +1048,7 @@ main.skills {
       width: rem(100);
       height: rem(100);
       border-radius: 50%;
-      border: $color-white 2px solid;
+      border: $color-text-sub 2px solid;
       object-fit: contain;
       flex-shrink: 0;
     }
@@ -1090,13 +1095,17 @@ main.skills {
       }
 
       a {
-        @include label-text($color: $color-gray, $size: 16, $spacing: 0.25em);
+        @include label-text(
+          $color: $color-text-sub,
+          $size: 16,
+          $spacing: 0.25em
+        );
         text-decoration: none;
         display: flex;
         align-items: center;
         gap: $space-s;
         padding: $space-s 0;
-        border-bottom: 1px solid #ffffff0a;
+        border-bottom: 1px solid $color-border;
         transition: color 0.3s;
 
         &::before {
@@ -1139,7 +1148,7 @@ main.skills {
       content: "";
       flex: 1;
       height: 1px;
-      background: #ffffff12;
+      background: $color-border;
     }
   }
 
@@ -1148,7 +1157,7 @@ main.skills {
     font-size: clamp(rem(42), 3vw, rem(40));
     font-weight: lighter;
     line-height: 1.2;
-    color: $color-white;
+    color: $color-text-sub;
     border-bottom: 1px solid $color-accent;
     margin-bottom: $space-l;
     @include mq(desktop) {
@@ -1159,7 +1168,7 @@ main.skills {
   .block-body {
     font-size: rem(16);
     line-height: 1.8;
-    color: $color-white;
+    color: $color-text-sub;
 
     p + p {
       margin-top: $space-m;
@@ -1176,7 +1185,7 @@ main.skills {
       font-family: $font-primary;
       font-size: rem(26);
       font-weight: bold;
-      color: $color-white;
+      color: $color-text-sub;
       margin: $space-xl 0 $space-s;
       @include mq(desktop) {
         font-size: rem(20); // スマホでは小見出しを縮小
@@ -1204,8 +1213,12 @@ main.skills {
   .mock-img {
     width: 100%;
     aspect-ratio: 16 / 9;
-    background: linear-gradient(135deg, #0b0b14 0%, #131328 100%);
-    border: 1px solid #ffffff0f;
+    background: linear-gradient(
+      135deg,
+      $color-surface 0%,
+      $color-surface-alt 100%
+    );
+    border: 1px solid $color-border;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1226,7 +1239,7 @@ main.skills {
     width: 100%;
     aspect-ratio: 16 / 9;
     margin-bottom: $space-xxl;
-    border: 1px solid #ffffff0f;
+    border: 1px solid $color-border;
     overflow: hidden;
     background: #000;
 
@@ -1239,13 +1252,13 @@ main.skills {
   }
 
   .highlight-box {
-    background: #b8a88a0f;
+    background: rgba($color-accent, 0.06);
     border-left: 2px solid $color-accent;
     padding: $space-l $space-l;
     margin: $space-xl 0;
     font-size: rem(16);
     line-height: 2;
-    color: #ffffffb3;
+    color: $color-text-sub;
   }
 
   td {
@@ -1282,7 +1295,7 @@ main.skills {
     gap: $space-s;
     padding: $space-m $space-xl;
     background: transparent;
-    border: 1px solid #b8a88a80;
+    border: 1px solid rgba($color-accent, 0.5);
     color: $color-accent;
     font-family: $font-text;
     font-size: rem(16);
@@ -1296,9 +1309,9 @@ main.skills {
       color 0.3s;
 
     &:hover {
-      background: #b8a88a1a;
+      background: rgba($color-accent, 0.1);
       border-color: $color-accent;
-      color: $color-white;
+      color: $color-text-sub;
     }
 
     svg {

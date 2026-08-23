@@ -5,21 +5,30 @@
    変数定義
 ======================================== */
 // --- カラー ---
-$color-white: #444343;
-$color-gray: #474141;
-$color-accent: #b8a88a;
-$color-bg: #f4f1f1;
-$color-text: #2c2a2a;
-$gray: #a0a0a0;
+// 併記した数値は $color-bg に対するコントラスト比。文字は 4.5:1 以上を目安にしている。
+// 背景が黒だった頃の名残（白の半透明・#a0a0a0 など）は明るい背景では読めないため整理した。
+$color-bg: #f4f1f1; // ページ背景
+$color-surface: #e7e3e3; // 画像プレースホルダなど、背景より一段沈んだ面
+$color-surface-alt: #ddd8d8; // 同上。グラデーションの終点に使う
+
+$color-text: #2c2a2a; // 本文                       12.7:1
+$color-text-sub: #454141; // 見出し・ラベル              9.0:1
+$color-text-weak: #6b6565; // 年号・件数など弱い文字       5.1:1
+$color-accent: #735827; // アクセント                  5.9:1
+
+// --- 罫線 ---
+$color-border: rgba($color-text, 0.12); // 細い区切り線
+$color-border-strong: rgba($color-text, 0.3); // 枠として見せたい線
 
 // --- レイアウト / エフェクト ---
-$nav-bg: rgba(0, 0, 0, 0.8);
-$glass-border: #ffffff3f;
-$border-sub: #ffffff67;
+$nav-bg: rgba(
+  $color-bg,
+  0.97
+); // スマホのメニュー。中の文字が $color-text なので背景も明るい色にする
 $canvas-opacity: 0.85;
 
 // --- タイポグラフィ ---
-$font-primary: "Cormorant Garamond", serif;
+$font-primary: "Noto Sans JP", serif;
 $font-text: "Noto Sans JP", sans-serif;
 
 // --- 重なり順 ---
@@ -63,7 +72,7 @@ $space-xxxl: 3rem; // 48px
 
 @mixin glass-card() {
   background-color: $color-bg;
-  border: $gray 2px solid;
+  border: $color-border-strong 2px solid;
   border-radius: 8px;
 }
 
@@ -82,7 +91,7 @@ $space-xxxl: 3rem; // 48px
   font-family: $font-primary;
   font-size: clamp(rem(54), 5.5vw, rem(84));
   line-height: 1;
-  color: $color-white;
+  color: $color-text-sub;
   text-align: center;
   margin-bottom: rem(72);
   @include mq(desktop) {

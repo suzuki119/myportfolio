@@ -55,7 +55,7 @@ body {
   justify-content: space-between;
   z-index: 50;
   background: #f4f1f1;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.4039215686);
+  border-bottom: 1px solid rgba(44, 42, 42, 0.12);
 }
 .header__logo img {
   width: 200px;
@@ -75,7 +75,7 @@ body {
   display: block;
   width: 40px;
   height: 3px;
-  background: #a0a0a0;
+  background: #6b6565;
   transition: transform 0.3s, opacity 0.3s, background 0.3s;
 }
 .header__toggle.open span {
@@ -108,7 +108,7 @@ body {
   font-size: 1.1428571429rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #474141;
+  color: #454141;
   text-decoration: none;
   cursor: pointer;
   transition: color 0.3s;
@@ -125,7 +125,7 @@ body {
     right: 0;
     bottom: 0;
     padding: 0;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(244, 241, 241, 0.97);
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -156,12 +156,12 @@ main {
   padding-top: 5.7142857143rem;
 }
 .main-visual__title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Sans JP", serif;
   font-size: clamp(4.2857142857rem, 10vw, 10rem);
   font-weight: 300;
   line-height: 0.95;
   letter-spacing: -0.01em;
-  color: #444343;
+  color: #454141;
 }
 .main-visual__title img {
   width: 80%;
@@ -171,7 +171,7 @@ main {
 }
 .main-visual__title em {
   font-style: italic;
-  color: #b8a88a;
+  color: #735827;
 }
 
 .about {
@@ -181,7 +181,7 @@ main {
   min-height: 100vh;
   padding: 6.4285714286rem 3.5714285714rem;
   background-color: #f4f1f1;
-  border: #a0a0a0 2px solid;
+  border: rgba(44, 42, 42, 0.3) 2px solid;
   border-radius: 8px;
 }
 @media (max-width: 800px) {
@@ -195,10 +195,10 @@ main {
   }
 }
 .about h2 {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Sans JP", serif;
   font-size: clamp(3.8571428571rem, 5.5vw, 6rem);
   line-height: 1;
-  color: #444343;
+  color: #454141;
   text-align: center;
   margin-bottom: 5.1428571429rem;
 }
@@ -225,7 +225,7 @@ main {
   }
 }
 .about__name {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Sans JP", serif;
   font-size: 2.4285714286rem;
   font-weight: lighter;
   margin-bottom: 0.25rem;
@@ -233,7 +233,7 @@ main {
 .about__name-en {
   font-size: 1.1428571429rem;
   letter-spacing: 0.28em;
-  color: #b8a88a;
+  color: #735827;
   margin-bottom: 1.5rem;
 }
 .about__icons {
@@ -247,12 +247,12 @@ main {
   justify-content: center;
   width: 50px;
   height: 50px;
-  border: 2px solid #bebebe;
+  border: 2px solid rgba(44, 42, 42, 0.3);
   text-decoration: none;
   transition: border-color 0.3s;
 }
 .about__git-link:hover, .about__blog-link:hover {
-  border-color: #b8a88a;
+  border-color: #735827;
 }
 .about__git-link__img, .about__blog-link__img {
   width: 20px;
@@ -268,7 +268,7 @@ main {
   left: 3.5714285714rem;
   top: 25%;
   font-size: 0.8571428571rem;
-  color: #474141;
+  color: #454141;
 }
 .about__git-link::after {
   content: "GitHub";
@@ -282,12 +282,12 @@ main {
   margin-bottom: 1.5rem;
 }
 .about__mypr {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Sans JP", serif;
   font-size: 1.2142857143rem;
   font-weight: lighter;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #b8a88a;
+  color: #735827;
   margin: 1.5rem 0 0.5rem;
 }
 .about__body {
@@ -296,13 +296,13 @@ main {
 }
 .about__photo {
   aspect-ratio: 3/4;
-  background: rgba(255, 255, 255, 0.0235294118);
-  border: 1px solid rgba(255, 255, 255, 0.0588235294);
+  background: #e7e3e3;
+  border: 1px solid rgba(44, 42, 42, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  color: #474141;
+  color: #454141;
   font-size: 1.1428571429rem;
   letter-spacing: 0.2em;
   margin-bottom: 2rem;
@@ -323,18 +323,18 @@ main {
   font-size: 1.1428571429rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: #b8a88a;
+  color: #735827;
   display: inline-block;
   text-align: center;
   margin: 2.5rem auto;
   text-decoration: none;
   padding-bottom: 2px;
-  border-bottom: 1px solid rgba(184, 168, 138, 0.4);
+  border-bottom: 1px solid rgba(115, 88, 39, 0.4);
   transition: color 0.3s, border-color 0.3s;
 }
 .btn:hover {
-  color: #444343;
-  border-bottom-color: #444343;
+  color: #454141;
+  border-bottom-color: #454141;
 }
 
 main.top .works {
@@ -350,10 +350,10 @@ main.top .works {
   }
 }
 main.top .works h2 {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Sans JP", serif;
   font-size: clamp(3.8571428571rem, 5.5vw, 6rem);
   line-height: 1;
-  color: #444343;
+  color: #454141;
   text-align: center;
   margin-bottom: 5.1428571429rem;
 }
@@ -365,7 +365,7 @@ main.top .works h2 {
 }
 
 .works .note-card {
-  background: rgba(113, 113, 113, 0.3490196078);
+  background: #e7e3e3;
   padding: 1.5rem;
 }
 .works .note-card__wrap {
@@ -374,10 +374,10 @@ main.top .works h2 {
   gap: 1.5rem;
   align-items: center;
   text-align: left;
-  border: 1px solid rgba(255, 255, 255, 0.0588235294);
+  border: 1px solid rgba(44, 42, 42, 0.12);
   font-size: 1rem;
   letter-spacing: 0.1em;
-  color: #b8a88a;
+  color: #735827;
   margin: 2rem 0;
 }
 @media (max-width: 800px) {
@@ -390,15 +390,15 @@ main.top .works h2 {
   font-size: 1rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: #b8a88a;
+  color: #735827;
   text-decoration: none;
   padding-bottom: 2px;
-  border-bottom: 1px solid rgba(184, 168, 138, 0.4);
+  border-bottom: 1px solid rgba(115, 88, 39, 0.4);
   transition: color 0.3s, border-color 0.3s;
 }
 .works .note-card__link:hover {
-  color: #444343;
-  border-bottom-color: #444343;
+  color: #454141;
+  border-bottom-color: #454141;
 }
 .works__grid {
   display: grid;
@@ -412,7 +412,7 @@ main.top .works h2 {
 }
 .works__card {
   background-color: #f4f1f1;
-  border: #a0a0a0 2px solid;
+  border: rgba(44, 42, 42, 0.3) 2px solid;
   border-radius: 8px;
   overflow: hidden;
   text-decoration: none;
@@ -422,12 +422,12 @@ main.top .works h2 {
   text-align: left;
 }
 .works__card:hover {
-  border-color: #444343;
+  border-color: #454141;
 }
 .works__card-img {
   width: 100%;
   aspect-ratio: 4/3;
-  background: #111;
+  background: #e7e3e3;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -446,7 +446,7 @@ main.top .works h2 {
 .works__card-img-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  background: linear-gradient(135deg, #e7e3e3 0%, #ddd8d8 100%);
 }
 .works__card-body {
   padding: 1rem 1.5rem 1.5rem;
@@ -461,12 +461,12 @@ main.top .works h2 {
   font-size: 1rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #b8a88a;
-  border: 1px solid rgba(184, 168, 138, 0.2784313725);
+  color: #735827;
+  border: 1px solid rgba(115, 88, 39, 0.35);
   padding: 0.25rem 0.5rem;
 }
 .works__card-title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Sans JP", serif;
   font-size: 2.2857142857rem;
   font-weight: bold;
   margin-bottom: 0.25rem;
@@ -474,15 +474,15 @@ main.top .works h2 {
 .works__card-period {
   font-size: 1.1428571429rem;
   letter-spacing: 0.15em;
-  color: #474141;
+  color: #454141;
 }
 
 .tag {
   font-size: 1rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #b8a88a;
-  border: 1px solid rgba(184, 168, 138, 0.2784313725);
+  color: #735827;
+  border: 1px solid rgba(115, 88, 39, 0.35);
   padding: 0.25rem 0.5rem;
 }
 
@@ -498,10 +498,10 @@ main.top .works h2 {
   }
 }
 .timeline h2 {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Sans JP", serif;
   font-size: clamp(3.8571428571rem, 5.5vw, 6rem);
   line-height: 1;
-  color: #444343;
+  color: #454141;
   text-align: center;
   margin-bottom: 5.1428571429rem;
 }
@@ -523,7 +523,7 @@ main.top .works h2 {
   top: 0;
   height: var(--tl-line-height, 0px);
   width: 1px;
-  background: #8b8b8b;
+  background: rgba(44, 42, 42, 0.3);
 }
 @media (max-width: 800px) {
   .timeline__wrap::before {
@@ -580,8 +580,8 @@ main.top .works h2 {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #b8a88a;
-  box-shadow: 0 0 18px rgba(184, 168, 138, 0.7019607843);
+  background: #735827;
+  box-shadow: 0 0 18px rgba(115, 88, 39, 0.35);
   flex-shrink: 0;
 }
 .timeline__side {
@@ -594,7 +594,7 @@ main.top .works h2 {
 }
 .timeline__card {
   background-color: #f4f1f1;
-  border: #a0a0a0 2px solid;
+  border: rgba(44, 42, 42, 0.3) 2px solid;
   border-radius: 8px;
   padding: 1.5rem 1.5rem;
 }
@@ -602,19 +602,20 @@ main.top .works h2 {
   font-size: 1.1428571429rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: #b8a88a;
+  color: #735827;
   margin-bottom: 0.5rem;
 }
 .timeline__role {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Sans JP", serif;
   font-size: 1.5714285714rem;
   font-weight: lighter;
   margin-bottom: 0.5rem;
+  font-weight: bold;
 }
 .timeline__desc {
   font-size: 1.1428571429rem;
   line-height: 1.85;
-  color: #474141;
+  color: #454141;
 }
 
 .contact {
@@ -635,10 +636,10 @@ main.top .works h2 {
   }
 }
 .contact__title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Sans JP", serif;
   font-size: clamp(3.8571428571rem, 5.5vw, 6rem);
   line-height: 1;
-  color: #444343;
+  color: #454141;
   text-align: center;
   margin-bottom: 5.1428571429rem;
   margin-bottom: 1rem;
@@ -667,9 +668,9 @@ main.top .works h2 {
   }
 }
 .contact__email {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Sans JP", serif;
   font-size: clamp(1.2857142857rem, 2.5vw, 2.2857142857rem);
-  color: #b8a88a;
+  color: #735827;
   text-decoration: none;
   letter-spacing: 0.04em;
   transition: opacity 0.3s;
@@ -707,7 +708,7 @@ main.top .works h2 {
   bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  background: #b8a88a;
+  background: #735827;
   color: #f4f1f1;
   font-size: 0.8571428571rem;
   letter-spacing: 0.05em;
@@ -734,15 +735,15 @@ main.top .works h2 {
   font-size: 1.1428571429rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #474141;
+  color: #454141;
   text-decoration: none;
   padding-bottom: 0.25rem;
   border-bottom: 1px solid transparent;
   transition: color 0.3s, border-color 0.3s;
 }
 .contact__link:hover {
-  color: #444343;
-  border-bottom-color: #b8a88a;
+  color: #454141;
+  border-bottom-color: #735827;
 }
 
 .footer {
@@ -768,8 +769,8 @@ main.top .works h2 {
   padding: 2rem;
   font-size: 1.1428571429rem;
   letter-spacing: 0.25em;
-  color: #474141;
-  border-top: 1px solid rgba(255, 255, 255, 0.0392156863);
+  color: #454141;
+  border-top: 1px solid rgba(44, 42, 42, 0.12);
   position: relative;
   z-index: 10;
 }
@@ -789,12 +790,12 @@ header.header--work {
   font-size: 1.1428571429rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #474141;
+  color: #454141;
   text-decoration: none;
   transition: color 0.3s;
 }
 .back-link:hover {
-  color: #b8a88a;
+  color: #735827;
 }
 .back-link svg {
   width: 14px;
@@ -809,7 +810,7 @@ header.header--work {
   margin-left: auto;
   margin-right: auto;
   height: 1px;
-  background: rgba(255, 255, 255, 0.0705882353);
+  background: rgba(44, 42, 42, 0.12);
 }
 @media (max-width: 800px) {
   .hero-divider {
@@ -832,11 +833,11 @@ header.header--work {
   }
 }
 .works__hero-title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Sans JP", serif;
   font-size: clamp(2.2857142857rem, 8vw, 11.4285714286rem);
   font-weight: lighter;
   line-height: 0.92;
-  color: #444343;
+  color: #454141;
 }
 .works__filter-bar {
   width: 90%;
@@ -868,26 +869,26 @@ header.header--work {
   font-size: 1.1428571429rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: #a0a0a0;
+  color: #6b6565;
   background: none;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(44, 42, 42, 0.12);
   padding: 6px 20px;
   cursor: pointer;
   transition: color 0.25s, border-color 0.25s;
 }
 .works__filter-btn:hover {
   color: #2c2a2a;
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(44, 42, 42, 0.3);
 }
 .works__filter-btn.is-active {
-  color: #b8a88a;
-  border-color: rgba(184, 168, 138, 0.45);
+  color: #735827;
+  border-color: rgba(115, 88, 39, 0.45);
 }
 .works__count {
   font-size: 1.1428571429rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #a0a0a0;
+  color: #6b6565;
   white-space: nowrap;
 }
 .works__list {
@@ -907,7 +908,7 @@ header.header--work {
   }
 }
 .works__empty {
-  color: #a0a0a0;
+  color: #6b6565;
   font-size: 1.1428571429rem;
   padding: 2.5rem 0;
 }
@@ -924,10 +925,10 @@ main.skills .skill {
   }
 }
 main.skills .skill__title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Sans JP", serif;
   font-size: clamp(3.8571428571rem, 5.5vw, 6rem);
   line-height: 1;
-  color: #444343;
+  color: #454141;
   text-align: center;
   margin-bottom: 5.1428571429rem;
 }
@@ -948,16 +949,16 @@ main.skills .skill__grid {
   }
 }
 main.skills .skill__category {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Sans JP", serif;
   font-size: 1.7142857143rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #b8a88a;
+  color: #735827;
   margin: 2rem 0;
 }
 main.skills .skill__card {
   background-color: #f4f1f1;
-  border: #a0a0a0 2px solid;
+  border: rgba(44, 42, 42, 0.3) 2px solid;
   border-radius: 8px;
   padding: 1.5rem;
   display: grid;
@@ -996,19 +997,19 @@ main.skills .skill__card-meta {
 }
 main.skills .skill__name {
   font-size: 2.1428571429rem;
-  color: #444343;
-  font-family: "Cormorant Garamond", serif;
+  color: #454141;
+  font-family: "Noto Sans JP", serif;
   font-weight: 300;
   letter-spacing: 0.05em;
 }
 main.skills .skill__years {
   font-size: 0.9285714286rem;
-  color: #a0a0a0;
+  color: #6b6565;
   letter-spacing: 0.05em;
 }
 main.skills .skill__detail {
   font-size: 1rem;
-  color: #474141;
+  color: #454141;
   line-height: 1.7;
 }
 @media (max-width: 800px) {
@@ -1031,11 +1032,11 @@ main.skills .skill__detail {
   }
 }
 .single__hero-title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Sans JP", serif;
   font-size: clamp(2.2857142857rem, 8vw, 11.4285714286rem);
   font-weight: lighter;
   line-height: 0.92;
-  color: #444343;
+  color: #454141;
 }
 .single__meta-bar {
   width: 90%;
@@ -1045,7 +1046,7 @@ main.skills .skill__detail {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.0588235294);
+  border-bottom: 1px solid rgba(44, 42, 42, 0.12);
 }
 @media (max-width: 800px) {
   .single__meta-bar {
@@ -1060,8 +1061,8 @@ main.skills .skill__detail {
 }
 .single__meta-item {
   padding: 1.5rem 2rem;
-  border-right: 1px solid rgba(255, 255, 255, 0.0588235294);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.0588235294);
+  border-right: 1px solid rgba(44, 42, 42, 0.12);
+  border-bottom: 1px solid rgba(44, 42, 42, 0.12);
 }
 .single__meta-item:nth-child(2n) {
   border-right: none;
@@ -1073,7 +1074,7 @@ main.skills .skill__detail {
   .single__meta-item {
     padding: 1rem 0;
     border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.0588235294);
+    border-bottom: 1px solid rgba(44, 42, 42, 0.12);
   }
   .single__meta-item:last-child {
     border-bottom: none;
@@ -1083,20 +1084,20 @@ main.skills .skill__detail {
   font-size: 1.1428571429rem;
   letter-spacing: 0.35em;
   text-transform: uppercase;
-  color: #b8a88a;
+  color: #735827;
   margin-bottom: 0.5rem;
 }
 .single__meta-value {
   font-size: 1.1428571429rem;
   line-height: 1.9;
-  color: rgba(255, 255, 255, 0.7019607843);
+  color: #454141;
 }
 .single__github-link {
   display: inline-flex;
   position: relative;
   align-items: center;
   gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.7019607843);
+  color: #454141;
   text-decoration: none;
   transition: color 0.3s;
 }
@@ -1104,7 +1105,7 @@ main.skills .skill__detail {
   width: 7.1428571429rem;
   height: 7.1428571429rem;
   border-radius: 50%;
-  border: #444343 2px solid;
+  border: #454141 2px solid;
   -o-object-fit: contain;
      object-fit: contain;
   flex-shrink: 0;
@@ -1163,25 +1164,25 @@ main.skills .skill__detail {
   font-size: 1.1428571429rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: #474141;
+  color: #454141;
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.0392156863);
+  border-bottom: 1px solid rgba(44, 42, 42, 0.12);
   transition: color 0.3s;
 }
 .single .sidebar-nav a::before {
   content: "";
   width: 20px;
   height: 1px;
-  background: #b8a88a;
+  background: #735827;
   opacity: 0;
   transition: opacity 0.3s;
 }
 .single .sidebar-nav a:hover, .single .sidebar-nav a.is-active {
-  color: #b8a88a;
+  color: #735827;
 }
 .single .sidebar-nav a:hover::before, .single .sidebar-nav a.is-active::before {
   opacity: 1;
@@ -1197,7 +1198,7 @@ main.skills .skill__detail {
   font-size: 1.1428571429rem;
   letter-spacing: 0.4em;
   text-transform: uppercase;
-  color: #b8a88a;
+  color: #735827;
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
@@ -1207,15 +1208,15 @@ main.skills .skill__detail {
   content: "";
   flex: 1;
   height: 1px;
-  background: rgba(255, 255, 255, 0.0705882353);
+  background: rgba(44, 42, 42, 0.12);
 }
 .single .block-title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Sans JP", serif;
   font-size: clamp(3rem, 3vw, 2.8571428571rem);
   font-weight: lighter;
   line-height: 1.2;
-  color: #444343;
-  border-bottom: 1px solid #b8a88a;
+  color: #454141;
+  border-bottom: 1px solid #735827;
   margin-bottom: 1.5rem;
 }
 @media (max-width: 800px) {
@@ -1226,7 +1227,7 @@ main.skills .skill__detail {
 .single .block-body {
   font-size: 1.1428571429rem;
   line-height: 1.8;
-  color: #444343;
+  color: #454141;
 }
 .single .block-body p + p {
   margin-top: 1rem;
@@ -1238,10 +1239,10 @@ main.skills .skill__detail {
   list-style: disc;
 }
 .single .block-body h3 {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Sans JP", serif;
   font-size: 1.8571428571rem;
   font-weight: bold;
-  color: #444343;
+  color: #454141;
   margin: 2rem 0 0.5rem;
 }
 @media (max-width: 800px) {
@@ -1250,10 +1251,10 @@ main.skills .skill__detail {
   }
 }
 .single .block-body h4 {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Sans JP", serif;
   font-size: 1.4285714286rem;
   font-weight: bold;
-  color: #b8a88a;
+  color: #735827;
   letter-spacing: 0.05em;
   margin: 1.5rem 0 0.25rem;
 }
@@ -1267,8 +1268,8 @@ main.skills .skill__detail {
 .single .mock-img {
   width: 100%;
   aspect-ratio: 16/9;
-  background: linear-gradient(135deg, #0b0b14 0%, #131328 100%);
-  border: 1px solid rgba(255, 255, 255, 0.0588235294);
+  background: linear-gradient(135deg, #e7e3e3 0%, #ddd8d8 100%);
+  border: 1px solid rgba(44, 42, 42, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1288,7 +1289,7 @@ main.skills .skill__detail {
   width: 100%;
   aspect-ratio: 16/9;
   margin-bottom: 2.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.0588235294);
+  border: 1px solid rgba(44, 42, 42, 0.12);
   overflow: hidden;
   background: #000;
 }
@@ -1299,13 +1300,13 @@ main.skills .skill__detail {
   border: 0;
 }
 .single .highlight-box {
-  background: rgba(184, 168, 138, 0.0588235294);
-  border-left: 2px solid #b8a88a;
+  background: rgba(115, 88, 39, 0.06);
+  border-left: 2px solid #735827;
   padding: 1.5rem 1.5rem;
   margin: 2rem 0;
   font-size: 1.1428571429rem;
   line-height: 2;
-  color: rgba(255, 255, 255, 0.7019607843);
+  color: #454141;
 }
 .single td {
   padding: 0.5rem;
@@ -1338,8 +1339,8 @@ main.skills .skill__detail {
   gap: 0.5rem;
   padding: 1rem 2rem;
   background: transparent;
-  border: 1px solid rgba(184, 168, 138, 0.5019607843);
-  color: #b8a88a;
+  border: 1px solid rgba(115, 88, 39, 0.5);
+  color: #735827;
   font-family: "Noto Sans JP", sans-serif;
   font-size: 1.1428571429rem;
   letter-spacing: 0.3em;
@@ -1349,9 +1350,9 @@ main.skills .skill__detail {
   transition: background 0.3s, border-color 0.3s, color 0.3s;
 }
 .single .btn-primary:hover {
-  background: rgba(184, 168, 138, 0.1019607843);
-  border-color: #b8a88a;
-  color: #444343;
+  background: rgba(115, 88, 39, 0.1);
+  border-color: #735827;
+  color: #454141;
 }
 .single .btn-primary svg {
   width: 14px;
