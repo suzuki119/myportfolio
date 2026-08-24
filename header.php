@@ -35,7 +35,9 @@
 
   <?php if (!empty($extra_head)) echo $extra_head; ?>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/the-new-css-reset/css/reset.min.css">
-  <link rel="stylesheet" href="css/style.css">
+  <?php // script.js と同じく、SCSSをコンパイルし直したときだけ取り直させる ?>
+  <?php $css_ver = @filemtime(__DIR__ . '/css/style.css'); ?>
+  <link rel="stylesheet" href="css/style.css<?= $css_ver ? '?v=' . $css_ver : '' ?>">
 </head>
 
 <body>

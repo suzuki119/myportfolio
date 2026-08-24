@@ -22,21 +22,22 @@
   </main>
 </footer>
 
-<?php // three.js / React は dist/bg.js にバンドル済みのため、ここでの読み込みは不要 ?>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
-<script src="script.js" defer></script>
-
-<?php // 背景の3Dは重い（zintai.glb が約3.2MB）ため、TOPページでのみ読み込む ?>
-<?php // src/ を Vite でビルドしたもの。src を編集したら `npm run build` で作り直す ?>
+<?php
+// [three.js] script.js の背景クリスタルが global の THREE を使うので、script.js より前に読む。
+// 読み込むのは $use_bg_3d を立てたページだけ（＝ index.php）。
+// script.js 側は main.top の有無で判定しているので、両方そろって初めて描画される。
+?>
 <?php if (!empty($use_bg_3d)): ?>
-  <?php
-  // ファイル名を固定しているぶん、更新してもブラウザが古い bg.js を使い続けてしまう。
-  // 更新日時をクエリに付けて、ビルドし直した／アップロードし直したときだけ取り直させる。
-  $bg_js  = 'dist/bg.js';
-  $bg_ver = @filemtime(__DIR__ . '/' . $bg_js);
-  ?>
-  <script type="module" src="<?= $bg_js . ($bg_ver ? '?v=' . $bg_ver : '') ?>"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
 <?php endif; ?>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+<?php
+// 更新日時をクエリに付けて、書き換えたときだけブラウザに取り直させる。
+// これがないと、修正しても古いキャッシュが実行され続けて原因が分からなくなる。
+$script_ver = @filemtime(__DIR__ . '/script.js');
+?>
+<script src="script.js<?= $script_ver ? '?v=' . $script_ver : '' ?>" defer></script>
+
 
 </body>
 </html>

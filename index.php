@@ -17,13 +17,15 @@ $skills = $sk_stmt->fetchAll();
 $page_title       = 'Suzuki Yutaro — Portfolio';
 $page_description = '鈴木優太郎のポートフォリオ。フロントエンドエンジニア志望。WordPress・JavaScript・SCSSによるWeb制作実績を掲載しています。';
 $og_url           = 'https://susuki-island.heavy.jp/myportfolio/';
-$use_bg_3d        = true; // [footer.php] 背景の3Dアニメーション（bg.js）を読み込む
+$use_bg_3d        = true; // [footer.php] three.js を読み込む。script.js の背景クリスタルが使う
 
 require 'header.php';
 ?>
 
-  <?php // [React] src/main.jsx がこの中に <canvas> を作る（dist/bg.js／footer.php で読み込み） ?>
-  <div id="canvas-container"></div>
+  <?php // [three.js] script.js の背景クリスタルがこのキャンバスに描画する ?>
+  <div id="canvas-container">
+    <canvas id="backcanvas"></canvas>
+  </div>
 
   <main class="top">
 
