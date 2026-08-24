@@ -29,7 +29,13 @@
 <?php // 背景の3Dは重い（zintai.glb が約3.2MB）ため、TOPページでのみ読み込む ?>
 <?php // src/ を Vite でビルドしたもの。src を編集したら `npm run build` で作り直す ?>
 <?php if (!empty($use_bg_3d)): ?>
-<script type="module" src="dist/bg.js"></script>
+  <?php
+  // ファイル名を固定しているぶん、更新してもブラウザが古い bg.js を使い続けてしまう。
+  // 更新日時をクエリに付けて、ビルドし直した／アップロードし直したときだけ取り直させる。
+  $bg_js  = 'dist/bg.js';
+  $bg_ver = @filemtime(__DIR__ . '/' . $bg_js);
+  ?>
+  <script type="module" src="<?= $bg_js . ($bg_ver ? '?v=' . $bg_ver : '') ?>"></script>
 <?php endif; ?>
 
 </body>
