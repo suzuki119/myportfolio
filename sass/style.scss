@@ -368,14 +368,13 @@ main.top .works {
       gap: $space-l;
       align-items: center;
       text-align: left;
-      border: 1px solid $color-border;
       font-size: rem(14);
       letter-spacing: 0.1em;
       color: $color-accent;
       margin: $space-xl 0;
       @include mq(desktop) {
         grid-template-columns: 1fr;
-        gap: $space-m;
+        gap: $space-xxxl;
       }
     }
     &__link {
@@ -812,7 +811,7 @@ header.header--work {
   &__hero-title {
     font-family: $font-primary;
     font-size: clamp(rem(32), 8vw, rem(160));
-    font-weight: lighter;
+    font-weight: bold;
     line-height: 0.92;
     color: $color-text-sub;
   }
@@ -982,7 +981,7 @@ main.skills {
   &__hero-title {
     font-family: $font-primary;
     font-size: clamp(rem(32), 8vw, rem(160));
-    font-weight: lighter;
+    font-weight: bold;
     line-height: 0.92;
     color: $color-text-sub;
   }
@@ -1042,7 +1041,10 @@ main.skills {
     gap: $space-s;
     color: $color-text-sub;
     text-decoration: none;
-    transition: color 0.3s;
+    transition: all 0.3s;
+    background-color: $color-surface-alt;
+    border-radius: 15px;
+    padding: $space-s $space-l;
 
     img {
       width: rem(100);
@@ -1051,6 +1053,11 @@ main.skills {
       border: $color-text-sub 2px solid;
       object-fit: contain;
       flex-shrink: 0;
+    }
+
+    &:hover {
+      color: $color-text-white;
+      background-color: $color-accent;
     }
   }
 

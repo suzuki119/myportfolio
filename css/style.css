@@ -374,7 +374,6 @@ main.top .works h2 {
   gap: 1.5rem;
   align-items: center;
   text-align: left;
-  border: 1px solid rgba(44, 42, 42, 0.12);
   font-size: 1rem;
   letter-spacing: 0.1em;
   color: #735827;
@@ -383,7 +382,7 @@ main.top .works h2 {
 @media (max-width: 800px) {
   .works .note-card__wrap {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 3rem;
   }
 }
 .works .note-card__link {
@@ -835,7 +834,7 @@ header.header--work {
 .works__hero-title {
   font-family: "Noto Sans JP", serif;
   font-size: clamp(2.2857142857rem, 8vw, 11.4285714286rem);
-  font-weight: lighter;
+  font-weight: bold;
   line-height: 0.92;
   color: #454141;
 }
@@ -1034,7 +1033,7 @@ main.skills .skill__detail {
 .single__hero-title {
   font-family: "Noto Sans JP", serif;
   font-size: clamp(2.2857142857rem, 8vw, 11.4285714286rem);
-  font-weight: lighter;
+  font-weight: bold;
   line-height: 0.92;
   color: #454141;
 }
@@ -1099,7 +1098,10 @@ main.skills .skill__detail {
   gap: 0.5rem;
   color: #454141;
   text-decoration: none;
-  transition: color 0.3s;
+  transition: all 0.3s;
+  background-color: #ddd8d8;
+  border-radius: 15px;
+  padding: 0.5rem 1.5rem;
 }
 .single__github-link img {
   width: 7.1428571429rem;
@@ -1109,6 +1111,10 @@ main.skills .skill__detail {
   -o-object-fit: contain;
      object-fit: contain;
   flex-shrink: 0;
+}
+.single__github-link:hover {
+  color: #f4f1f1;
+  background-color: #735827;
 }
 .single .tag-list {
   display: flex;
